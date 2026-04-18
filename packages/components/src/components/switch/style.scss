@@ -1,0 +1,58 @@
+.vfui-switch {
+  @apply inline-flex items-center justify-center p-0 m-0 border-0 bg-transparent cursor-pointer outline-none;
+  @apply align-middle rounded-full;
+}
+
+.vfui-switch:focus-visible .vfui-switch__track {
+  box-shadow:
+    0 0 0 var(--vfui-ring-offset) var(--vfui-page-bg),
+    0 0 0 calc(var(--vfui-ring-offset) + var(--vfui-ring-width)) var(--vfui-ring-color);
+}
+
+.vfui-switch__track {
+  @apply relative w-11 h-6 shrink-0 rounded-full transition-[background-color,box-shadow] duration-150 ease-in-out;
+  background: var(--vfui-border-muted);
+}
+
+/* 深色：关态轨道与拇指与页面/卡片背景区分度低，改用更亮的轨道与浅色拇指 */
+html.dark .vfui-switch:not(.vfui-switch--checked) .vfui-switch__track {
+  background: var(--vfui-border-default);
+  box-shadow: inset 0 0 0 1px rgb(148 163 184 / 22%);
+}
+
+html.dark .vfui-switch--checked .vfui-switch__track {
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 12%);
+}
+
+.vfui-switch--checked .vfui-switch__track {
+  background: var(--vfui-color-primary);
+}
+
+.vfui-switch__thumb {
+  @apply absolute top-1/2 size-5 rounded-full shadow-sm transition-[left,right] duration-150 ease-in-out;
+  left: 2px;
+  right: auto;
+  transform: translateY(-50%);
+  background: var(--vfui-surface);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 12%);
+}
+
+html.dark .vfui-switch__thumb {
+  background: #f1f5f9;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 35%),
+    0 0 0 1px rgb(15 23 42 / 25%);
+}
+
+.vfui-switch--checked .vfui-switch__thumb {
+  left: auto;
+  right: 2px;
+}
+
+.vfui-switch--disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
+.vfui-switch--disabled .vfui-switch__track {
+  @apply cursor-not-allowed;
+}

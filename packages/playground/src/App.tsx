@@ -51,6 +51,9 @@ export function App() {
           <Link to="/slider" class={linkBase} active={linkActive}>
             Slider
           </Link>
+          <Link to="/switch" class={linkBase} active={linkActive}>
+            Switch
+          </Link>
         </nav>
 
         <main class="flex-1 min-w-0">
