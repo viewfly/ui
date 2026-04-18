@@ -40,6 +40,11 @@ export interface TooltipProps {
   /** 移出触发区或浮层后延迟关闭（ms），默认 120 */
   closeDelay?: number
   /**
+   * 受控显隐：传入后完全由该布尔值决定是否展示，不再响应 `trigger` 的 hover / focus 打开与关闭
+   *（仍走同一套定位、箭头与入场动画；与 Slider 拖动提示等场景配合时可设 `openDelay={0}`）。
+   */
+  open?: boolean
+  /**
    * 当沿首选侧空间不足时，是否自动翻到对侧（如 `top-*` ↔ `bottom-*`，`left-*` ↔ `right-*`），对齐方式不变。
    * 默认 `true`；设为 `false` 则始终使用 `placement`。
    */
@@ -305,6 +310,38 @@ export function Tooltip(props: TooltipProps) {
     }
   })
 
+  createEffect(
+    () => {
+      if (props.open === undefined) return 'uc' as const
+      if (props.disabled ?? false) return 'dis' as const
+      return props.open ? ('on' as const) : ('off' as const)
+    },
+    (mode) => {
+      if (mode === 'uc') return
+      if (mode === 'dis') {
+        closeNow()
+        return
+      }
+      if (mode === 'on') {
+        openNow()
+      } else {
+        closeNow()
+      }
+    },
+  )
+
+  createEffect(
+    () => {
+      void mounted()
+      void visible()
+      return props.content
+    },
+    () => {
+      if (!mounted() || !visible()) return
+      queueMicrotask(() => compute())
+    },
+  )
+
   createEffect([mounted], ([m]) => {
     if (!m) return
     const onLayout = () => compute()
@@ -366,10 +403,12 @@ export function Tooltip(props: TooltipProps) {
           role="tooltip"
           onMouseEnter={() => {
             if (props.disabled) return
+            if (props.open !== undefined) return
             clearClose()
           }}
           onMouseLeave={() => {
             if (props.disabled) return
+            if (props.open !== undefined) return
             if ((props.trigger ?? 'hover') !== 'hover') return
             scheduleClose()
           }}
@@ -387,24 +426,32 @@ export function Tooltip(props: TooltipProps) {
     const describedBy = mounted() && visible() ? tooltipId : undefined
 
     const onTriggerEnter = () => {
-      if (disabled || triggerMode !== 'hover') return
+      if (disabled) return
+      if (props.open !== undefined) return
+      if (triggerMode !== 'hover') return
       scheduleOpen()
     }
     const onTriggerLeave = () => {
-      if (disabled || triggerMode !== 'hover') return
+      if (disabled) return
+      if (props.open !== undefined) return
+      if (triggerMode !== 'hover') return
       clearOpen()
       scheduleClose()
     }
 
     const onFocusIn = (ev: FocusEvent) => {
-      if (disabled || triggerMode !== 'focus') return
+      if (disabled) return
+      if (props.open !== undefined) return
+      if (triggerMode !== 'focus') return
       const root = triggerRef.current
       if (!root) return
       const t = ev.target as Node | null
       if (t && root.contains(t)) scheduleOpen()
     }
     const onFocusOut = (ev: FocusEvent) => {
-      if (disabled || triggerMode !== 'focus') return
+      if (disabled) return
+      if (props.open !== undefined) return
+      if (triggerMode !== 'focus') return
       const root = triggerRef.current
       if (!root) return
       const related = ev.relatedTarget as Node | null

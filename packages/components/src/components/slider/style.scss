@@ -1,0 +1,62 @@
+.vfui-slider {
+  @apply w-full box-border py-2;
+}
+
+.vfui-slider__rail {
+  @apply relative h-5 flex items-center cursor-pointer touch-none select-none;
+}
+
+/* 整体统一半透明，与可用态色相一致，仅压低不透明度 */
+.vfui-slider--disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
+.vfui-slider--disabled .vfui-slider__rail {
+  @apply cursor-not-allowed;
+}
+
+.vfui-slider__rail-bg {
+  @apply absolute left-0 right-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full;
+  background: var(--vfui-border-muted);
+}
+
+.vfui-slider__fill {
+  @apply absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full pointer-events-none;
+  background: var(--vfui-color-primary);
+}
+
+.vfui-slider__handle {
+  @apply absolute top-1/2 z-[2] pointer-events-none;
+  transform: translate(-50%, -50%);
+}
+
+.vfui-slider__thumb {
+  @apply relative block size-4 rounded-full border-2 border-solid shadow-sm outline-none transition-shadow pointer-events-auto;
+  border-color: var(--vfui-color-primary);
+  background: var(--vfui-surface);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 8%);
+}
+
+.vfui-slider__thumb:hover {
+  box-shadow: 0 0 0 4px var(--vfui-ring-color);
+}
+
+.vfui-slider__thumb:focus-visible {
+  box-shadow: 0 0 0 var(--vfui-ring-width) var(--vfui-ring-color);
+}
+
+.vfui-slider--disabled .vfui-slider__thumb {
+  @apply shadow-none cursor-not-allowed;
+}
+
+.vfui-slider--disabled .vfui-slider__thumb:hover,
+.vfui-slider--disabled .vfui-slider__thumb:focus-visible {
+  box-shadow: none;
+}
+
+/* Tooltip 触发器默认 cursor-default，会盖住轨道的 not-allowed */
+.vfui-slider--disabled .vfui-tooltip,
+.vfui-slider--disabled .vfui-tooltip__trigger {
+  @apply cursor-not-allowed;
+}
+

@@ -48,6 +48,9 @@ export function App() {
           <Link to="/tooltip" class={linkBase} active={linkActive}>
             Tooltip
           </Link>
+          <Link to="/slider" class={linkBase} active={linkActive}>
+            Slider
+          </Link>
         </nav>
 
         <main class="flex-1 min-w-0">
