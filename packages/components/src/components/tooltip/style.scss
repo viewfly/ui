@@ -1,0 +1,181 @@
+.vfui-tooltip {
+  @apply inline-flex max-w-full align-middle;
+}
+
+.vfui-tooltip__trigger {
+  @apply inline-flex max-w-full cursor-default;
+}
+
+.vfui-tooltip--disabled .vfui-tooltip__trigger {
+  @apply cursor-not-allowed opacity-60 pointer-events-none;
+}
+
+@keyframes vfui-tooltip-enter-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes vfui-tooltip-enter-top {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes vfui-tooltip-enter-left {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes vfui-tooltip-enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.vfui-tooltip__panel {
+  --vfui-tooltip-arrow-fill: #111827;
+
+  @apply fixed z-[60] max-w-xs rounded-md px-2.5 py-1.5 text-xs leading-snug shadow-md;
+  @apply bg-gray-900 text-gray-50 border border-gray-700/80;
+  @apply dark:bg-slate-700 dark:text-slate-50 dark:border-slate-600;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translate3d(0, 0, 0);
+  will-change: opacity, transform;
+}
+
+html.dark .vfui-tooltip__panel {
+  --vfui-tooltip-arrow-fill: #334155;
+}
+
+/* 指向触发器的小三角：与面板同色，随 data-placement 贴边 */
+.vfui-tooltip__panel::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  pointer-events: none;
+}
+
+/* —— 上方弹出：箭头在底边，朝下 —— */
+.vfui-tooltip__panel[data-placement^='top']::after {
+  bottom: -6px;
+  border-width: 6px 6px 0;
+  border-color: var(--vfui-tooltip-arrow-fill) transparent transparent;
+}
+
+.vfui-tooltip__panel[data-placement='top-start']::after {
+  left: 12px;
+}
+
+.vfui-tooltip__panel[data-placement='top-center']::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.vfui-tooltip__panel[data-placement='top-end']::after {
+  right: 12px;
+}
+
+/* —— 下方弹出：箭头在顶边，朝上 —— */
+.vfui-tooltip__panel[data-placement^='bottom']::after {
+  top: -6px;
+  border-width: 0 6px 6px;
+  border-color: transparent transparent var(--vfui-tooltip-arrow-fill);
+}
+
+.vfui-tooltip__panel[data-placement='bottom-start']::after {
+  left: 12px;
+}
+
+.vfui-tooltip__panel[data-placement='bottom-center']::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.vfui-tooltip__panel[data-placement='bottom-end']::after {
+  right: 12px;
+}
+
+/* —— 左侧弹出：箭头在右边，朝右 —— */
+.vfui-tooltip__panel[data-placement^='left']::after {
+  right: -6px;
+  border-width: 6px 0 6px 6px;
+  border-color: transparent transparent transparent var(--vfui-tooltip-arrow-fill);
+}
+
+.vfui-tooltip__panel[data-placement='left-start']::after {
+  top: 10px;
+}
+
+.vfui-tooltip__panel[data-placement='left-center']::after {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.vfui-tooltip__panel[data-placement='left-end']::after {
+  bottom: 10px;
+}
+
+/* —— 右侧弹出：箭头在左边，朝左 —— */
+.vfui-tooltip__panel[data-placement^='right']::after {
+  left: -6px;
+  border-width: 6px 6px 6px 0;
+  border-color: transparent var(--vfui-tooltip-arrow-fill) transparent transparent;
+}
+
+.vfui-tooltip__panel[data-placement='right-start']::after {
+  top: 10px;
+}
+
+.vfui-tooltip__panel[data-placement='right-center']::after {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.vfui-tooltip__panel[data-placement='right-end']::after {
+  bottom: 10px;
+}
+
+.vfui-tooltip__panel--open.vfui-tooltip__panel--anim-bottom {
+  animation: vfui-tooltip-enter-bottom 0.14s ease-out forwards;
+}
+
+.vfui-tooltip__panel--open.vfui-tooltip__panel--anim-top {
+  animation: vfui-tooltip-enter-top 0.14s ease-out forwards;
+}
+
+.vfui-tooltip__panel--open.vfui-tooltip__panel--anim-left {
+  animation: vfui-tooltip-enter-left 0.14s ease-out forwards;
+}
+
+.vfui-tooltip__panel--open.vfui-tooltip__panel--anim-right {
+  animation: vfui-tooltip-enter-right 0.14s ease-out forwards;
+}

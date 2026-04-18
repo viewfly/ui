@@ -28,6 +28,15 @@ export function HomePage() {
             <span class="block text-xs vfui-text-muted mt-1">水平 / 垂直、虚线、文案位置</span>
           </Link>
         </li>
+        <li>
+          <Link
+            to="/tooltip"
+            class="block rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/60 px-4 py-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors"
+          >
+            <span class="font-medium text-gray-900 dark:text-slate-100">Tooltip</span>
+            <span class="block text-xs vfui-text-muted mt-1">上下左右 12 方位、悬停 / 聚焦</span>
+          </Link>
+        </li>
       </ul>
       <p class="text-sm text-gray-500 dark:text-slate-400 mt-8">
         @viewfly/ui-utils 示例：clamp(120, 0, 100) = {w}

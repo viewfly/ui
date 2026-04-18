@@ -45,6 +45,9 @@ export function App() {
           <Link to="/dropdown" class={linkBase} active={linkActive}>
             Dropdown
           </Link>
+          <Link to="/tooltip" class={linkBase} active={linkActive}>
+            Tooltip
+          </Link>
         </nav>
 
         <main class="flex-1 min-w-0">
