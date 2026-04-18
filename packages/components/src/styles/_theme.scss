@@ -1,0 +1,150 @@
+@use 'sass:color';
+@use './variables' as v;
+
+// Design tokens：语义命名 + 浅色 / html.dark 两套取值
+:root {
+  color-scheme: light;
+
+  // —— 品牌与状态色（填充、强调）——
+  --vfui-color-primary: #{v.$vfui-color-primary};
+  --vfui-color-primary-hover: #{color.adjust(v.$vfui-color-primary, $lightness: -6%)};
+  --vfui-color-success: #{v.$vfui-color-success};
+  --vfui-color-success-hover: #{color.adjust(v.$vfui-color-success, $lightness: -6%)};
+  --vfui-color-warning: #{v.$vfui-color-warning};
+  --vfui-color-warning-hover: #{color.adjust(v.$vfui-color-warning, $lightness: -6%)};
+  --vfui-color-danger: #{v.$vfui-color-danger};
+  --vfui-color-danger-hover: #{color.adjust(v.$vfui-color-danger, $lightness: -6%)};
+  --vfui-color-info: #{v.$vfui-color-info};
+  --vfui-color-info-hover: #{color.adjust(v.$vfui-color-info, $lightness: -6%)};
+
+  // 与 danger 同值，便于兼容「error」命名习惯
+  --vfui-color-error: var(--vfui-color-danger);
+  --vfui-color-error-hover: var(--vfui-color-danger-hover);
+
+  // —— 表面与层级 ——
+  --vfui-page-bg: #f1f5f9;
+  --vfui-surface: #ffffff;
+  --vfui-surface-elevated: #ffffff;
+  --vfui-surface-muted: #f8fafc;
+  --vfui-overlay: rgb(15 23 42 / 45%);
+
+  // —— 文本 ——
+  --vfui-text: #111827;
+  --vfui-fg-default: var(--vfui-text);
+  --vfui-fg-muted: #6b7280;
+  --vfui-fg-disabled: #9ca3af;
+  --vfui-fg-inverse: #f8fafc;
+  --vfui-fg-on-primary: #ffffff;
+  --vfui-fg-on-success: #ffffff;
+  --vfui-fg-on-danger: #ffffff;
+  --vfui-fg-on-info: #ffffff;
+  --vfui-fg-on-warning: #422006;
+
+  // —— 边框 ——
+  --vfui-border: #d1d5db;
+  --vfui-border-default: var(--vfui-border);
+  --vfui-border-muted: #e5e7eb;
+  --vfui-border-strong: #9ca3af;
+
+  // —— 焦点环 ——
+  --vfui-ring-width: 2px;
+  --vfui-ring-offset: 2px;
+  --vfui-ring-color: rgb(41 110 255 / 35%);
+
+  // —— 链接 ——
+  --vfui-link-color: #{v.$vfui-color-primary};
+  --vfui-link-hover: #{color.adjust(v.$vfui-color-primary, $lightness: -8%)};
+
+  // —— 状态弱背景（提示条、Alert 等）——
+  --vfui-tone-success-bg: #ecfdf5;
+  --vfui-tone-success-border: #6ee7b7;
+  --vfui-tone-success-fg: #065f46;
+  --vfui-tone-warning-bg: #fffbeb;
+  --vfui-tone-warning-border: #fcd34d;
+  --vfui-tone-warning-fg: #92400e;
+  --vfui-tone-danger-bg: #fef2f2;
+  --vfui-tone-danger-border: #fca5a5;
+  --vfui-tone-danger-fg: #991b1b;
+  --vfui-tone-info-bg: #ecfeff;
+  --vfui-tone-info-border: #67e8f9;
+  --vfui-tone-info-fg: #155e75;
+  --vfui-tone-primary-bg: #eef4ff;
+  --vfui-tone-primary-border: #93c5fd;
+  --vfui-tone-primary-fg: #1e3a8a;
+
+  // —— 默认按钮（与旧 token 兼容）——
+  --vfui-muted: var(--vfui-fg-muted);
+  --vfui-btn-default-bg: var(--vfui-surface);
+  --vfui-btn-default-text: var(--vfui-fg-default);
+  --vfui-btn-default-border: var(--vfui-border-default);
+  --vfui-btn-default-hover-bg: #f9fafb;
+  --vfui-btn-default-hover-border: #9ca3af;
+}
+
+html.dark {
+  color-scheme: dark;
+
+  --vfui-color-primary: #4d8dff;
+  --vfui-color-primary-hover: #6ba3ff;
+  --vfui-color-success: #22c55e;
+  --vfui-color-success-hover: #4ade80;
+  --vfui-color-warning: #fbbf24;
+  --vfui-color-warning-hover: #fcd34d;
+  --vfui-color-danger: #f87171;
+  --vfui-color-danger-hover: #fca5a5;
+  --vfui-color-info: #22d3ee;
+  --vfui-color-info-hover: #67e8f9;
+
+  --vfui-color-error: var(--vfui-color-danger);
+  --vfui-color-error-hover: var(--vfui-color-danger-hover);
+
+  --vfui-page-bg: #020617;
+  --vfui-surface: #0f172a;
+  --vfui-surface-elevated: #1e293b;
+  --vfui-surface-muted: #0f172a;
+  --vfui-overlay: rgb(0 0 0 / 55%);
+
+  --vfui-text: #f1f5f9;
+  --vfui-fg-default: var(--vfui-text);
+  --vfui-fg-muted: #94a3b8;
+  --vfui-fg-disabled: #64748b;
+  --vfui-fg-inverse: #0f172a;
+  --vfui-fg-on-primary: #ffffff;
+  --vfui-fg-on-success: #ffffff;
+  --vfui-fg-on-danger: #ffffff;
+  --vfui-fg-on-info: #ffffff;
+  --vfui-fg-on-warning: #422006;
+
+  --vfui-border: #334155;
+  --vfui-border-default: var(--vfui-border);
+  --vfui-border-muted: #1e293b;
+  --vfui-border-strong: #475569;
+
+  --vfui-ring-color: rgb(77 141 255 / 45%);
+
+  --vfui-link-color: #7eabff;
+  --vfui-link-hover: #a5c3ff;
+
+  --vfui-tone-success-bg: rgb(34 197 94 / 12%);
+  --vfui-tone-success-border: #166534;
+  --vfui-tone-success-fg: #bbf7d0;
+  --vfui-tone-warning-bg: rgb(251 191 36 / 12%);
+  --vfui-tone-warning-border: #a16207;
+  --vfui-tone-warning-fg: #fde68a;
+  --vfui-tone-danger-bg: rgb(248 113 113 / 12%);
+  --vfui-tone-danger-border: #991b1b;
+  --vfui-tone-danger-fg: #fecaca;
+  --vfui-tone-info-bg: rgb(34 211 238 / 12%);
+  --vfui-tone-info-border: #155e75;
+  --vfui-tone-info-fg: #a5f3fc;
+  --vfui-tone-primary-bg: rgb(77 141 255 / 12%);
+  --vfui-tone-primary-border: #1d4ed8;
+  --vfui-tone-primary-fg: #bfdbfe;
+
+  --vfui-muted: var(--vfui-fg-muted);
+  --vfui-btn-default-bg: #1e293b;
+  --vfui-btn-default-text: var(--vfui-fg-default);
+  --vfui-btn-default-border: var(--vfui-border-default);
+  --vfui-btn-default-hover-bg: #334155;
+  --vfui-btn-default-hover-border: #475569;
+}

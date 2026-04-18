@@ -1,0 +1,7 @@
+@use './variables' as *;
+
+@mixin vfui-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

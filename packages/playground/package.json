@@ -1,0 +1,25 @@
+{
+  "name": "@viewfly/ui-playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@viewfly/ui-components": "workspace:*",
+    "@viewfly/ui-icons": "workspace:*",
+    "@viewfly/ui-utils": "workspace:*",
+    "@viewfly/core": "^2.0.0",
+    "@viewfly/platform-browser": "^2.0.0",
+    "@viewfly/router": "^2.0.0"
+  },
+  "devDependencies": {
+    "@unocss/preset-wind3": "66.6.8",
+    "sass": "^1.99.0",
+    "typescript": "^6.0.3",
+    "unocss": "^66.6.8",
+    "vite": "^8.0.8"
+  }
+}

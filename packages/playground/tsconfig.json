@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@viewfly/ui-utils": ["../utils/src/index.ts"],
+      "@viewfly/ui-icons": ["../icons/src/index.ts"],
+      "@viewfly/ui-components": ["../components/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "uno.config.ts"]
+}

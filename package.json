@@ -1,0 +1,15 @@
+{
+  "name": "viewfly-ui",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "pnpm --filter @viewfly/ui-playground dev",
+    "build": "pnpm --filter @viewfly/ui-utils build && pnpm --filter @viewfly/ui-icons build && pnpm --filter @viewfly/ui-components build && pnpm --filter @viewfly/ui-playground build",
+    "build:components": "pnpm --filter @viewfly/ui-components build",
+    "preview": "pnpm --filter @viewfly/ui-playground preview"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

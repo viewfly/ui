@@ -1,0 +1,33 @@
+---
+description: Viewfly：可渲染子节点类型用 JSXNode，不用 JSX.Element
+globs: packages/**/*.tsx
+alwaysApply: false
+---
+
+# Viewfly 与 JSXNode
+
+## 必须遵守
+
+- **通用「节点」类型使用 `JSXNode`**（从 `@viewfly/core` 导入），**不要**用 `JSX.Element` 表示子节点、插槽等可渲染内容。
+- **`JSX.Element` 偏窄**：Viewfly 中 `JSXNode` 包含元素、类组件、字符串、数字、可迭代子节点等，与框架内部 `Props['children']` 等声明一致。
+
+## 正例
+
+```tsx
+import type { JSXNode } from '@viewfly/core'
+
+export interface FooProps {
+  children?: JSXNode
+  extra?: JSXNode
+}
+```
+
+## 反例
+
+```tsx
+import type { JSX } from '@viewfly/core'
+
+export interface FooProps {
+  children?: JSX.Element // ❌ 改用 JSXNode
+}
+```

@@ -1,0 +1,325 @@
+.vfui-button {
+  @apply box-border inline-flex items-center justify-center cursor-pointer outline-none gap-1.5;
+  @apply border border-solid rounded-md text-sm leading-normal px-3.5 py-1.5;
+  @apply bg-[var(--vfui-btn-default-bg)] text-[var(--vfui-btn-default-text)] border-[var(--vfui-btn-default-border)];
+  @apply transition-[color,background-color,border-color,box-shadow] duration-150 ease-in-out;
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-btn-default-hover-bg)] border-[var(--vfui-btn-default-hover-border)];
+  }
+
+  &:focus-visible {
+    box-shadow:
+      0 0 0 var(--vfui-ring-offset) var(--vfui-page-bg),
+      0 0 0 calc(var(--vfui-ring-offset) + var(--vfui-ring-width)) var(--vfui-ring-color);
+  }
+
+  &:disabled {
+    @apply cursor-not-allowed opacity-55;
+  }
+
+  &[aria-disabled='true'] {
+    @apply cursor-not-allowed opacity-55 pointer-events-none;
+  }
+}
+
+.vfui-button--primary {
+  @apply bg-[var(--vfui-color-primary)] text-[var(--vfui-fg-on-primary)] border-[var(--vfui-color-primary)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-color-primary-hover)] border-[var(--vfui-color-primary-hover)];
+  }
+}
+
+.vfui-button--success {
+  @apply bg-[var(--vfui-color-success)] text-[var(--vfui-fg-on-success)] border-[var(--vfui-color-success)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-color-success-hover)] border-[var(--vfui-color-success-hover)];
+  }
+}
+
+.vfui-button--warning {
+  @apply bg-[var(--vfui-color-warning)] text-[var(--vfui-fg-on-warning)] border-[var(--vfui-color-warning)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-color-warning-hover)] border-[var(--vfui-color-warning-hover)];
+  }
+}
+
+.vfui-button--danger {
+  @apply bg-[var(--vfui-color-danger)] text-[var(--vfui-fg-on-danger)] border-[var(--vfui-color-danger)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-color-danger-hover)] border-[var(--vfui-color-danger-hover)];
+  }
+}
+
+.vfui-button--info {
+  @apply bg-[var(--vfui-color-info)] text-[var(--vfui-fg-on-info)] border-[var(--vfui-color-info)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-color-info-hover)] border-[var(--vfui-color-info-hover)];
+  }
+}
+
+// —— outlined / dashed：描边 + 透明底 ——
+.vfui-button--variant-outlined.vfui-button--default,
+.vfui-button--variant-dashed.vfui-button--default {
+  @apply bg-transparent text-[var(--vfui-fg-default)] border-[var(--vfui-border-default)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-surface-muted)] border-[var(--vfui-border-strong)];
+  }
+}
+
+.vfui-button--variant-outlined.vfui-button--primary,
+.vfui-button--variant-dashed.vfui-button--primary {
+  @apply bg-transparent text-[var(--vfui-color-primary)] border-[var(--vfui-color-primary)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-primary-bg)] border-[var(--vfui-color-primary-hover)] text-[var(--vfui-color-primary-hover)];
+  }
+}
+
+.vfui-button--variant-outlined.vfui-button--success,
+.vfui-button--variant-dashed.vfui-button--success {
+  @apply bg-transparent text-[var(--vfui-color-success)] border-[var(--vfui-color-success)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-success-bg)] border-[var(--vfui-color-success-hover)] text-[var(--vfui-color-success-hover)];
+  }
+}
+
+.vfui-button--variant-outlined.vfui-button--warning,
+.vfui-button--variant-dashed.vfui-button--warning {
+  @apply bg-transparent text-[var(--vfui-tone-warning-fg)] border-[var(--vfui-color-warning)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-warning-bg)] border-[var(--vfui-color-warning-hover)] text-[var(--vfui-tone-warning-fg)];
+  }
+}
+
+.vfui-button--variant-outlined.vfui-button--danger,
+.vfui-button--variant-dashed.vfui-button--danger {
+  @apply bg-transparent text-[var(--vfui-color-danger)] border-[var(--vfui-color-danger)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-danger-bg)] border-[var(--vfui-color-danger-hover)] text-[var(--vfui-color-danger-hover)];
+  }
+}
+
+.vfui-button--variant-outlined.vfui-button--info,
+.vfui-button--variant-dashed.vfui-button--info {
+  @apply bg-transparent text-[var(--vfui-color-info)] border-[var(--vfui-color-info)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-info-bg)] border-[var(--vfui-color-info-hover)] text-[var(--vfui-color-info-hover)];
+  }
+}
+
+.vfui-button--variant-dashed {
+  @apply border-dashed;
+}
+
+// —— filled：弱背景（tone）——
+.vfui-button--variant-filled.vfui-button--default {
+  @apply bg-[var(--vfui-surface-muted)] text-[var(--vfui-fg-default)] border-[var(--vfui-border-muted)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-surface-elevated)] border-[var(--vfui-border-default)];
+  }
+}
+
+.vfui-button--variant-filled.vfui-button--primary {
+  @apply bg-[var(--vfui-tone-primary-bg)] text-[var(--vfui-tone-primary-fg)] border-[var(--vfui-tone-primary-border)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-primary-bg)] border-[var(--vfui-color-primary)] text-[var(--vfui-tone-primary-fg)];
+  }
+}
+
+.vfui-button--variant-filled.vfui-button--success {
+  @apply bg-[var(--vfui-tone-success-bg)] text-[var(--vfui-tone-success-fg)] border-[var(--vfui-tone-success-border)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-success-bg)] border-[var(--vfui-color-success)] text-[var(--vfui-tone-success-fg)];
+  }
+}
+
+.vfui-button--variant-filled.vfui-button--warning {
+  @apply bg-[var(--vfui-tone-warning-bg)] text-[var(--vfui-tone-warning-fg)] border-[var(--vfui-tone-warning-border)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-warning-bg)] border-[var(--vfui-color-warning)] text-[var(--vfui-tone-warning-fg)];
+  }
+}
+
+.vfui-button--variant-filled.vfui-button--danger {
+  @apply bg-[var(--vfui-tone-danger-bg)] text-[var(--vfui-tone-danger-fg)] border-[var(--vfui-tone-danger-border)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-danger-bg)] border-[var(--vfui-color-danger)] text-[var(--vfui-tone-danger-fg)];
+  }
+}
+
+.vfui-button--variant-filled.vfui-button--info {
+  @apply bg-[var(--vfui-tone-info-bg)] text-[var(--vfui-tone-info-fg)] border-[var(--vfui-tone-info-border)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-info-bg)] border-[var(--vfui-color-info)] text-[var(--vfui-tone-info-fg)];
+  }
+}
+
+// —— text：无边框弱底 ——
+.vfui-button--variant-text.vfui-button--default {
+  @apply bg-transparent border-transparent text-[var(--vfui-fg-default)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-surface-muted)] border-transparent;
+  }
+}
+
+.vfui-button--variant-text.vfui-button--primary {
+  @apply bg-transparent border-transparent text-[var(--vfui-color-primary)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-primary-bg)] border-transparent text-[var(--vfui-color-primary-hover)];
+  }
+}
+
+.vfui-button--variant-text.vfui-button--success {
+  @apply bg-transparent border-transparent text-[var(--vfui-color-success)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-success-bg)] border-transparent text-[var(--vfui-color-success-hover)];
+  }
+}
+
+.vfui-button--variant-text.vfui-button--warning {
+  @apply bg-transparent border-transparent text-[var(--vfui-tone-warning-fg)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-warning-bg)] border-transparent;
+  }
+}
+
+.vfui-button--variant-text.vfui-button--danger {
+  @apply bg-transparent border-transparent text-[var(--vfui-color-danger)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-danger-bg)] border-transparent text-[var(--vfui-color-danger-hover)];
+  }
+}
+
+.vfui-button--variant-text.vfui-button--info {
+  @apply bg-transparent border-transparent text-[var(--vfui-color-info)];
+
+  &:hover:not(:disabled) {
+    @apply bg-[var(--vfui-tone-info-bg)] border-transparent text-[var(--vfui-color-info-hover)];
+  }
+}
+
+// —— link：链接色 + 下划线（`<a>` 默认带下划线，与按钮态统一为无下划线直至 hover）——
+.vfui-button--variant-link {
+  @apply no-underline;
+}
+
+// —— link：链接色 + 下划线 ——
+.vfui-button--variant-link.vfui-button--default {
+  @apply bg-transparent border-transparent text-[var(--vfui-link-color)] underline-offset-2;
+
+  &:hover:not(:disabled) {
+    @apply bg-transparent text-[var(--vfui-link-hover)] underline border-transparent;
+  }
+}
+
+.vfui-button--variant-link.vfui-button--primary {
+  @apply bg-transparent border-transparent text-[var(--vfui-color-primary)] underline-offset-2;
+
+  &:hover:not(:disabled) {
+    @apply bg-transparent text-[var(--vfui-color-primary-hover)] underline border-transparent;
+  }
+}
+
+.vfui-button--variant-link.vfui-button--success {
+  @apply bg-transparent border-transparent text-[var(--vfui-color-success)] underline-offset-2;
+
+  &:hover:not(:disabled) {
+    @apply bg-transparent text-[var(--vfui-color-success-hover)] underline border-transparent;
+  }
+}
+
+.vfui-button--variant-link.vfui-button--warning {
+  @apply bg-transparent border-transparent text-[var(--vfui-tone-warning-fg)] underline-offset-2;
+
+  &:hover:not(:disabled) {
+    @apply bg-transparent text-[var(--vfui-color-warning)] underline border-transparent;
+  }
+}
+
+.vfui-button--variant-link.vfui-button--danger {
+  @apply bg-transparent border-transparent text-[var(--vfui-color-danger)] underline-offset-2;
+
+  &:hover:not(:disabled) {
+    @apply bg-transparent text-[var(--vfui-color-danger-hover)] underline border-transparent;
+  }
+}
+
+.vfui-button--variant-link.vfui-button--info {
+  @apply bg-transparent border-transparent text-[var(--vfui-color-info)] underline-offset-2;
+
+  &:hover:not(:disabled) {
+    @apply bg-transparent text-[var(--vfui-color-info-hover)] underline border-transparent;
+  }
+}
+
+// —— size（默认 middle 即根上 px / text，不挂修饰符）——
+.vfui-button--size-small {
+  @apply text-xs px-2.5 py-1;
+}
+
+.vfui-button--size-large {
+  @apply text-base px-5 py-2.5;
+}
+
+// —— shape ——
+.vfui-button--shape-round {
+  @apply rounded-full;
+}
+
+.vfui-button--shape-circle {
+  @apply rounded-full aspect-square p-0 shrink-0;
+  @apply min-h-9 min-w-9 h-9 w-9;
+}
+
+.vfui-button--shape-circle.vfui-button--size-small {
+  @apply min-h-7 min-w-7 h-7 w-7 text-xs;
+}
+
+.vfui-button--shape-circle.vfui-button--size-large {
+  @apply min-h-11 min-w-11 h-11 w-11 text-base;
+}
+
+// —— block ——
+.vfui-button--block {
+  @apply w-full;
+}
+
+// —— loading ——
+.vfui-button__spinner {
+  @apply inline-block shrink-0 rounded-full border-2 border-solid border-current border-r-transparent animate-spin;
+  @apply w-[0.9em] h-[0.9em];
+}
+
+.vfui-button__icon {
+  @apply inline-flex shrink-0 items-center justify-center leading-none;
+}
+
+.vfui-button--loading:disabled {
+  @apply cursor-wait;
+}
+
+.vfui-button--loading[aria-disabled='true'] {
+  @apply cursor-wait;
+}

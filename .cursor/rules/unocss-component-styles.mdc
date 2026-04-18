@@ -1,0 +1,46 @@
+---
+description: 组件样式使用 UnoCSS、独立 SCSS、语义化 class（vfui- 前缀 BEM）
+globs: packages/**/*.{tsx,scss}
+alwaysApply: false
+---
+
+# 组件样式（UnoCSS + SCSS）
+
+## 必须遵守
+
+- **样式来源**：组件的视觉样式一律通过 **UnoCSS** 表达；在 SCSS 中用 `@apply` 组合原子类，不要手写与 Uno 重复的 longhand（颜色/间距/布局等优先用工具类语义）。
+- **文件位置**：每个组件单独一个 SCSS 文件，与组件同目录、由组件 `import`；不要在 TSX 里写 `<style>` 或内联 `style={{}}`（动态值除外）。
+- **类名**：使用 **有语义的、稳定的** class，推荐 **`vfui-` + 块名**，修饰符用 BEM 风格：`vfui-块名`、`vfui-块名__元素`、`vfui-块名--修饰符`；在 JSX 里把这些类挂到对应 DOM 上，避免无意义缩写（如 `.a`、`.x1`）。
+
+## 构建
+
+- **`packages/components`** 的 Vite 已启用 **`unocss/vite`**，且 **`uno.config.ts`** 含 **`transformerDirectives`**，SCSS 中的 `@apply` 会在构建时展开；产物中不应再出现 `@apply` 或未使用的原子类名依赖。
+
+## 示例
+
+**TSX**：语义类名挂在元素上。
+
+```tsx
+import './style.scss'
+
+// ✅
+<button type="button" class={`vfui-button vfui-button--${type}`} disabled={disabled}>
+```
+
+**SCSS**：`@apply` 组合 Uno 工具类；设计 token 用 CSS 变量，避免与 Uno 阶梯重复手写。
+
+```scss
+.vfui-button {
+  @apply inline-flex items-center justify-center border border-solid rounded-md text-sm;
+  @apply bg-[var(--vfui-btn-default-bg)] text-[var(--vfui-btn-default-text)] border-[var(--vfui-btn-default-border)];
+}
+
+.vfui-button--primary {
+  @apply bg-[var(--vfui-color-primary)] text-[var(--vfui-fg-on-primary)] border-[var(--vfui-color-primary)];
+}
+```
+
+## 反例
+
+- 在 TSX 里堆一长串 Uno 原子类字符串作为主样式（应收到 SCSS + 语义 class）。
+- 同一组件样式散落在多个未约定的全局文件里。
