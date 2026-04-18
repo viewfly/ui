@@ -54,6 +54,9 @@ export function App() {
           <Link to="/switch" class={linkBase} active={linkActive}>
             Switch
           </Link>
+          <Link to="/checkbox" class={linkBase} active={linkActive}>
+            Checkbox
+          </Link>
         </nav>
 
         <main class="flex-1 min-w-0">

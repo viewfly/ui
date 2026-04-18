@@ -5,6 +5,7 @@ import { DropdownPage } from './pages/DropdownPage'
 import { TooltipPage } from './pages/TooltipPage'
 import { SliderPage } from './pages/SliderPage'
 import { SwitchPage } from './pages/SwitchPage'
+import { CheckboxPage } from './pages/CheckboxPage'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
 
@@ -16,5 +17,6 @@ export const routes: RouteConfig[] = [
   { path: 'tooltip', component: TooltipPage },
   { path: 'slider', component: SliderPage },
   { path: 'switch', component: SwitchPage },
+  { path: 'checkbox', component: CheckboxPage },
   { path: '*', component: NotFoundPage },
 ]
