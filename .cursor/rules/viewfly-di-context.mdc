@@ -1,0 +1,78 @@
+---
+description: Viewfly 用依赖注入（createContextProvider + inject）做跨组件通信及与 Signal 的配合
+globs: packages/**/*.tsx
+alwaysApply: false
+---
+
+# Viewfly：依赖注入与跨组件通信
+
+官方说明见 [依赖注入](https://viewfly.org/guide/di)。在组件库中需要**父子/祖先与后代**共享状态（如 RadioGroup、Form、主题）时，优先用 **`createContextProvider` + `InjectionToken` + `inject`**，而不是仅靠 props 层层下传。
+
+## 推荐结构
+
+1. **`InjectionToken<T>`**：定义上下文类型 `T`（与业务相关的只读/操作接口）。
+2. **`createContextProvider({ provide: token })`**：得到 Provider 组件；在**提供方组件**的渲染中通过 **`useValue={...}`** 注入实现（每实例一份上下文时，在提供方 `setup` 内组装对象，避免无意义的引用抖动）。
+3. **消费方**：在子组件**主函数体**内调用 **`inject(token, notFoundValue?)`**；未找到依赖时返回 `notFoundValue`，**不必**再传 `InjectFlags.Optional`（与「可选依赖」语义一致）；仅在使用 **Self / SkipSelf** 等查找规则时才传第三个参数 `flags`。
+
+## `withAnnotation` 与 `inject` 的作用域
+
+- 通过 **`withAnnotation({ providers: [...] }, setup)`** 注册的依赖，**不仅后代组件**可以 `inject`，**当前这个被 `withAnnotation` 包住的组件**在 **`setup` 主函数体里**同样可以用 **`inject`** 取到（`providers` 挂在本组件对应注入器上，与官方文档一致）。
+- 若用 **`createContextProvider` + `useValue`**，则由 **Provider 子树**解析；提供值的逻辑通常在**渲染 Provider 的组件**内组装 `ctx`，一般不再在同一函数里对自己 `inject` 同 token（与 `withAnnotation` 的挂载点不同）。
+
+## 与响应式的关系（必须遵守）
+
+文档说明：**Viewfly 不会监听 provide/inject 中「普通对象字段」的变化**；组件更新仍依赖渲染时订阅的 **`Signal` / `createDerived` / `reactive`**。
+
+- **错误**：`inject` 拿到 `{ count: 0 }`，只改 `count` 字段，期望子组件自动刷新。
+- **正确**：上下文里放 **`Signal` / `createDerived` 等**，子组件在**返回的渲染函数**里调用 **`ctx.count()`** / **`ctx.selected()`**，与 `viewfly-state-signal-reactive.mdc` 中的 Signal 用法一致。
+
+## 最小示意
+
+```tsx
+// context.ts
+import { createContextProvider, InjectionToken, type Signal } from '@viewfly/core'
+
+export interface MyGroupCtx {
+  value: Signal<string | undefined>
+  setValue: (v: string) => void
+}
+export const myGroupToken = new InjectionToken<MyGroupCtx>('MyGroup')
+export const MyGroupProvider = createContextProvider({ provide: myGroupToken })
+```
+
+```tsx
+// Group.tsx — 主体内用 createSignal / createDerived 组装 ctx，不要解构 props（见 viewfly-props-reactivity）
+export function MyGroup(props: { value?: string; defaultValue?: string; children?: JSXNode }) {
+  const inner = createSignal(props.defaultValue)
+  const value = createDerived(() => (props.value !== undefined ? props.value : inner()))
+  const ctx: MyGroupCtx = { value, setValue: (v) => { /* ... */ } }
+  return () => (
+    <MyGroupProvider useValue={ctx}>
+      <div>{props.children}</div>
+    </MyGroupProvider>
+  )
+}
+```
+
+```tsx
+// Child.tsx
+import { inject } from '@viewfly/core'
+import { myGroupToken } from './context'
+
+export function Child(props: { id: string }) {
+  const group = inject(myGroupToken, null) // 组外为 null，无需 InjectFlags.Optional
+  return () => {
+    if (!group) return <span>单独使用</span>
+    const current = group.value()
+    return <span>{current}</span>
+  }
+}
+```
+
+## 与 props 规则的关系
+
+提供方、消费方仍遵守 **主体内不解构 `props`**，仅在**内层渲染函数**解构，见 `viewfly-props-reactivity.mdc`。
+
+## 参考实现
+
+仓库内 **`RadioGroup` / `Radio`**（`packages/components/src/components/radio/`）为完整落地示例。
