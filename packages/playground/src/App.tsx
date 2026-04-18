@@ -57,6 +57,9 @@ export function App() {
           <Link to="/checkbox" class={linkBase} active={linkActive}>
             Checkbox
           </Link>
+          <Link to="/radio" class={linkBase} active={linkActive}>
+            Radio
+          </Link>
         </nav>
 
         <main class="flex-1 min-w-0">

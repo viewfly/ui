@@ -6,6 +6,7 @@ import { TooltipPage } from './pages/TooltipPage'
 import { SliderPage } from './pages/SliderPage'
 import { SwitchPage } from './pages/SwitchPage'
 import { CheckboxPage } from './pages/CheckboxPage'
+import { RadioPage } from './pages/RadioPage'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
 
@@ -18,5 +19,6 @@ export const routes: RouteConfig[] = [
   { path: 'slider', component: SliderPage },
   { path: 'switch', component: SwitchPage },
   { path: 'checkbox', component: CheckboxPage },
+  { path: 'radio', component: RadioPage },
   { path: '*', component: NotFoundPage },
 ]

@@ -64,6 +64,15 @@ export function HomePage() {
             <span class="block text-xs vfui-text-muted mt-1">多选、文案、受控 / 非受控、禁用</span>
           </Link>
         </li>
+        <li>
+          <Link
+            to="/radio"
+            class="block rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/60 px-4 py-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors"
+          >
+            <span class="font-medium text-gray-900 dark:text-slate-100">Radio</span>
+            <span class="block text-xs vfui-text-muted mt-1">RadioGroup、受控 / 原生非受控、禁用</span>
+          </Link>
+        </li>
       </ul>
       <p class="text-sm text-gray-500 dark:text-slate-400 mt-8">
         @viewfly/ui-utils 示例：clamp(120, 0, 100) = {w}
