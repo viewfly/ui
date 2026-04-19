@@ -17,8 +17,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@viewfly/platform-browser':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.0.2
+        version: 2.0.2
       sass:
         specifier: ^1.99.0
         version: 1.99.0
@@ -59,11 +59,11 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@viewfly/platform-browser':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.0.2
+        version: 2.0.2
       '@viewfly/router':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.0.1
+        version: 2.0.1
       '@viewfly/ui-components':
         specifier: workspace:*
         version: link:../components
@@ -889,11 +889,11 @@ packages:
   '@viewfly/core@2.0.0':
     resolution: {integrity: sha512-ImzUJKTFMrMweCpOGgvYDfzG2VOPkVm6kU124Fu+d/xdRXnqmYeyy9YQRiwmy6E/IuX/1dWdd2poapT5Z+w/Wg==}
 
-  '@viewfly/platform-browser@2.0.0':
-    resolution: {integrity: sha512-MfVdq4kX2D43YJtZWjBEtZk/vSwMoCj8rkCEKxDhw5HP39a9LT7kn1vUDCEatcWOajXSr7yWinfQRtjlQI+2AA==}
+  '@viewfly/platform-browser@2.0.2':
+    resolution: {integrity: sha512-R+aOWxlMLiKxZkky2GDSXARJ4h0fj+sFq2Ep29TFaPv1jQy75B0TfvUVhPQaJreXKXbtUeMsnaCHsHaLRHP2gQ==}
 
-  '@viewfly/router@2.0.0':
-    resolution: {integrity: sha512-djf77bFxP39GD2NK1SIcLlSNVkfcIAVrFNonTVWDKdj00dg3hNZ989gdghxDQqHPP3iuNgHBCCMa+X8gjOZ4WQ==}
+  '@viewfly/router@2.0.1':
+    resolution: {integrity: sha512-pLSSllYdZO+LW73K7BThG8j5f3x3o4BwoFRoQKX2MqQBTH9pGVfRXinN67nLbnRezWjIr+cR91J5LqL1o6xQgQ==}
 
   '@volar/language-core@2.4.28':
     resolution: {integrity: sha512-w4qhIJ8ZSitgLAkVay6AbcnC7gP3glYM3fYwKV3srj8m494E3xtrCv6E+bWviiK/8hs6e6t1ij1s2Endql7vzQ==}
@@ -2223,12 +2223,12 @@ snapshots:
     dependencies:
       reflect-metadata: 0.2.2
 
-  '@viewfly/platform-browser@2.0.0':
+  '@viewfly/platform-browser@2.0.2':
     dependencies:
       '@viewfly/core': 2.0.0
       csstype: 3.2.3
 
-  '@viewfly/router@2.0.0':
+  '@viewfly/router@2.0.1':
     dependencies:
       '@tanbo/stream': 1.2.7
       '@viewfly/core': 2.0.0
