@@ -4,43 +4,11 @@ globs: packages/**/*.tsx
 alwaysApply: false
 ---
 
-# Viewfly 组件本地状态：`createSignal` 与 `reactive`
+# Viewfly：`createSignal` / `reactive`（摘要）
 
-## 选择原则
+- **单一标量/布尔/字符串**：优先 **`createSignal`**。
+- **多字段成组 UI 状态**（如 `{ open, x, y }`、表单草稿）：优先 **`reactive`**，避免一堆相关 signal 与成组更新抖动。
+- 字段彼此独立时，多个 `createSignal` 仍合理；不要为单个值包一层 `reactive({ value })`。
+- 从 `@viewfly/core` 按需导入，与现有组件一致。
 
-- **简单标量状态**（数字、布尔、字符串等单一值）：优先用 **`createSignal`**，粒度细、更新路径清晰，便于按需追踪。
-- **多个字段共同描述一块 UI 状态**（如 `{ open, x, y }`、表单草稿、面板布局）：优先用 **`reactive`** 创建响应式对象，避免大量分散的 signal 与成组更新时的多次触发。
-
-## 正例
-
-```tsx
-import { createSignal, reactive } from '@viewfly/core'
-
-export function Panel() {
-  const visible = createSignal(false) // 单一布尔
-  const draft = reactive({ title: '', count: 0 }) // 多字段一组状态
-
-  return () => (
-    <div>
-      {visible() ? <span>{draft.title}</span> : null}
-    </div>
-  )
-}
-```
-
-## 反例
-
-```tsx
-// ❌ 多个相关标量各自 createSignal，可读性与成组更新较差（除非字段完全独立）
-const open = createSignal(false)
-const posX = createSignal(0)
-const posY = createSignal(0)
-
-// ❌ 仅为一个数字/字符串包一层 reactive，偏重
-const count = reactive({ value: 0 })
-```
-
-## 边界
-
-- 字段**彼此独立**、无「一起变」的语义时，多个 `createSignal` 仍合理。
-- 从 `@viewfly/core` 按需导入 `createSignal`、`reactive`，与现有组件保持一致。
+**完整说明与正/反例**：[docs/agent-guidelines.md#viewfly-state-signal-reactive](../../docs/agent-guidelines.md#viewfly-state-signal-reactive)。

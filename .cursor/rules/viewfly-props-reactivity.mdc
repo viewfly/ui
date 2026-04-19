@@ -4,43 +4,10 @@ globs: packages/**/*.tsx
 alwaysApply: false
 ---
 
-# Viewfly 组件与 Props 响应性
+# Viewfly：Props 响应性（摘要）
 
-## 必须遵守
+- **`props` 是响应式对象**：在**组件主函数体**（`return () => ...` 之外）**不要**解构或展开 `props`。
+- 在**组件返回的渲染函数**内再 `const { ... } = props` 读取默认值与字段。
+- 主体内若故意做「一次性非响应快照」，须在评审中说明；默认按上述规则。
 
-- **`props` 是响应式对象**：在**组件主函数体**（`setup` 等价区域、`return () => ...` 之外）**不要**对 `props` 做解构、展开到局部常量，否则会断开与响应式源的连接，后续更新可能不触发视图更新。
-- **渲染函数内可解构**：在**组件返回的渲染函数**里（内层 `() => { ... }`）再解构 `props`，便于读取默认值与字段，此时访问的是随更新刷新的视图阶段读取。
-
-## 结构示意
-
-```tsx
-export function Component(props: ComponentProps) {
-  // 组件主体：可写逻辑，但不要用 const { a, b } = props
-
-  return () => {
-    // 渲染函数：此处可解构 props
-    const { a, b = 'default' } = props
-    return <div>{a}{b}</div>
-  }
-}
-```
-
-## 反例与正例
-
-```tsx
-// ❌ 在主体内解构，破坏响应性
-export function Bad(props: Props) {
-  const { count } = props
-  return () => <span>{count}</span>
-}
-
-// ✅ 在返回的渲染函数内解构
-export function Good(props: Props) {
-  return () => {
-    const { count } = props
-    return <span>{count}</span>
-  }
-}
-```
-
-若主体内仅需**单次非响应**快照且明确有意为之，需在代码审查中单独说明；默认按上述规则处理。
+**完整说明与示例**：[docs/agent-guidelines.md#viewfly-props-reactivity](../../docs/agent-guidelines.md#viewfly-props-reactivity)。
