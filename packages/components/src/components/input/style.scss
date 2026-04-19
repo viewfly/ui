@@ -1,0 +1,179 @@
+// —— 独立输入框 ——
+.vfui-input {
+  @apply box-border inline-block min-w-[8rem] max-w-full rounded-md border border-solid px-3 py-1.5 text-sm leading-normal outline-none transition-[color,background-color,border-color] duration-150 ease-in-out;
+  border-color: var(--vfui-border-default);
+  background: var(--vfui-surface);
+  color: var(--vfui-fg-default);
+}
+
+.vfui-input::placeholder {
+  color: var(--vfui-fg-muted);
+}
+
+// 组合内由 .vfui-input-affix:focus-within 统一描边色
+.vfui-input:focus-visible:not(.vfui-input--in-affix) {
+  border-color: var(--vfui-color-primary);
+}
+
+.vfui-input--block {
+  @apply w-full min-w-0;
+}
+
+.vfui-input--disabled {
+  @apply cursor-not-allowed opacity-55;
+}
+
+.vfui-input:read-only:not(:disabled) {
+  @apply cursor-default;
+}
+
+.vfui-input--size-small {
+  @apply text-xs px-2.5 py-1;
+}
+
+.vfui-input--size-large {
+  @apply text-base px-3.5 py-2;
+}
+
+// —— 前后缀组合：分段独立边框 + 相邻 -1px 重叠（参考 Ant Design Input.Group）——
+.vfui-input-affix {
+  @apply inline-flex max-w-full min-w-[8rem] items-stretch gap-0 bg-transparent text-sm leading-normal text-[var(--vfui-fg-default)];
+}
+
+.vfui-input-affix > * {
+  @apply relative z-0 box-border border border-solid bg-[var(--vfui-surface)] transition-[border-color] duration-150 ease-in-out;
+  margin-left: -1px;
+  border-color: var(--vfui-border-default);
+}
+
+.vfui-input-affix > *:first-child {
+  margin-left: 0;
+}
+
+.vfui-input-affix > *:first-child:not(:last-child) {
+  @apply rounded-l-md rounded-r-none;
+}
+
+.vfui-input-affix > *:last-child:not(:first-child) {
+  @apply rounded-r-md rounded-l-none;
+}
+
+.vfui-input-affix > *:not(:first-child):not(:last-child) {
+  @apply rounded-none;
+}
+
+.vfui-input-affix:focus-within > * {
+  border-color: var(--vfui-color-primary);
+  z-index: 1;
+}
+
+// 与按钮重叠时避免后一段盖住前一段的描边：谁在聚焦谁在上层
+.vfui-input-affix:focus-within > .vfui-input--in-affix:focus {
+  z-index: 2;
+}
+
+.vfui-input-affix:focus-within > .vfui-input-affix__addon:focus-within {
+  z-index: 2;
+}
+
+.vfui-input-affix--block {
+  @apply w-full min-w-0;
+}
+
+.vfui-input-affix--disabled {
+  @apply cursor-not-allowed opacity-55;
+  pointer-events: none;
+}
+
+.vfui-input-affix__addon {
+  @apply inline-flex shrink-0 items-center justify-center gap-1 self-stretch;
+  color: var(--vfui-fg-muted);
+}
+
+.vfui-input-affix__icon {
+  @apply size-4 shrink-0;
+}
+
+.vfui-input-affix__addon--prefix {
+  @apply pl-3 pr-2;
+}
+
+.vfui-input-affix__addon--suffix {
+  @apply pl-2 pr-3;
+}
+
+.vfui-input-affix--size-small .vfui-input-affix__addon--prefix {
+  @apply pl-2.5 pr-1.5;
+}
+
+.vfui-input-affix--size-small .vfui-input-affix__addon--suffix {
+  @apply pl-1.5 pr-2.5;
+}
+
+.vfui-input-affix--size-large .vfui-input-affix__addon--prefix {
+  @apply pl-3.5 pr-2;
+}
+
+.vfui-input-affix--size-large .vfui-input-affix__addon--suffix {
+  @apply pl-2 pr-3.5;
+}
+
+.vfui-input-affix--size-small {
+  @apply text-xs;
+}
+
+.vfui-input-affix--size-large {
+  @apply text-base;
+}
+
+.vfui-input.vfui-input--in-affix {
+  @apply min-w-0 flex-1 px-2 py-1.5 text-sm leading-normal outline-none ring-0;
+  color: var(--vfui-fg-default);
+  box-shadow: none;
+}
+
+.vfui-input.vfui-input--in-affix::placeholder {
+  color: var(--vfui-fg-muted);
+}
+
+.vfui-input--in-affix.vfui-input--size-small {
+  @apply px-1.5 py-1 text-xs;
+}
+
+.vfui-input--in-affix.vfui-input--size-large {
+  @apply px-2.5 py-2 text-base;
+}
+
+// 槽内仅一颗 Button（任意 type / variant）：槽位不设整圈外框，只留与输入的一条接缝；按钮铺满并保留自带描边
+.vfui-input-affix__addon--suffix:has(> .vfui-button:only-child),
+.vfui-input-affix__addon--prefix:has(> .vfui-button:only-child),
+.vfui-input-affix--size-small .vfui-input-affix__addon--suffix:has(> .vfui-button:only-child),
+.vfui-input-affix--size-small .vfui-input-affix__addon--prefix:has(> .vfui-button:only-child),
+.vfui-input-affix--size-large .vfui-input-affix__addon--suffix:has(> .vfui-button:only-child),
+.vfui-input-affix--size-large .vfui-input-affix__addon--prefix:has(> .vfui-button:only-child) {
+  @apply gap-0 overflow-hidden p-0;
+  background-color: transparent;
+  border-width: 0;
+  border-style: solid;
+  border-color: var(--vfui-border-default);
+}
+
+.vfui-input-affix__addon--suffix:has(> .vfui-button:only-child),
+.vfui-input-affix--size-small .vfui-input-affix__addon--suffix:has(> .vfui-button:only-child),
+.vfui-input-affix--size-large .vfui-input-affix__addon--suffix:has(> .vfui-button:only-child) {
+  border-left-width: 1px;
+}
+
+.vfui-input-affix__addon--prefix:has(> .vfui-button:only-child),
+.vfui-input-affix--size-small .vfui-input-affix__addon--prefix:has(> .vfui-button:only-child),
+.vfui-input-affix--size-large .vfui-input-affix__addon--prefix:has(> .vfui-button:only-child) {
+  border-right-width: 1px;
+}
+
+.vfui-input-affix__addon--suffix:has(> .vfui-button:only-child) > .vfui-button {
+  @apply h-full min-h-0 min-w-0 w-full rounded-l-none rounded-r-md border-l-0;
+}
+
+.vfui-input-affix__addon--prefix:has(> .vfui-button:only-child) > .vfui-button {
+  @apply h-full min-h-0 min-w-0 w-full rounded-l-md rounded-r-none border-r-0;
+}

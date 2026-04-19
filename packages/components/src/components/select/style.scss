@@ -11,16 +11,15 @@
 }
 
 .vfui-select__control {
-  @apply box-border inline-flex w-full min-w-[8rem] max-w-full cursor-default items-center justify-between gap-2 rounded-md border border-solid px-3 py-1.5 text-left text-sm leading-normal outline-none transition-[color,background-color,border-color,box-shadow] duration-150 ease-in-out;
+  @apply box-border inline-flex w-full min-w-[8rem] max-w-full cursor-default items-center justify-between gap-2 rounded-md border border-solid px-3 py-1.5 text-left text-sm leading-normal outline-none transition-[color,background-color,border-color] duration-150 ease-in-out;
   border-color: var(--vfui-border-default);
   background: var(--vfui-surface);
   color: var(--vfui-fg-default);
 }
 
-.vfui-select__control:focus-visible {
-  box-shadow:
-    0 0 0 var(--vfui-ring-offset) var(--vfui-page-bg),
-    0 0 0 calc(var(--vfui-ring-offset) + var(--vfui-ring-width)) var(--vfui-ring-color);
+.vfui-select__control:focus-visible,
+.vfui-select__control[aria-expanded='true'] {
+  border-color: var(--vfui-color-primary);
 }
 
 .vfui-select__value {

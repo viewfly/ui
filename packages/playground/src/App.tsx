@@ -42,6 +42,9 @@ export function App() {
           <Link to="/divider" class={linkBase} active={linkActive}>
             Divider
           </Link>
+          <Link to="/input" class={linkBase} active={linkActive}>
+            Input
+          </Link>
           <Link to="/dropdown" class={linkBase} active={linkActive}>
             Dropdown
           </Link>
