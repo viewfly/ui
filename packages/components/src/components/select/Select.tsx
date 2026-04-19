@@ -1,0 +1,144 @@
+import type { JSXNode } from '@viewfly/core'
+import { createDerived, createSignal } from '@viewfly/core'
+import { Dropdown } from '../dropdown/Dropdown'
+import './style.scss'
+
+export interface SelectOptionItem {
+  value: string
+  label: JSXNode
+  disabled?: boolean
+}
+
+export type SelectSize = 'small' | 'middle' | 'large'
+
+export interface SelectProps {
+  /** 选项列表 */
+  options: SelectOptionItem[]
+  /** 受控：当前选中项的 `value` */
+  value?: string
+  /** 非受控初始值 */
+  defaultValue?: string
+  /** 选中变化 */
+  onChange?: (value: string) => void
+  disabled?: boolean
+  /** 未选中或没有匹配项时的占位 */
+  placeholder?: string
+  size?: SelectSize
+  /** 块级宽度 */
+  block?: boolean
+  class?: string
+  /** 下拉层挂载节点，与 `Dropdown` 一致 */
+  getContainer?: () => HTMLElement
+}
+
+export function Select(props: SelectProps) {
+  const uncontrolled = createSignal<string | undefined>(props.defaultValue)
+  const selected = createDerived(() =>
+    props.value !== undefined ? props.value : uncontrolled(),
+  )
+  const closeTick = createSignal(0)
+  const listOpen = createSignal(false)
+  const listboxId = `vfui-sel-${Math.random().toString(36).slice(2, 11)}`
+
+  const commit = (next: string) => {
+    if (props.value === undefined) {
+      uncontrolled.set(next)
+    }
+    props.onChange?.(next)
+    closeTick.set(closeTick() + 1)
+  }
+
+  const onOpenChange = (open: boolean) => {
+    listOpen.set(open)
+  }
+
+  return () => {
+    const {
+      options,
+      disabled = false,
+      placeholder = '请选择',
+      block = false,
+      size = 'middle',
+      class: rootClass,
+      getContainer,
+    } = props
+
+    const current = selected()
+    const active = options.find((o) => o.value === current)
+    const hasSelection = active != null
+
+    const sizeMod = size === 'middle' ? '' : ` vfui-select--size-${size}`
+    const blockMod = block ? ' vfui-select--block' : ''
+    const disabledMod = disabled ? ' vfui-select--disabled' : ''
+    const rootCls = `vfui-select${sizeMod}${blockMod}${disabledMod}${rootClass ? ` ${rootClass}` : ''}`
+
+    const open = listOpen()
+
+    const panel = (
+      <div class="vfui-select__panel px-1" role="listbox" id={listboxId}>
+        {options.map((opt) => {
+          const isSelected = opt.value === current
+          const optDisabled = opt.disabled ?? false
+          const selMod = isSelected ? ' vfui-select__option--selected' : ''
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              role="option"
+              class={`vfui-select__option${selMod}`}
+              aria-selected={isSelected ? true : undefined}
+              disabled={optDisabled}
+              onClick={() => {
+                if (optDisabled) return
+                commit(opt.value)
+              }}
+            >
+              {opt.label}
+            </button>
+          )
+        })}
+      </div>
+    )
+
+    return (
+      <div class={rootCls}>
+        <Dropdown
+          trigger="click"
+          disabled={disabled}
+          closeTick={closeTick}
+          onOpenChange={onOpenChange}
+          getContainer={getContainer}
+          verticalPanelAlign="left"
+          dropdown={panel}
+        >
+          <div
+            class="vfui-select__control"
+            role="combobox"
+            aria-expanded={open}
+            aria-controls={listboxId}
+            aria-haspopup="listbox"
+            aria-disabled={disabled ? true : undefined}
+            tabIndex={disabled ? -1 : 0}
+          >
+            <span
+              class={
+                hasSelection ? 'vfui-select__value' : 'vfui-select__value vfui-select__value--placeholder'
+              }
+            >
+              {hasSelection ? active.label : placeholder}
+            </span>
+            <svg class="vfui-select__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path
+                d="M6 8l4 4 4-4"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+        </Dropdown>
+      </div>
+    )
+  }
+}

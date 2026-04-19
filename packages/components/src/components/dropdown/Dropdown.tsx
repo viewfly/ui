@@ -1,4 +1,4 @@
-import type { JSXNode } from '@viewfly/core'
+import type { JSXNode, Signal } from '@viewfly/core'
 import { createDynamicRef, createEffect, createRef, createSignal, reactive } from '@viewfly/core'
 import { createPortal } from '@viewfly/platform-browser'
 import './style.scss'
@@ -54,6 +54,13 @@ export interface DropdownProps {
   /** 面板与触发器下边沿的间距（px），默认 8 */
   gap?: number
   disabled?: boolean
+  /**
+   * 外部请求关闭：递增该 signal 的值会在面板打开时收起（如 Select 选中项后）。
+   * 首次订阅时的初值不会触发关闭，仅在同 signal 的值发生变化时生效。
+   */
+  closeTick?: Signal<number>
+  /** 面板展开动画完成后的 `expanded` 变化通知（`mounted` 打开过程中可能短暂为 false） */
+  onOpenChange?: (open: boolean) => void
 }
 
 const HOVER_CLOSE_MS = 160
@@ -309,6 +316,29 @@ export function Dropdown(props: DropdownProps) {
     return () => {
       panelElement = null
     }
+  })
+
+  let prevCloseTick: number | undefined
+  createEffect(
+    () => (props.closeTick == null ? null : props.closeTick()),
+    (tick) => {
+      if (tick === null) {
+        prevCloseTick = undefined
+        return
+      }
+      if (prevCloseTick === undefined) {
+        prevCloseTick = tick
+        return
+      }
+      if (tick !== prevCloseTick) {
+        prevCloseTick = tick
+        closePanel()
+      }
+    },
+  )
+
+  createEffect([expanded], ([ex]) => {
+    props.onOpenChange?.(ex)
   })
 
   createEffect([mounted], ([m]) => {
