@@ -11,6 +11,6 @@ export interface VfuiRadioGroupContext {
   optionType: Signal<VfuiRadioGroupOptionType>
 }
 
-export const vfuiRadioGroupToken = new InjectionToken<VfuiRadioGroupContext>('VfuiRadioGroup')
+export const VfuiRadioGroupToken = new InjectionToken<VfuiRadioGroupContext>('VfuiRadioGroup')
 
-export const VfuiRadioGroupProvider = createContextProvider({ provide: vfuiRadioGroupToken })
+export const VfuiRadioGroupProvider = createContextProvider({ provide: VfuiRadioGroupToken })

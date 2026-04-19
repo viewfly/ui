@@ -24,7 +24,7 @@
 
 ### 推荐结构
 
-1. **`InjectionToken<T>`**：定义上下文类型 `T`（与业务相关的只读/操作接口）。
+1. **`InjectionToken<T>`**：定义上下文类型 `T`（与业务相关的只读/操作接口）。导出的 token 实例常量使用 **PascalCase** 命名（如 `VfuiRadioGroupToken`），与 `inject(SomeClass)` 的风格一致。
 2. **`createContextProvider({ provide: token })`**：得到 Provider 组件；在**提供方组件**的渲染中通过 **`useValue={...}`** 注入实现（每实例一份上下文时，在提供方 `setup` 内组装对象，避免无意义的引用抖动）。
 3. **消费方**：在子组件**主函数体**内调用 **`inject(token, notFoundValue?)`**；未找到依赖时返回 `notFoundValue`，**不必**再传 `InjectFlags.Optional`（与「可选依赖」语义一致）；仅在使用 **Self / SkipSelf** 等查找规则时才传第三个参数 `flags`。
 
@@ -50,8 +50,8 @@ export interface MyGroupCtx {
   value: Signal<string | undefined>
   setValue: (v: string) => void
 }
-export const myGroupToken = new InjectionToken<MyGroupCtx>('MyGroup')
-export const MyGroupProvider = createContextProvider({ provide: myGroupToken })
+export const MyGroupToken = new InjectionToken<MyGroupCtx>('MyGroup')
+export const MyGroupProvider = createContextProvider({ provide: MyGroupToken })
 ```
 
 ```tsx
@@ -71,10 +71,10 @@ export function MyGroup(props: { value?: string; defaultValue?: string; children
 ```tsx
 // Child.tsx
 import { inject } from '@viewfly/core'
-import { myGroupToken } from './context'
+import { MyGroupToken } from './context'
 
 export function Child(props: { id: string }) {
-  const group = inject(myGroupToken, null) // 组外为 null，无需 InjectFlags.Optional
+  const group = inject(MyGroupToken, null) // 组外为 null，无需 InjectFlags.Optional
   return () => {
     if (!group) return <span>单独使用</span>
     const current = group.value()

@@ -1,6 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createSignal, inject } from '@viewfly/core'
-import { vfuiRadioGroupToken } from './context'
+import { VfuiRadioGroupToken } from './context'
 import './style.scss'
 
 export interface RadioProps {
@@ -20,7 +20,7 @@ export interface RadioProps {
 }
 
 export function Radio(props: RadioProps) {
-  const group = inject(vfuiRadioGroupToken, null)
+  const group = inject(VfuiRadioGroupToken, null)
   const uncontrolled = createSignal(props.defaultChecked ?? false)
 
   const resolveChecked = () => {

@@ -2,8 +2,16 @@
   @apply inline-flex max-w-full align-middle;
 }
 
+.vfui-dropdown--block {
+  @apply flex w-full max-w-full min-w-0;
+}
+
 .vfui-dropdown__trigger {
   @apply inline-flex max-w-full cursor-default;
+}
+
+.vfui-dropdown--block .vfui-dropdown__trigger {
+  @apply flex w-full min-w-0;
 }
 
 .vfui-dropdown--disabled .vfui-dropdown__trigger {

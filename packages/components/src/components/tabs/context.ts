@@ -12,6 +12,6 @@ export interface VfuiTabsContext {
   idPrefix: string
 }
 
-export const vfuiTabsToken = new InjectionToken<VfuiTabsContext>('VfuiTabs')
+export const VfuiTabsToken = new InjectionToken<VfuiTabsContext>('VfuiTabs')
 
-export const VfuiTabsProvider = createContextProvider({ provide: vfuiTabsToken })
+export const VfuiTabsProvider = createContextProvider({ provide: VfuiTabsToken })

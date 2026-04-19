@@ -1,5 +1,18 @@
 import type { JSXNode, Signal } from '@viewfly/core'
-import { createDynamicRef, createEffect, createRef, createSignal, Portal, reactive } from '@viewfly/core'
+import {
+  createDynamicRef,
+  createEffect,
+  createRef,
+  createSignal,
+  inject,
+  Portal,
+  reactive,
+} from '@viewfly/core'
+import {
+  VfuiDropdownNestProvider,
+  VfuiDropdownNestToken,
+  type VfuiDropdownNestContext,
+} from './nest-context'
 import './style.scss'
 
 export type DropdownTrigger = 'click' | 'hover'
@@ -17,7 +30,10 @@ export type DropdownHorizontalPanelAlign = 'top' | 'middle' | 'bottom'
 export type DropdownVerticalPanelAlign = 'left' | 'center' | 'right'
 
 export interface DropdownProps {
-  /** 下拉层内容（挂载到 `getContainer` 指定节点下） */
+  /**
+   * 下拉层内容（挂载到 `getContainer` 指定节点下）。
+   * 可在内容中再嵌套 `Dropdown` 作为子菜单；父级会识别子面板的 Portal 节点，避免误触关闭。
+   */
   dropdown: JSXNode
   /** 触发区域 */
   children?: JSXNode
@@ -60,6 +76,11 @@ export interface DropdownProps {
   closeTick?: Signal<number>
   /** 面板展开动画完成后的 `expanded` 变化通知（`mounted` 打开过程中可能短暂为 false） */
   onOpenChange?: (open: boolean) => void
+  /**
+   * 为 true 时根容器与触发区横向占满父级宽度（如放在 `MenuList` 里作为占一整行的子菜单触发器）。
+   * @default false
+   */
+  block?: boolean
 }
 
 const HOVER_CLOSE_MS = 160
@@ -103,6 +124,9 @@ export function Dropdown(props: DropdownProps) {
   })
   const triggerRef = createRef<HTMLElement>()
   let panelElement: HTMLElement | null = null
+  /** 子级 Dropdown 的 Portal 面板（不在本节点 DOM 子树内），点击外部关闭时需一并视为「菜单内」 */
+  const nestedPanels = new Set<HTMLElement>()
+  const parentNest = inject(VfuiDropdownNestToken, null)
 
   let hoverCloseTimer: ReturnType<typeof setTimeout> | undefined
   let openAnimTimer: ReturnType<typeof setTimeout> | undefined
@@ -127,6 +151,21 @@ export function Dropdown(props: DropdownProps) {
       hoverCloseTimer = undefined
       closePanel()
     }, HOVER_CLOSE_MS)
+  }
+
+  const registerNestedPanel = (el: HTMLElement | null): (() => void) => {
+    if (!el) return () => {}
+    nestedPanels.add(el)
+    const unregisterUp = parentNest?.registerNestedPanel(el)
+    return () => {
+      nestedPanels.delete(el)
+      unregisterUp?.()
+    }
+  }
+
+  const nestCtx: VfuiDropdownNestContext = {
+    registerNestedPanel,
+    onNestedPanelEnter: clearHoverClose,
   }
 
   const computeLayout = () => {
@@ -311,8 +350,14 @@ export function Dropdown(props: DropdownProps) {
 
   const panelRef = createDynamicRef<HTMLElement>((node) => {
     panelElement = node
+    let unregisterFromParent: (() => void) | undefined
+    if (node) {
+      unregisterFromParent = parentNest?.registerNestedPanel(node)
+    }
     computeLayout()
     return () => {
+      unregisterFromParent?.()
+      unregisterFromParent = undefined
       panelElement = null
     }
   })
@@ -377,6 +422,9 @@ export function Dropdown(props: DropdownProps) {
       if (!n) return
       if (triggerRef.current?.contains(n)) return
       if (panelElement?.contains(n)) return
+      for (const sub of nestedPanels) {
+        if (sub.contains(n)) return
+      }
       closePanel()
     }
 
@@ -410,6 +458,7 @@ export function Dropdown(props: DropdownProps) {
               }}
               role="menu"
               onMouseEnter={() => {
+                parentNest?.onNestedPanelEnter()
                 if (props.trigger !== 'hover' || props.disabled) return
                 clearHoverClose()
               }}
@@ -418,7 +467,7 @@ export function Dropdown(props: DropdownProps) {
                 scheduleHoverClose()
               }}
             >
-              {props.dropdown}
+              <VfuiDropdownNestProvider useValue={nestCtx}>{props.dropdown}</VfuiDropdownNestProvider>
             </div>
           ) : null}
         </Portal>
@@ -430,9 +479,10 @@ export function Dropdown(props: DropdownProps) {
     const triggerMode = props.trigger ?? 'click'
     const disabled = props.disabled ?? false
     const disabledClass = disabled ? ' vfui-dropdown--disabled' : ''
+    const blockClass = props.block ? ' vfui-dropdown--block' : ''
 
     return (
-      <div class={`vfui-dropdown${disabledClass}`}>
+      <div class={`vfui-dropdown${disabledClass}${blockClass}`}>
         <div
           class="vfui-dropdown__trigger"
           ref={triggerRef}

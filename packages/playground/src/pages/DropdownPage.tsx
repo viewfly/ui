@@ -153,6 +153,117 @@ export function DropdownPage() {
           <Button type="default">悬停我</Button>
         </Dropdown>
       </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">多级嵌套菜单（点击）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          在 <code class="text-xs">MenuList</code> 内再嵌套 <code class="text-xs">Dropdown</code> 即可；子级建议加{' '}
+          <code class="text-xs">block</code> 使触发区与常规 <code class="text-xs">MenuItem</code> 一样占满一行。子菜单使用{' '}
+          <code class="text-xs">orientation=&quot;horizontal&quot;</code> 与{' '}
+          <code class="text-xs">horizontalAlign=&quot;right&quot;</code> 时从菜单项右侧展开。
+        </p>
+        <Dropdown
+          trigger="click"
+          dropdown={
+            <MenuList role="menu" class="min-w-52">
+              <MenuItem>新建文件</MenuItem>
+              <MenuItem>保存</MenuItem>
+              <Dropdown
+                block
+                trigger="click"
+                orientation="horizontal"
+                horizontalAlign="right"
+                gap={4}
+                dropdown={
+                  <MenuList role="menu" class="min-w-44">
+                    <MenuItem>复制路径</MenuItem>
+                    <MenuItem>在终端打开</MenuItem>
+                    <Dropdown
+                      block
+                      trigger="click"
+                      orientation="horizontal"
+                      horizontalAlign="right"
+                      gap={4}
+                      dropdown={
+                        <MenuList role="menu" class="min-w-40">
+                          <MenuItem>UTF-8</MenuItem>
+                          <MenuItem>GBK</MenuItem>
+                        </MenuList>
+                      }
+                    >
+                      <button
+                        type="button"
+                        role="menuitem"
+                        class="vfui-menu__item w-full flex items-center justify-between gap-2 text-left"
+                      >
+                        <span>编码</span>
+                        <span class="text-xs opacity-60" aria-hidden="true">
+                          ›
+                        </span>
+                      </button>
+                    </Dropdown>
+                  </MenuList>
+                }
+              >
+                <button
+                  type="button"
+                  role="menuitem"
+                  class="vfui-menu__item w-full flex items-center justify-between gap-2 text-left"
+                >
+                  <span>更多</span>
+                  <span class="text-xs opacity-60" aria-hidden="true">
+                    ›
+                  </span>
+                </button>
+              </Dropdown>
+            </MenuList>
+          }
+        >
+          <Button type="primary">文件（多级）</Button>
+        </Dropdown>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">多级嵌套（根为悬停 + 子为点击）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          根菜单悬停打开；移入子菜单浮层时会取消根级的关闭计时。子级仍用点击展开，避免纯悬停子菜单在跨 Portal 移动时难以操作。子级 <code class="text-xs">Dropdown</code> 同样使用{' '}
+          <code class="text-xs">block</code> 占满一行。
+        </p>
+        <Dropdown
+          trigger="hover"
+          dropdown={
+            <MenuList role="menu" class="min-w-48">
+              <MenuItem>概览</MenuItem>
+              <Dropdown
+                block
+                trigger="click"
+                orientation="horizontal"
+                horizontalAlign="right"
+                gap={4}
+                dropdown={
+                  <MenuList role="menu" class="min-w-40">
+                    <MenuItem>成员</MenuItem>
+                    <MenuItem>账单</MenuItem>
+                  </MenuList>
+                }
+              >
+                <button
+                  type="button"
+                  role="menuitem"
+                  class="vfui-menu__item w-full flex items-center justify-between gap-2 text-left"
+                >
+                  <span>设置</span>
+                  <span class="text-xs opacity-60" aria-hidden="true">
+                    ›
+                  </span>
+                </button>
+              </Dropdown>
+            </MenuList>
+          }
+        >
+          <Button type="default">工作区（悬停 + 子菜单）</Button>
+        </Dropdown>
+      </section>
     </div>
   )
 }
