@@ -2,6 +2,10 @@
   @apply flex flex-col gap-2;
 }
 
+.vfui-radio-group--button {
+  @apply flex-row flex-wrap gap-0;
+}
+
 .vfui-radio {
   @apply relative inline-flex items-center gap-2 m-0 cursor-pointer select-none;
 }
@@ -65,4 +69,76 @@ html.dark .vfui-radio__input:checked + .vfui-radio__box {
 
 .vfui-radio--disabled .vfui-radio__box {
   @apply cursor-not-allowed;
+}
+
+// —— RadioGroup optionType="button"：分段按钮 ——
+.vfui-radio-group--button .vfui-radio--button {
+  @apply inline-flex relative gap-0;
+}
+
+.vfui-radio-group--button .vfui-radio--button + .vfui-radio--button {
+  margin-left: -1px;
+}
+
+.vfui-radio__button {
+  @apply relative inline-flex items-center justify-center box-border border border-solid px-3.5 py-1.5 text-sm leading-normal whitespace-nowrap transition-[color,background-color,border-color,box-shadow] duration-150 ease-in-out;
+  border-color: var(--vfui-border-default);
+  background: var(--vfui-surface);
+  color: var(--vfui-fg-default);
+}
+
+.vfui-radio-group--button .vfui-radio--button:first-child .vfui-radio__button {
+  @apply rounded-l-md;
+}
+
+.vfui-radio-group--button .vfui-radio--button:last-child .vfui-radio__button {
+  @apply rounded-r-md;
+}
+
+.vfui-radio-group--button .vfui-radio--button:only-child .vfui-radio__button {
+  @apply rounded-md;
+}
+
+.vfui-radio-group--button .vfui-radio--button:has(.vfui-radio__input:checked) {
+  z-index: 1;
+}
+
+.vfui-radio-group--button .vfui-radio--button:has(.vfui-radio__input:focus-visible) {
+  z-index: 2;
+}
+
+.vfui-radio-group--button .vfui-radio__input:focus-visible + .vfui-radio__button {
+  box-shadow:
+    0 0 0 var(--vfui-ring-offset) var(--vfui-page-bg),
+    0 0 0 calc(var(--vfui-ring-offset) + var(--vfui-ring-width)) var(--vfui-ring-color);
+}
+
+.vfui-radio-group--button .vfui-radio__input:checked + .vfui-radio__button {
+  @apply border-[var(--vfui-color-primary)];
+  background: var(--vfui-color-primary);
+  color: var(--vfui-fg-on-primary);
+}
+
+.vfui-radio-group--button .vfui-radio__input:checked + .vfui-radio__button:hover {
+  background: var(--vfui-color-primary-hover);
+  border-color: var(--vfui-color-primary-hover);
+}
+
+.vfui-radio-group--button .vfui-radio--button:not(.vfui-radio--disabled):hover .vfui-radio__input:not(:checked) + .vfui-radio__button {
+  color: var(--vfui-color-primary);
+  border-color: var(--vfui-color-primary);
+  z-index: 1;
+}
+
+.vfui-radio-group--button .vfui-radio--button.vfui-radio--disabled .vfui-radio__button {
+  @apply cursor-not-allowed;
+}
+
+// 与 Button 的 size 对齐（middle 为 .vfui-radio__button 默认 px / text）
+.vfui-radio-group--button.vfui-radio-group--size-small .vfui-radio__button {
+  @apply text-xs px-2.5 py-1;
+}
+
+.vfui-radio-group--button.vfui-radio-group--size-large .vfui-radio__button {
+  @apply text-base px-5 py-2.5;
 }

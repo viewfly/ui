@@ -6,6 +6,7 @@ export function RadioPage() {
   const nativeEcho = createSignal<string>('')
   const groupPlan = createSignal<'free' | 'pro'>('pro')
   const groupNative = createSignal<string>('')
+  const groupBtn = createSignal<'day' | 'week' | 'month'>('week')
 
   return () => (
     <div>
@@ -31,6 +32,55 @@ export function RadioPage() {
           <Radio value="plus">Plus</Radio>
         </RadioGroup>
         <span class="text-sm vfui-text-muted">最近 onChange：{groupNative() || 'basic（初始）'}</span>
+      </section>
+
+      <section class="mb-8 flex flex-col gap-3">
+        <h3 class="text-sm font-medium vfui-text-muted">RadioGroup（optionType=&quot;button&quot; + size）</h3>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-xs vfui-text-muted w-14 shrink-0">small</span>
+            <RadioGroup
+              optionType="button"
+              size="small"
+              value={groupBtn()}
+              onChange={(v) => groupBtn.set(v as 'day' | 'week' | 'month')}
+            >
+              <Radio value="day">日</Radio>
+              <Radio value="week">周</Radio>
+              <Radio value="month">月</Radio>
+            </RadioGroup>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-xs vfui-text-muted w-14 shrink-0">middle</span>
+            <RadioGroup
+              optionType="button"
+              value={groupBtn()}
+              onChange={(v) => groupBtn.set(v as 'day' | 'week' | 'month')}
+            >
+              <Radio value="day">日</Radio>
+              <Radio value="week">周</Radio>
+              <Radio value="month">月</Radio>
+            </RadioGroup>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-xs vfui-text-muted w-14 shrink-0">large</span>
+            <RadioGroup
+              optionType="button"
+              size="large"
+              value={groupBtn()}
+              onChange={(v) => groupBtn.set(v as 'day' | 'week' | 'month')}
+            >
+              <Radio value="day">日</Radio>
+              <Radio value="week">周</Radio>
+              <Radio value="month">月</Radio>
+            </RadioGroup>
+          </div>
+        </div>
+        <RadioGroup optionType="button" size="small" disabled defaultValue="b">
+          <Radio value="a">禁用组 A</Radio>
+          <Radio value="b">禁用组 B</Radio>
+        </RadioGroup>
+        <span class="text-sm vfui-text-muted">当前：{groupBtn()}</span>
       </section>
 
       <section class="mb-8 flex flex-col gap-3">
