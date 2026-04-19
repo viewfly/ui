@@ -56,7 +56,7 @@ export interface DropdownProps {
   disabled?: boolean
   /**
    * 外部请求关闭：递增该 signal 的值会在面板打开时收起（如 Select 选中项后）。
-   * 首次订阅时的初值不会触发关闭，仅在同 signal 的值发生变化时生效。
+   * 仅在同 signal 的值发生变化时生效（与 `createEffect` 一致：订阅初值不会触发回调）。
    */
   closeTick?: Signal<number>
   /** 面板展开动画完成后的 `expanded` 变化通知（`mounted` 打开过程中可能短暂为 false） */
@@ -318,22 +318,17 @@ export function Dropdown(props: DropdownProps) {
     }
   })
 
-  let prevCloseTick: number | undefined
   createEffect(
     () => (props.closeTick == null ? null : props.closeTick()),
-    (tick) => {
+    (tick, prevTick) => {
       if (tick === null) {
-        prevCloseTick = undefined
         return
       }
-      if (prevCloseTick === undefined) {
-        prevCloseTick = tick
+      // Viewfly 的 createEffect 不在订阅时调用 callback；此处 prevTick 为上次依赖值（含初始值）。
+      if (tick === prevTick) {
         return
       }
-      if (tick !== prevCloseTick) {
-        prevCloseTick = tick
-        closePanel()
-      }
+      closePanel()
     },
   )
 
