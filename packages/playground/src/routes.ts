@@ -2,6 +2,7 @@ import type { RouteConfig } from '@viewfly/router'
 import { ButtonPage } from './pages/ButtonPage'
 import { DividerPage } from './pages/DividerPage'
 import { InputPage } from './pages/InputPage'
+import { InputNumberPage } from './pages/InputNumberPage'
 import { DropdownPage } from './pages/DropdownPage'
 import { TooltipPage } from './pages/TooltipPage'
 import { SliderPage } from './pages/SliderPage'
@@ -17,6 +18,7 @@ export const routes: RouteConfig[] = [
   { path: 'button', component: ButtonPage },
   { path: 'divider', component: DividerPage },
   { path: 'input', component: InputPage },
+  { path: 'input-number', component: InputNumberPage },
   { path: 'dropdown', component: DropdownPage },
   { path: 'tooltip', component: TooltipPage },
   { path: 'slider', component: SliderPage },

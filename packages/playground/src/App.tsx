@@ -45,6 +45,9 @@ export function App() {
           <Link to="/input" class={linkBase} active={linkActive}>
             Input
           </Link>
+          <Link to="/input-number" class={linkBase} active={linkActive}>
+            InputNumber
+          </Link>
           <Link to="/dropdown" class={linkBase} active={linkActive}>
             Dropdown
           </Link>

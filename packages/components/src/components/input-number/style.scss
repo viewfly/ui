@@ -1,0 +1,57 @@
+.vfui-input-number__step {
+  @apply inline-flex min-w-[2.25rem] shrink-0 cursor-pointer select-none items-center justify-center self-stretch px-2 font-medium tabular-nums outline-none transition-[color,background-color] duration-150 ease-in-out;
+  color: var(--vfui-fg-muted);
+  background: var(--vfui-surface);
+}
+
+.vfui-input-number__step:hover:not(:disabled) {
+  color: var(--vfui-fg-default);
+  background: var(--vfui-surface-muted);
+}
+
+.vfui-input-number__step:focus-visible {
+  z-index: 2;
+  color: var(--vfui-color-primary);
+}
+
+.vfui-input-number__step:disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
+.vfui-input-affix--size-small .vfui-input-number__step {
+  @apply min-w-[2rem] px-1.5 text-xs;
+}
+
+.vfui-input-affix--size-large .vfui-input-number__step {
+  @apply min-w-[2.5rem] px-2.5 text-base;
+}
+
+// —— 右侧纵向步进（单列占宽小于左右分列）——
+.vfui-input-number__handlers--stack {
+  @apply flex min-w-[1.75rem] shrink-0 flex-col overflow-hidden p-0;
+}
+
+.vfui-input-number__handlers--stack .vfui-input-number__step {
+  @apply min-h-0 min-w-0 flex-1 border-0 px-0 py-0 leading-none;
+  border-radius: 0;
+}
+
+.vfui-input-number__handlers--stack .vfui-input-number__step:first-child {
+  border-bottom: 1px solid var(--vfui-border-default);
+}
+
+.vfui-input-affix:focus-within .vfui-input-number__handlers--stack .vfui-input-number__step:first-child {
+  border-bottom-color: var(--vfui-color-primary);
+}
+
+.vfui-input-affix:focus-within > .vfui-input-number__handlers:focus-within {
+  z-index: 2;
+}
+
+.vfui-input-affix--size-small .vfui-input-number__handlers--stack {
+  @apply min-w-[1.5rem] text-xs;
+}
+
+.vfui-input-affix--size-large .vfui-input-number__handlers--stack {
+  @apply min-w-[2rem] text-base;
+}
