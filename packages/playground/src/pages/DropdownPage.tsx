@@ -26,7 +26,8 @@ export function DropdownPage() {
       <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">点击触发（默认）</h3>
         <p class="text-sm vfui-text-muted mb-4">
-          弹出层通过 <code class="text-xs">createPortal</code> 挂到 <code class="text-xs">document.body</code>
+          弹出层通过 <code class="text-xs">Portal</code>（<code class="text-xs">@viewfly/core</code>）挂到{' '}
+          <code class="text-xs">document.body</code>
           ，带透明度与位移动画；面板与按钮留有间距。
         </p>
         <Dropdown

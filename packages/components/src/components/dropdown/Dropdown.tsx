@@ -1,6 +1,5 @@
 import type { JSXNode, Signal } from '@viewfly/core'
-import { createDynamicRef, createEffect, createRef, createSignal, reactive } from '@viewfly/core'
-import { createPortal } from '@viewfly/platform-browser'
+import { createDynamicRef, createEffect, createRef, createSignal, Portal, reactive } from '@viewfly/core'
 import './style.scss'
 
 export type DropdownTrigger = 'click' | 'hover'
@@ -48,7 +47,7 @@ export interface DropdownProps {
   getHorizontalTopMinFrom?: () => HTMLElement | null
   /**
    * 弹出层挂载的 DOM 节点；未传时默认 `document.body`。
-   * 在组件初始化时解析一次，与 Viewfly `createPortal` 行为一致。
+   * 在子组件首次渲染时解析一次，与 `<Portal host>` 在挂载时确定容器的行为一致。
    */
   getContainer?: () => HTMLElement
   /** 面板与触发器下边沿的间距（px），默认 8 */
@@ -387,9 +386,7 @@ export function Dropdown(props: DropdownProps) {
 
   function DropdownPortal() {
     const portalHost = props.getContainer?.() ?? defaultContainer()
-    return createPortal(() => {
-      if (!mounted()) return null
-
+    return () => {
       const ex = expanded()
       const openCls = ex ? ' vfui-dropdown__panel--open' : ''
       const animByPlacement: Record<typeof layout.placement, string> = {
@@ -401,28 +398,32 @@ export function Dropdown(props: DropdownProps) {
       const animCls = animByPlacement[layout.placement]
 
       return (
-        <div
-          ref={panelRef}
-          class={`vfui-dropdown__panel${animCls}${openCls}`}
-          style={{
-            top: `${layout.top}px`,
-            left: `${layout.left}px`,
-            minWidth: `${layout.minWidth}px`,
-          }}
-          role="menu"
-          onMouseEnter={() => {
-            if (props.trigger !== 'hover' || props.disabled) return
-            clearHoverClose()
-          }}
-          onMouseLeave={() => {
-            if (props.trigger !== 'hover' || props.disabled) return
-            scheduleHoverClose()
-          }}
-        >
-          {props.dropdown}
-        </div>
+        <Portal host={portalHost}>
+          {mounted() ? (
+            <div
+              ref={panelRef}
+              class={`vfui-dropdown__panel${animCls}${openCls}`}
+              style={{
+                top: `${layout.top}px`,
+                left: `${layout.left}px`,
+                minWidth: `${layout.minWidth}px`,
+              }}
+              role="menu"
+              onMouseEnter={() => {
+                if (props.trigger !== 'hover' || props.disabled) return
+                clearHoverClose()
+              }}
+              onMouseLeave={() => {
+                if (props.trigger !== 'hover' || props.disabled) return
+                scheduleHoverClose()
+              }}
+            >
+              {props.dropdown}
+            </div>
+          ) : null}
+        </Portal>
       )
-    }, portalHost)
+    }
   }
 
   return () => {

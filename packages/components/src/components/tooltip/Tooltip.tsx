@@ -1,6 +1,5 @@
 import type { JSXNode } from '@viewfly/core'
-import { createDynamicRef, createEffect, createRef, createSignal, reactive } from '@viewfly/core'
-import { createPortal } from '@viewfly/platform-browser'
+import { createDynamicRef, createEffect, createRef, createSignal, Portal, reactive } from '@viewfly/core'
 import './style.scss'
 
 /**
@@ -51,7 +50,7 @@ export interface TooltipProps {
   flip?: boolean
   /**
    * 浮层挂载的 DOM 节点；未传时默认 `document.body`。
-   * 在组件初始化时解析一次，与 Viewfly `createPortal` 行为一致。
+   * 在子组件首次渲染时解析一次，与 `<Portal host>` 在挂载时确定容器的行为一致。
    */
   getContainer?: () => HTMLElement
   disabled?: boolean
@@ -377,9 +376,7 @@ export function Tooltip(props: TooltipProps) {
 
   function TooltipPortal() {
     const portalHost = props.getContainer?.() ?? defaultContainer()
-    return createPortal(() => {
-      if (!mounted()) return null
-
+    return () => {
       const v = visible()
       const openCls = v ? ' vfui-tooltip__panel--open' : ''
       const animBySide: Record<typeof layout.animSide, string> = {
@@ -391,32 +388,36 @@ export function Tooltip(props: TooltipProps) {
       const animCls = animBySide[layout.animSide]
 
       return (
-        <div
-          ref={panelRef}
-          id={tooltipId}
-          data-placement={layout.resolvedPlacement}
-          class={`vfui-tooltip__panel${animCls}${openCls}`}
-          style={{
-            top: `${layout.top}px`,
-            left: `${layout.left}px`,
-          }}
-          role="tooltip"
-          onMouseEnter={() => {
-            if (props.disabled) return
-            if (props.open !== undefined) return
-            clearClose()
-          }}
-          onMouseLeave={() => {
-            if (props.disabled) return
-            if (props.open !== undefined) return
-            if ((props.trigger ?? 'hover') !== 'hover') return
-            scheduleClose()
-          }}
-        >
-          {props.content}
-        </div>
+        <Portal host={portalHost}>
+          {mounted() ? (
+            <div
+              ref={panelRef}
+              id={tooltipId}
+              data-placement={layout.resolvedPlacement}
+              class={`vfui-tooltip__panel${animCls}${openCls}`}
+              style={{
+                top: `${layout.top}px`,
+                left: `${layout.left}px`,
+              }}
+              role="tooltip"
+              onMouseEnter={() => {
+                if (props.disabled) return
+                if (props.open !== undefined) return
+                clearClose()
+              }}
+              onMouseLeave={() => {
+                if (props.disabled) return
+                if (props.open !== undefined) return
+                if ((props.trigger ?? 'hover') !== 'hover') return
+                scheduleClose()
+              }}
+            >
+              {props.content}
+            </div>
+          ) : null}
+        </Portal>
       )
-    }, portalHost)
+    }
   }
 
   return () => {
