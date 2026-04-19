@@ -50,6 +50,16 @@ export function SelectPage() {
       </section>
 
       <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">选项紧凑密度</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          <code class="text-xs">optionDensity=&quot;compact&quot;</code> 使用与 <code class="text-xs">MenuItem</code> 相同的紧凑行样式。
+        </p>
+        <div class="max-w-md">
+          <Select optionDensity="compact" placeholder="紧凑选项" options={baseOptions} />
+        </div>
+      </section>
+
+      <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">禁用</h3>
         <Select disabled options={baseOptions} defaultValue="bj" />
       </section>

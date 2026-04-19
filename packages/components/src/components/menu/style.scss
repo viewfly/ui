@@ -1,0 +1,33 @@
+.vfui-menu {
+  @apply flex flex-col gap-0.5 p-1 max-h-60 overflow-y-auto min-w-0;
+}
+
+.vfui-menu__item {
+  @apply flex w-full cursor-pointer select-none items-center rounded-md border-0 bg-transparent px-3 py-2 text-left text-sm leading-snug outline-none transition-[background-color,color] duration-150 ease-in-out;
+  color: var(--vfui-fg-default);
+}
+
+.vfui-menu__item--compact {
+  @apply px-2 py-1.5 text-xs leading-snug;
+}
+
+.vfui-menu__item:hover:not(:disabled):not([aria-disabled='true']) {
+  @apply bg-gray-100 dark:bg-slate-700/90;
+}
+
+.vfui-menu__item:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--vfui-ring-color);
+}
+
+.vfui-menu__item--selected {
+  @apply bg-[var(--vfui-tone-primary-bg)] text-[var(--vfui-tone-primary-fg)] font-medium;
+}
+
+.vfui-menu__item--selected:hover:not(:disabled):not([aria-disabled='true']) {
+  @apply bg-[color-mix(in_srgb,var(--vfui-tone-primary-bg),var(--vfui-color-primary)_14%)];
+}
+
+.vfui-menu__item:disabled,
+.vfui-menu__item[aria-disabled='true'] {
+  @apply cursor-not-allowed opacity-50;
+}

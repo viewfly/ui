@@ -1,6 +1,7 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDerived, createSignal } from '@viewfly/core'
 import { Dropdown } from '../dropdown/Dropdown'
+import { MenuItem, MenuList, type MenuItemDensity } from '../menu'
 import './style.scss'
 
 export interface SelectOptionItem {
@@ -24,6 +25,8 @@ export interface SelectProps {
   /** 未选中或没有匹配项时的占位 */
   placeholder?: string
   size?: SelectSize
+  /** 下拉选项行密度，与 `MenuItem` 一致 */
+  optionDensity?: MenuItemDensity
   /** 块级宽度 */
   block?: boolean
   class?: string
@@ -58,6 +61,7 @@ export function Select(props: SelectProps) {
       disabled = false,
       placeholder = '请选择',
       block = false,
+      optionDensity = 'default',
       size = 'middle',
       class: rootClass,
       getContainer,
@@ -75,18 +79,16 @@ export function Select(props: SelectProps) {
     const open = listOpen()
 
     const panel = (
-      <div class="vfui-select__panel px-1" role="listbox" id={listboxId}>
+      <MenuList role="listbox" id={listboxId}>
         {options.map((opt) => {
           const isSelected = opt.value === current
           const optDisabled = opt.disabled ?? false
-          const selMod = isSelected ? ' vfui-select__option--selected' : ''
           return (
-            <button
+            <MenuItem
               key={opt.value}
-              type="button"
               role="option"
-              class={`vfui-select__option${selMod}`}
-              aria-selected={isSelected ? true : undefined}
+              density={optionDensity}
+              selected={isSelected}
               disabled={optDisabled}
               onClick={() => {
                 if (optDisabled) return
@@ -94,10 +96,10 @@ export function Select(props: SelectProps) {
               }}
             >
               {opt.label}
-            </button>
+            </MenuItem>
           )
         })}
-      </div>
+      </MenuList>
     )
 
     return (

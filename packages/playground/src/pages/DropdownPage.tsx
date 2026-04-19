@@ -1,19 +1,12 @@
 import type { JSXNode } from '@viewfly/core'
 import { createRef } from '@viewfly/core'
-import { Button, Dropdown } from '@viewfly/ui-components'
-
-const menuItem =
-  'block w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-slate-700/80 cursor-pointer transition-colors'
+import { Button, Dropdown, MenuItem, MenuList } from '@viewfly/ui-components'
 
 const wideMenu = (
-  <div class="py-1 px-1 min-w-52">
-    <button type="button" class={menuItem}>
-      菜单项 A
-    </button>
-    <button type="button" class={menuItem}>
-      菜单项 B
-    </button>
-  </div>
+  <MenuList role="menu" class="min-w-52">
+    <MenuItem>菜单项 A</MenuItem>
+    <MenuItem>菜单项 B</MenuItem>
+  </MenuList>
 )
 
 /** 虚线框作「大触发区」，便于看出与面板的水平/垂直对齐 */
@@ -39,17 +32,11 @@ export function DropdownPage() {
         <Dropdown
           trigger="click"
           dropdown={
-            <div class="py-1 px-1">
-              <button type="button" class={menuItem}>
-                第一项
-              </button>
-              <button type="button" class={menuItem}>
-                第二项
-              </button>
-              <button type="button" class={menuItem}>
-                第三项
-              </button>
-            </div>
+            <MenuList role="menu">
+              <MenuItem>第一项</MenuItem>
+              <MenuItem>第二项</MenuItem>
+              <MenuItem>第三项</MenuItem>
+            </MenuList>
           }
         >
           <Button type="primary">打开菜单</Button>

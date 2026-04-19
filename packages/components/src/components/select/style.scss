@@ -10,6 +10,11 @@
   @apply w-full max-w-full;
 }
 
+/* Dropdown 为 inline-flex：trigger 默认随内容收缩，control 的 w-full 无法拉满块级容器 */
+.vfui-select--block .vfui-dropdown__trigger {
+  @apply w-full min-w-0;
+}
+
 .vfui-select__control {
   @apply box-border inline-flex w-full min-w-[8rem] max-w-full cursor-default items-center justify-between gap-2 rounded-md border border-solid px-3 py-1.5 text-left text-sm leading-normal outline-none transition-[color,background-color,border-color] duration-150 ease-in-out;
   border-color: var(--vfui-border-default);
@@ -56,34 +61,4 @@
 
 .vfui-select--size-large .vfui-select__chevron {
   @apply size-[1.125rem];
-}
-
-.vfui-select__panel {
-  @apply py-1 max-h-60 overflow-y-auto min-w-0;
-}
-
-.vfui-select__option {
-  @apply flex w-full cursor-pointer select-none items-center border-0 bg-transparent px-3 py-2 text-left text-sm leading-snug outline-none transition-colors duration-150 ease-in-out;
-  color: var(--vfui-fg-default);
-}
-
-.vfui-select__option:hover:not(:disabled):not([aria-disabled='true']) {
-  @apply bg-[var(--vfui-surface-muted)];
-}
-
-.vfui-select__option:focus-visible {
-  box-shadow: inset 0 0 0 2px var(--vfui-ring-color);
-}
-
-.vfui-select__option--selected {
-  @apply bg-[var(--vfui-tone-primary-bg)] text-[var(--vfui-tone-primary-fg)] font-medium;
-}
-
-.vfui-select__option--selected:hover:not(:disabled):not([aria-disabled='true']) {
-  @apply bg-[var(--vfui-tone-primary-bg)];
-}
-
-.vfui-select__option:disabled,
-.vfui-select__option[aria-disabled='true'] {
-  @apply cursor-not-allowed opacity-50;
 }
