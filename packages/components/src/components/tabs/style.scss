@@ -1,0 +1,75 @@
+.vfui-tabs {
+  @apply w-full flex flex-col;
+}
+
+.vfui-tabs__tablist {
+  @apply flex flex-wrap gap-0 border-0 border-b border-solid;
+  border-color: var(--vfui-border-muted);
+}
+
+.vfui-tabs--vertical .vfui-tabs__tablist {
+  @apply flex-col flex-nowrap border-b-0 border-r pr-3 mr-1;
+  min-width: fit-content;
+}
+
+/* 横向：面板在下方，标签底边贴内容区，仅保留上侧圆角 */
+.vfui-tabs__tab {
+  @apply relative inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium cursor-pointer border-0 bg-transparent rounded-t-md;
+  color: var(--vfui-fg-muted);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+/* 纵向：面板在右侧，标签靠面板一侧（右缘）无圆角，仅保留左侧圆角 */
+.vfui-tabs--vertical .vfui-tabs__tab {
+  @apply rounded-none rounded-l-md;
+}
+
+.vfui-tabs__tab:hover:not(:disabled) {
+  color: var(--vfui-fg-default);
+  background: var(--vfui-surface-muted);
+}
+
+.vfui-tabs__tab:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--vfui-ring-offset) var(--vfui-page-bg),
+    0 0 0 calc(var(--vfui-ring-offset) + var(--vfui-ring-width)) var(--vfui-ring-color);
+}
+
+.vfui-tabs__tab--active {
+  color: var(--vfui-color-primary);
+  font-weight: 600;
+}
+
+.vfui-tabs__tab--active::after {
+  content: '';
+  @apply absolute bottom-0 left-2 right-2 h-0.5 rounded-full;
+  background: var(--vfui-color-primary);
+}
+
+.vfui-tabs--vertical .vfui-tabs__tab--active::after {
+  @apply left-auto right-0 top-2 bottom-2 w-0.5 h-auto;
+}
+
+.vfui-tabs__tab--disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
+.vfui-tabs__panel {
+  @apply pt-4 text-sm;
+  color: var(--vfui-fg-default);
+}
+
+.vfui-tabs--vertical {
+  @apply flex flex-row gap-6 items-start;
+}
+
+.vfui-tabs--vertical .vfui-tabs__panel {
+  @apply flex-1 min-w-0 pt-0;
+}
+
+.vfui-tabs__panel[hidden] {
+  display: none !important;
+}
