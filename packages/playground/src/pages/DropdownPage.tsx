@@ -1,6 +1,7 @@
 import type { JSXNode } from '@viewfly/core'
 import { createRef } from '@viewfly/core'
-import { Button, Dropdown, MenuItem, MenuList } from '@viewfly/ui-components'
+import { Button, Dropdown, MenuItem, MenuList, SpaceCompact } from '@viewfly/ui-components'
+import { IconGlyph } from '@viewfly/ui-icons'
 
 const wideMenu = (
   <MenuList role="menu" class="min-w-52">
@@ -42,6 +43,40 @@ export function DropdownPage() {
         >
           <Button type="primary">打开菜单</Button>
         </Dropdown>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">紧凑组合：主按钮 + 下拉（SpaceCompact）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          用 <code class="text-xs">SpaceCompact</code> 包裹相邻控件，与 Ant Design{' '}
+          <code class="text-xs">Space.Compact</code> 类似：共享竖向边框与分段圆角。主按钮可单独{' '}
+          <code class="text-xs">onClick</code>；右侧图标按钮置于 <code class="text-xs">Dropdown</code> 内，菜单用{' '}
+          <code class="text-xs">verticalPanelAlign=&quot;right&quot;</code> 贴近「右下角」展开。
+        </p>
+        <SpaceCompact>
+          <Button type="default" onClick={() => console.log('主操作')}>
+            操作
+          </Button>
+          <Dropdown
+            trigger="click"
+            verticalPanelAlign="right"
+            dropdown={
+              <MenuList role="menu">
+                <MenuItem onClick={() => console.log('click', '1')}>第一项</MenuItem>
+                <MenuItem onClick={() => console.log('click', '2')}>第二项</MenuItem>
+                <MenuItem onClick={() => console.log('click', '3')}>第三项</MenuItem>
+              </MenuList>
+            }
+          >
+            <Button
+              type="default"
+              chevronDown={false}
+              class="px-2.5"
+              aria-label="更多操作"
+              icon={<IconGlyph name="more" size={16} />}
+            />
+          </Dropdown>
+        </SpaceCompact>
       </section>
 
       <section class="mb-10">

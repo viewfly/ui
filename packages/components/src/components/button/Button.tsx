@@ -42,6 +42,8 @@ export interface ButtonProps {
   chevronDown?: boolean
   /** 块级宽度（`width: 100%`） */
   block?: boolean
+  /** 追加到根节点 `class` */
+  class?: string
   disabled?: boolean
   onClick?: () => void
   children?: JSXNode
@@ -65,6 +67,7 @@ export function Button(props: ButtonProps) {
       iconPosition = 'start',
       chevronDown,
       block = false,
+      class: rootClass,
       disabled = false,
       onClick,
       children,
@@ -83,7 +86,8 @@ export function Button(props: ButtonProps) {
 
     const chevronSize = size === 'small' ? 12 : size === 'large' ? 16 : 14
 
-    const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${blockMod}`
+    const extraCls = rootClass ? ` ${rootClass}` : ''
+    const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${blockMod}${extraCls}`
     const inactive = disabled || loading
 
     const body = (

@@ -1,6 +1,7 @@
 import './styles/index.scss'
 
 export * from './components/button'
+export * from './components/space-compact'
 export * from './components/divider'
 export * from './components/input'
 export * from './components/input-number'

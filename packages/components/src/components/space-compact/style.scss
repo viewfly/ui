@@ -1,0 +1,67 @@
+// 紧凑排列：相邻控件共享边框（类似 Ant Design Space.Compact）
+.vfui-space-compact {
+  @apply inline-flex items-stretch align-middle;
+}
+
+.vfui-space-compact--block {
+  @apply flex w-full min-w-0;
+}
+
+.vfui-space-compact > * {
+  @apply relative;
+}
+
+.vfui-space-compact > * + * {
+  margin-inline-start: -1px;
+}
+
+.vfui-space-compact > *:hover,
+.vfui-space-compact > *:focus-within {
+  z-index: 1;
+}
+
+// 首段：去掉右侧圆角（根级按钮或 Dropdown 内的按钮）
+.vfui-space-compact > *:first-child:is(.vfui-button),
+.vfui-space-compact > *:first-child .vfui-button {
+  @apply rounded-e-none;
+}
+
+// 末段：去掉左侧圆角
+.vfui-space-compact > *:last-child:is(.vfui-button),
+.vfui-space-compact > *:last-child .vfui-button {
+  @apply rounded-s-none;
+}
+
+// 中间段：无圆角
+.vfui-space-compact > *:not(:first-child):not(:last-child):is(.vfui-button),
+.vfui-space-compact > *:not(:first-child):not(:last-child) .vfui-button {
+  @apply rounded-none;
+}
+
+// 圆形 / 胶囊按钮在紧凑组内仍按段对齐（覆盖 rounded-full）
+.vfui-space-compact > *:first-child:is(.vfui-button).vfui-button--shape-circle,
+.vfui-space-compact > *:first-child:is(.vfui-button).vfui-button--shape-round,
+.vfui-space-compact > *:first-child .vfui-button.vfui-button--shape-circle,
+.vfui-space-compact > *:first-child .vfui-button.vfui-button--shape-round {
+  @apply rounded-e-none;
+}
+
+.vfui-space-compact > *:last-child:is(.vfui-button).vfui-button--shape-circle,
+.vfui-space-compact > *:last-child:is(.vfui-button).vfui-button--shape-round,
+.vfui-space-compact > *:last-child .vfui-button.vfui-button--shape-circle,
+.vfui-space-compact > *:last-child .vfui-button.vfui-button--shape-round {
+  @apply rounded-s-none;
+}
+
+.vfui-space-compact
+  > *:not(:first-child):not(:last-child):is(.vfui-button).vfui-button--shape-circle,
+.vfui-space-compact
+  > *:not(:first-child):not(:last-child):is(.vfui-button).vfui-button--shape-round,
+.vfui-space-compact
+  > *:not(:first-child):not(:last-child)
+  .vfui-button.vfui-button--shape-circle,
+.vfui-space-compact
+  > *:not(:first-child):not(:last-child)
+  .vfui-button.vfui-button--shape-round {
+  @apply rounded-none;
+}
