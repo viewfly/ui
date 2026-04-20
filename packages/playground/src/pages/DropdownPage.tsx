@@ -173,7 +173,6 @@ export function DropdownPage() {
                 trigger="click"
                 orientation="horizontal"
                 horizontalAlign="right"
-                gap={4}
                 dropdown={
                   <MenuList role="menu" class="min-w-44">
                     <MenuItem>复制路径</MenuItem>
@@ -183,7 +182,6 @@ export function DropdownPage() {
                       trigger="click"
                       orientation="horizontal"
                       horizontalAlign="right"
-                      gap={4}
                       dropdown={
                         <MenuList role="menu" class="min-w-40">
                           <MenuItem>UTF-8</MenuItem>
@@ -221,7 +219,6 @@ export function DropdownPage() {
                 trigger="click"
                 orientation="horizontal"
                 horizontalAlign="right"
-                gap={4}
                 dropdown={
                   <MenuList role="menu" class="min-w-40">
                     <MenuItem>成员</MenuItem>

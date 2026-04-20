@@ -49,7 +49,8 @@ export interface DropdownProps {
   horizontalAlign?: DropdownHorizontalAlign
   /**
    * 横向弹出时，面板与触发器在垂直方向的对齐：顶对齐、垂直居中、底对齐。
-   * 默认 `top`；仅 `orientation="horizontal"` 时有效。
+   * 未指定时：根级触发器默认 `top`；嵌在另一 `Dropdown` 面板内（子菜单）默认 `middle`。
+   * 仅 `orientation="horizontal"` 时有效。
    */
   horizontalPanelAlign?: DropdownHorizontalPanelAlign
   /**
@@ -67,7 +68,7 @@ export interface DropdownProps {
    * 在子组件首次渲染时解析一次，与 `<Portal host>` 在挂载时确定容器的行为一致。
    */
   getContainer?: () => HTMLElement
-  /** 面板与触发器下边沿的间距（px），默认 8 */
+  /** 面板与触发器之间的间距（px）：纵向为上下边距，横向为左右间距；默认 10 */
   gap?: number
   disabled?: boolean
   /**
@@ -172,7 +173,7 @@ export function Dropdown(props: DropdownProps) {
   const computeLayout = () => {
     const el = triggerRef.current
     if (!el) return
-    const gap = props.gap ?? 8
+    const gap = props.gap ?? 10
     const orientation = props.orientation ?? 'vertical'
     const r = el.getBoundingClientRect()
     const vw = typeof window !== 'undefined' ? window.innerWidth : 0
@@ -195,7 +196,8 @@ export function Dropdown(props: DropdownProps) {
       const fitsLeft = panelW <= 0 || panelW <= spaceLeft
       const fitsRight = panelW <= 0 || panelW <= spaceRight
       const prefer = props.horizontalAlign ?? 'left'
-      const vAlign = props.horizontalPanelAlign ?? 'top'
+      const vAlign =
+        props.horizontalPanelAlign ?? (parentNest != null ? 'middle' : 'top')
       const hForAlign = panelH > 0 ? panelH : effH
 
       if (vAlign === 'top') {

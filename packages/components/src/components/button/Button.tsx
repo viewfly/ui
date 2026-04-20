@@ -82,8 +82,6 @@ export function Button(props: ButtonProps) {
       chevronDown === true || (chevronDown !== false && dropdownTrigger != null)
 
     const chevronSize = size === 'small' ? 12 : size === 'large' ? 16 : 14
-    const chevronExpanded = dropdownTrigger?.expanded() ?? false
-    const chevronCls = `vfui-button__chevron${chevronExpanded ? ' vfui-button__chevron--expanded' : ''}`
 
     const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${blockMod}`
     const inactive = disabled || loading
@@ -95,7 +93,7 @@ export function Button(props: ButtonProps) {
         {children}
         {showEndIcon ? <span class="vfui-button__icon">{icon}</span> : null}
         {showChevronDown ? (
-          <span class={chevronCls} aria-hidden="true">
+          <span class="vfui-button__chevron" aria-hidden="true">
             <IconArrowBottom size={chevronSize} class="vfui-button__chevron-icon" />
           </span>
         ) : null}

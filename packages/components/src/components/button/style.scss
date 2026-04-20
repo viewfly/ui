@@ -317,15 +317,11 @@
 }
 
 .vfui-button__chevron {
-  @apply inline-flex shrink-0 items-center justify-center leading-none transition-transform duration-200 ease-out;
+  @apply inline-flex shrink-0 items-center justify-center leading-none;
 }
 
 .vfui-button__chevron-icon {
   @apply block opacity-80;
-}
-
-.vfui-button__chevron--expanded {
-  transform: rotate(180deg);
 }
 
 .vfui-button--loading:disabled {
