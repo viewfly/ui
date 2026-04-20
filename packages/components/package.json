@@ -24,8 +24,8 @@
     "build": "vite build"
   },
   "peerDependencies": {
-    "@viewfly/core": "^2.0.0",
-    "@viewfly/platform-browser": "^2.0.0",
+    "@viewfly/core": "^2.1.0",
+    "@viewfly/platform-browser": "^2.1.0",
     "@viewfly/ui-icons": "^0.0.1"
   },
   "devDependencies": {
