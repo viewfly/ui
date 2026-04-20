@@ -72,6 +72,9 @@ export function App() {
           <Link to="/tabs" class={linkBase} active={linkActive}>
             Tabs
           </Link>
+          <Link to="/icons" class={linkBase} active={linkActive}>
+            Icons
+          </Link>
         </nav>
 
         <main class="flex-1 min-w-0">

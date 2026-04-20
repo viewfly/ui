@@ -1,5 +1,5 @@
 import type { JSXNode } from '@viewfly/core'
-import { IconArrowRight } from '@viewfly/ui-icons'
+import { IconGlyph } from '@viewfly/ui-icons'
 
 export type MenuItemDensity = 'default' | 'compact'
 
@@ -62,7 +62,7 @@ export function MenuItem(props: MenuItemProps) {
           <>
             <span class="vfui-menu__item__main">{children}</span>
             <span class="vfui-menu__item__chevron" aria-hidden="true">
-              <IconArrowRight size={density === 'compact' ? 12 : 14} class="vfui-menu__item__chevron-icon" />
+              <IconGlyph name="arrow-right" size={density === 'compact' ? 12 : 14} class="vfui-menu__item__chevron-icon" />
             </span>
           </>
         ) : (

@@ -1,6 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { inject } from '@viewfly/core'
-import { IconArrowBottom } from '@viewfly/ui-icons'
+import { IconGlyph } from '@viewfly/ui-icons'
 import { VfuiDropdownTriggerToken } from '../dropdown/trigger-context'
 import './style.scss'
 
@@ -94,7 +94,7 @@ export function Button(props: ButtonProps) {
         {showEndIcon ? <span class="vfui-button__icon">{icon}</span> : null}
         {showChevronDown ? (
           <span class="vfui-button__chevron" aria-hidden="true">
-            <IconArrowBottom size={chevronSize} class="vfui-button__chevron-icon" />
+            <IconGlyph name="arrow-bottom" size={chevronSize} class="vfui-button__chevron-icon" />
           </span>
         ) : null}
       </>
