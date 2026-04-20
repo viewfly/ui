@@ -191,30 +191,12 @@ export function DropdownPage() {
                         </MenuList>
                       }
                     >
-                      <button
-                        type="button"
-                        role="menuitem"
-                        class="vfui-menu__item w-full flex items-center justify-between gap-2 text-left"
-                      >
-                        <span>编码</span>
-                        <span class="text-xs opacity-60" aria-hidden="true">
-                          ›
-                        </span>
-                      </button>
+                      <MenuItem chevronRight>编码</MenuItem>
                     </Dropdown>
                   </MenuList>
                 }
               >
-                <button
-                  type="button"
-                  role="menuitem"
-                  class="vfui-menu__item w-full flex items-center justify-between gap-2 text-left"
-                >
-                  <span>更多</span>
-                  <span class="text-xs opacity-60" aria-hidden="true">
-                    ›
-                  </span>
-                </button>
+                <MenuItem chevronRight>更多</MenuItem>
               </Dropdown>
             </MenuList>
           }
@@ -247,16 +229,7 @@ export function DropdownPage() {
                   </MenuList>
                 }
               >
-                <button
-                  type="button"
-                  role="menuitem"
-                  class="vfui-menu__item w-full flex items-center justify-between gap-2 text-left"
-                >
-                  <span>设置</span>
-                  <span class="text-xs opacity-60" aria-hidden="true">
-                    ›
-                  </span>
-                </button>
+                <MenuItem chevronRight>设置</MenuItem>
               </Dropdown>
             </MenuList>
           }

@@ -19,6 +19,9 @@ importers:
       '@viewfly/platform-browser':
         specifier: ^2.1.0
         version: 2.1.0
+      '@viewfly/ui-icons':
+        specifier: workspace:*
+        version: link:../icons
       sass:
         specifier: ^1.99.0
         version: 1.99.0

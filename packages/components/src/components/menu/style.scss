@@ -7,6 +7,22 @@
   color: var(--vfui-fg-default);
 }
 
+.vfui-menu__item--with-chevron {
+  @apply justify-between gap-2;
+}
+
+.vfui-menu__item__main {
+  @apply min-w-0 flex-1 text-left;
+}
+
+.vfui-menu__item__chevron {
+  @apply inline-flex shrink-0 items-center justify-center opacity-60;
+}
+
+.vfui-menu__item__chevron-icon {
+  @apply block;
+}
+
 .vfui-menu__item--compact {
   @apply px-2 py-1.5 text-xs leading-snug;
 }

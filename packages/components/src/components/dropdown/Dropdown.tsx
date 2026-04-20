@@ -13,6 +13,7 @@ import {
   VfuiDropdownNestToken,
   type VfuiDropdownNestContext,
 } from './nest-context'
+import { VfuiDropdownTriggerProvider } from './trigger-context'
 import './style.scss'
 
 export type DropdownTrigger = 'click' | 'hover'
@@ -483,24 +484,26 @@ export function Dropdown(props: DropdownProps) {
 
     return (
       <div class={`vfui-dropdown${disabledClass}${blockClass}`}>
-        <div
-          class="vfui-dropdown__trigger"
-          ref={triggerRef}
-          onClick={() => {
-            if (triggerMode !== 'click' || disabled) return
-            toggleClick()
-          }}
-          onMouseEnter={() => {
-            if (triggerMode !== 'hover' || disabled) return
-            openPanel()
-          }}
-          onMouseLeave={() => {
-            if (triggerMode !== 'hover' || disabled) return
-            scheduleHoverClose()
-          }}
-        >
-          {props.children}
-        </div>
+        <VfuiDropdownTriggerProvider useValue={{ expanded }}>
+          <div
+            class="vfui-dropdown__trigger"
+            ref={triggerRef}
+            onClick={() => {
+              if (triggerMode !== 'click' || disabled) return
+              toggleClick()
+            }}
+            onMouseEnter={() => {
+              if (triggerMode !== 'hover' || disabled) return
+              openPanel()
+            }}
+            onMouseLeave={() => {
+              if (triggerMode !== 'hover' || disabled) return
+              scheduleHoverClose()
+            }}
+          >
+            {props.children}
+          </div>
+        </VfuiDropdownTriggerProvider>
         <DropdownPortal />
       </div>
     )

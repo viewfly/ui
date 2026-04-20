@@ -1,4 +1,5 @@
 import type { JSXNode } from '@viewfly/core'
+import { IconArrowRight } from '@viewfly/ui-icons'
 
 export type MenuItemDensity = 'default' | 'compact'
 
@@ -19,6 +20,8 @@ export interface MenuItemProps {
   role?: MenuItemRole
   class?: string
   htmlType?: MenuItemHtmlType
+  /** 为 true 时在右侧展示子菜单式右箭头（与 `Dropdown` 内嵌套项一致） */
+  chevronRight?: boolean
   onClick?: () => void
 }
 
@@ -32,12 +35,14 @@ export function MenuItem(props: MenuItemProps) {
       role = 'menuitem',
       class: extra,
       htmlType = 'button',
+      chevronRight = false,
       onClick,
     } = props
 
     const densityMod = density === 'compact' ? ' vfui-menu__item--compact' : ''
     const selectedMod = selected ? ' vfui-menu__item--selected' : ''
-    const cls = `vfui-menu__item${densityMod}${selectedMod}${extra ? ` ${extra}` : ''}`
+    const chevronMod = chevronRight ? ' vfui-menu__item--with-chevron' : ''
+    const cls = `vfui-menu__item${densityMod}${selectedMod}${chevronMod}${extra ? ` ${extra}` : ''}`
 
     const ariaSelected = role === 'option' ? selected : undefined
 
@@ -53,7 +58,16 @@ export function MenuItem(props: MenuItemProps) {
           onClick?.()
         }}
       >
-        {children}
+        {chevronRight ? (
+          <>
+            <span class="vfui-menu__item__main">{children}</span>
+            <span class="vfui-menu__item__chevron" aria-hidden="true">
+              <IconArrowRight size={density === 'compact' ? 12 : 14} class="vfui-menu__item__chevron-icon" />
+            </span>
+          </>
+        ) : (
+          children
+        )}
       </button>
     )
   }

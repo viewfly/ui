@@ -1,2 +1,6 @@
 export type { IconProps } from './icon-base'
+export { IconArrowBottom } from './icons/arrow-bottom'
+export { IconArrowLeft } from './icons/arrow-left'
+export { IconArrowRight } from './icons/arrow-right'
+export { IconArrowTop } from './icons/arrow-top'
 export { IconCheck } from './icons/check'

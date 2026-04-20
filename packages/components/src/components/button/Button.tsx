@@ -1,4 +1,7 @@
 import type { JSXNode } from '@viewfly/core'
+import { inject } from '@viewfly/core'
+import { IconArrowBottom } from '@viewfly/ui-icons'
+import { VfuiDropdownTriggerToken } from '../dropdown/trigger-context'
 import './style.scss'
 
 export type ButtonVariant = 'solid' | 'outlined' | 'dashed' | 'filled' | 'text' | 'link'
@@ -32,6 +35,11 @@ export interface ButtonProps {
   icon?: JSXNode
   /** `icon` 相对文案的位置，默认 `start` */
   iconPosition?: ButtonIconPosition
+  /**
+   * 是否在文案末尾展示下拉式下箭头。
+   * 未传且位于 `Dropdown` 触发区内时默认为展示；显式 `false` 可关闭。
+   */
+  chevronDown?: boolean
   /** 块级宽度（`width: 100%`） */
   block?: boolean
   disabled?: boolean
@@ -40,6 +48,8 @@ export interface ButtonProps {
 }
 
 export function Button(props: ButtonProps) {
+  const dropdownTrigger = inject(VfuiDropdownTriggerToken, null)
+
   return () => {
     const {
       type = 'default',
@@ -53,6 +63,7 @@ export function Button(props: ButtonProps) {
       loading = false,
       icon,
       iconPosition = 'start',
+      chevronDown,
       block = false,
       disabled = false,
       onClick,
@@ -67,6 +78,13 @@ export function Button(props: ButtonProps) {
     const showStartIcon = !loading && icon && iconPosition === 'start'
     const showEndIcon = !loading && icon && iconPosition === 'end'
 
+    const showChevronDown =
+      chevronDown === true || (chevronDown !== false && dropdownTrigger != null)
+
+    const chevronSize = size === 'small' ? 12 : size === 'large' ? 16 : 14
+    const chevronExpanded = dropdownTrigger?.expanded() ?? false
+    const chevronCls = `vfui-button__chevron${chevronExpanded ? ' vfui-button__chevron--expanded' : ''}`
+
     const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${blockMod}`
     const inactive = disabled || loading
 
@@ -76,6 +94,11 @@ export function Button(props: ButtonProps) {
         {showStartIcon ? <span class="vfui-button__icon">{icon}</span> : null}
         {children}
         {showEndIcon ? <span class="vfui-button__icon">{icon}</span> : null}
+        {showChevronDown ? (
+          <span class={chevronCls} aria-hidden="true">
+            <IconArrowBottom size={chevronSize} class="vfui-button__chevron-icon" />
+          </span>
+        ) : null}
       </>
     )
 
