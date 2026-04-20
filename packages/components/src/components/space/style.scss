@@ -1,0 +1,52 @@
+// 子项间距：与 Ant Design Space 量级接近（8 / 16 / 24）
+.vfui-space {
+  @apply inline-flex;
+}
+
+.vfui-space--vertical {
+  @apply flex-col;
+}
+
+.vfui-space--wrap {
+  @apply flex-wrap;
+}
+
+.vfui-space--block {
+  @apply flex w-full min-w-0;
+}
+
+.vfui-space--gap-small {
+  @apply gap-2;
+}
+
+.vfui-space--gap-middle {
+  @apply gap-4;
+}
+
+.vfui-space--gap-large {
+  @apply gap-6;
+}
+
+.vfui-space--align-start {
+  @apply items-start;
+}
+
+.vfui-space--align-end {
+  @apply items-end;
+}
+
+.vfui-space--align-center {
+  @apply items-center;
+}
+
+.vfui-space--align-baseline {
+  @apply items-baseline;
+}
+
+.vfui-space--align-stretch {
+  @apply items-stretch;
+}
+
+.vfui-space__split {
+  @apply inline-flex items-center self-stretch text-[var(--vfui-border-default)];
+}

@@ -102,6 +102,15 @@ export function HomePage() {
         </li>
         <li>
           <Link
+            to="/space"
+            class="block rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/60 px-4 py-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors"
+          >
+            <span class="font-medium text-gray-900 dark:text-slate-100">Space</span>
+            <span class="block text-xs vfui-text-muted mt-1">间距布局、换行、分隔、Space.Compact</span>
+          </Link>
+        </li>
+        <li>
+          <Link
             to="/tabs"
             class="block rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/60 px-4 py-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors"
           >

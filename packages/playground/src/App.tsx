@@ -69,6 +69,9 @@ export function App() {
           <Link to="/select" class={linkBase} active={linkActive}>
             Select
           </Link>
+          <Link to="/space" class={linkBase} active={linkActive}>
+            Space
+          </Link>
           <Link to="/tabs" class={linkBase} active={linkActive}>
             Tabs
           </Link>

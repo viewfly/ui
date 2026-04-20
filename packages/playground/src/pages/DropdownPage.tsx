@@ -1,6 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createRef } from '@viewfly/core'
-import { Button, Dropdown, MenuItem, MenuList, SpaceCompact } from '@viewfly/ui-components'
+import { Button, Dropdown, MenuItem, MenuList, Space } from '@viewfly/ui-components'
 import { IconGlyph } from '@viewfly/ui-icons'
 
 const wideMenu = (
@@ -46,14 +46,14 @@ export function DropdownPage() {
       </section>
 
       <section class="mb-10">
-        <h3 class="text-sm font-medium vfui-text-muted mb-3">紧凑组合：主按钮 + 下拉（SpaceCompact）</h3>
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">紧凑组合：主按钮 + 下拉（Space.Compact）</h3>
         <p class="text-sm vfui-text-muted mb-4">
-          用 <code class="text-xs">SpaceCompact</code> 包裹相邻控件，与 Ant Design{' '}
-          <code class="text-xs">Space.Compact</code> 类似：共享竖向边框与分段圆角。主按钮可单独{' '}
+          用 <code class="text-xs">Space.Compact</code> 包裹相邻控件（亦导出同名 <code class="text-xs">SpaceCompact</code>
+          ）：共享竖向边框与分段圆角。主按钮可单独{' '}
           <code class="text-xs">onClick</code>；右侧图标按钮置于 <code class="text-xs">Dropdown</code> 内，菜单用{' '}
           <code class="text-xs">verticalPanelAlign=&quot;right&quot;</code> 贴近「右下角」展开。
         </p>
-        <SpaceCompact>
+        <Space.Compact>
           <Button type="default" onClick={() => console.log('主操作')}>
             操作
           </Button>
@@ -76,7 +76,7 @@ export function DropdownPage() {
               icon={<IconGlyph name="more" size={16} />}
             />
           </Dropdown>
-        </SpaceCompact>
+        </Space.Compact>
       </section>
 
       <section class="mb-10">
