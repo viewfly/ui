@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDerived, createSignal } from '@viewfly/core'
+import { IconGlyph } from '@viewfly/ui-icons'
 import { Dropdown } from '../dropdown/Dropdown'
 import { MenuItem, MenuList, type MenuItemDensity } from '../menu'
 import './style.scss'
@@ -27,6 +28,8 @@ export interface SelectProps {
   size?: SelectSize
   /** 下拉选项行密度，与 `MenuItem` 一致 */
   optionDensity?: MenuItemDensity
+  /** 下拉项使用列紧凑布局（联动 `Dropdown` + `MenuList`） */
+  menuColumnCompact?: boolean
   /** 块级宽度 */
   block?: boolean
   class?: string
@@ -61,7 +64,8 @@ export function Select(props: SelectProps) {
       disabled = false,
       placeholder = '请选择',
       block = false,
-      optionDensity = 'default',
+      optionDensity = 'compact',
+      menuColumnCompact = true,
       size = 'middle',
       class: rootClass,
       getContainer,
@@ -75,11 +79,12 @@ export function Select(props: SelectProps) {
     const blockMod = block ? ' vfui-select--block' : ''
     const disabledMod = disabled ? ' vfui-select--disabled' : ''
     const rootCls = `vfui-select${sizeMod}${blockMod}${disabledMod}${rootClass ? ` ${rootClass}` : ''}`
+    const chevronSize = size === 'small' ? 12 : size === 'large' ? 16 : 14
 
     const open = listOpen()
 
     const panel = (
-      <MenuList role="listbox" id={listboxId}>
+      <MenuList role="listbox" id={listboxId} columnCompact={menuColumnCompact}>
         {options.map((opt) => {
           const isSelected = opt.value === current
           const optDisabled = opt.disabled ?? false
@@ -111,6 +116,7 @@ export function Select(props: SelectProps) {
           onOpenChange={onOpenChange}
           getContainer={getContainer}
           verticalPanelAlign="left"
+          menuColumnCompact={menuColumnCompact}
           dropdown={panel}
         >
           <div
@@ -129,15 +135,9 @@ export function Select(props: SelectProps) {
             >
               {hasSelection ? active.label : placeholder}
             </span>
-            <svg class="vfui-select__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path
-                d="M6 8l4 4 4-4"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+            <span class="vfui-select__chevron" aria-hidden="true">
+              <IconGlyph name="arrow-bottom" size={chevronSize} class="vfui-select__chevron-icon" />
+            </span>
           </div>
         </Dropdown>
       </div>

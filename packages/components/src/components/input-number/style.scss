@@ -19,7 +19,7 @@
 }
 
 .vfui-input-affix--size-small .vfui-input-number__step {
-  @apply min-w-[2rem] px-1.5 text-xs;
+  @apply min-w-[2rem] px-1.5 text-[13px];
 }
 
 .vfui-input-affix--size-large .vfui-input-number__step {
@@ -49,7 +49,7 @@
 }
 
 .vfui-input-affix--size-small .vfui-input-number__handlers--stack {
-  @apply min-w-[1.5rem] text-xs;
+  @apply min-w-[1.5rem] text-[13px];
 }
 
 .vfui-input-affix--size-large .vfui-input-number__handlers--stack {

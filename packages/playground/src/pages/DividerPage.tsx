@@ -1,4 +1,4 @@
-import { Divider } from '@viewfly/ui-components'
+import { Divider, MenuItem, MenuList } from '@viewfly/ui-components'
 
 export function DividerPage() {
   return () => (
@@ -11,6 +11,17 @@ export function DividerPage() {
         <Divider />
         <p class="text-sm text-gray-600 dark:text-slate-400 mt-6 mb-3">虚线 + plain（更紧凑）</p>
         <Divider dashed plain />
+      </section>
+
+      <section class="mb-8">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">间距配置（spacing）</h3>
+        <p class="text-sm text-gray-600 dark:text-slate-400 mb-3">支持 default / compact / none；plain 仍兼容并等同于 compact。</p>
+        <p class="text-xs vfui-text-muted mb-1">default（默认）</p>
+        <Divider />
+        <p class="text-xs vfui-text-muted mb-1 mt-4">compact</p>
+        <Divider spacing="compact" />
+        <p class="text-xs vfui-text-muted mb-1 mt-4">none（无额外上下间距）</p>
+        <Divider spacing="none" />
       </section>
 
       <section class="mb-8">
@@ -32,6 +43,33 @@ export function DividerPage() {
           <span>中间</span>
           <Divider direction="vertical" dashed />
           <span>右侧</span>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">MenuList 组合示例</h3>
+        <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">常规与紧凑布局对比，并演示与 Divider 的分组搭配。</p>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="rounded-md border border-gray-200 dark:border-slate-700 p-2">
+            <p class="text-xs vfui-text-muted mb-2">常规</p>
+            <MenuList role="menu" class="min-w-52">
+              <MenuItem>概览</MenuItem>
+              <MenuItem>成员管理</MenuItem>
+              <Divider spacing="none" />
+              <MenuItem>权限设置</MenuItem>
+              <MenuItem>审计日志</MenuItem>
+            </MenuList>
+          </div>
+          <div class="rounded-md border border-gray-200 dark:border-slate-700 p-2">
+            <p class="text-xs vfui-text-muted mb-2">紧凑</p>
+            <MenuList role="menu" columnCompact class="min-w-52">
+              <MenuItem density="compact">概览</MenuItem>
+              <MenuItem density="compact">成员管理</MenuItem>
+              <Divider spacing="none" />
+              <MenuItem density="compact">权限设置</MenuItem>
+              <MenuItem density="compact">审计日志</MenuItem>
+            </MenuList>
+          </div>
         </div>
       </section>
     </div>

@@ -136,7 +136,7 @@ html.dark .vfui-radio__input:checked + .vfui-radio__box {
 
 // 与 Button 的 size 对齐（middle 为 .vfui-radio__button 默认 px / text）
 .vfui-radio-group--button.vfui-radio-group--size-small .vfui-radio__button {
-  @apply text-xs px-2.5 py-1;
+  @apply text-[13px] px-2.5 py-1;
 }
 
 .vfui-radio-group--button.vfui-radio-group--size-large .vfui-radio__button {

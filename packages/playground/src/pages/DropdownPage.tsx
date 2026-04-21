@@ -1,6 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createRef } from '@viewfly/core'
-import { Button, Dropdown, MenuItem, MenuList, Space } from '@viewfly/ui-components'
+import { Button, Divider, Dropdown, MenuItem, MenuList, Space } from '@viewfly/ui-components'
 import { IconGlyph } from '@viewfly/ui-icons'
 
 const wideMenu = (
@@ -77,6 +77,52 @@ export function DropdownPage() {
             />
           </Dropdown>
         </Space.Compact>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">菜单分组：与 Divider 组合</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          在 <code class="text-xs">MenuList</code> 中穿插 <code class="text-xs">Divider</code> 可快速表达分组层级。
+        </p>
+        <Dropdown
+          trigger="click"
+          dropdown={
+            <MenuList role="menu" class="min-w-56">
+              <MenuItem>新建</MenuItem>
+              <MenuItem>打开最近</MenuItem>
+              <Divider spacing="none" />
+              <MenuItem>重命名</MenuItem>
+              <MenuItem>移动到</MenuItem>
+              <Divider spacing="none" />
+              <MenuItem>删除</MenuItem>
+            </MenuList>
+          }
+        >
+          <Button type="default">分组菜单</Button>
+        </Dropdown>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">选项紧凑布局（menuColumnCompact）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          通过 <code class="text-xs">menuColumnCompact</code> 与 <code class="text-xs">MenuItem density=&quot;compact&quot;</code>{' '}
+          联动，让下拉项在保持可读性的前提下更紧凑。
+        </p>
+        <Dropdown
+          trigger="click"
+          menuColumnCompact
+          dropdown={
+            <MenuList role="menu" class="min-w-52">
+              <MenuItem density="compact">紧凑项 A</MenuItem>
+              <MenuItem density="compact">紧凑项 B</MenuItem>
+              <MenuItem density="compact">紧凑项 C</MenuItem>
+              <Divider spacing="none" />
+              <MenuItem density="compact">更多设置</MenuItem>
+            </MenuList>
+          }
+        >
+          <Button type="default">紧凑菜单</Button>
+        </Dropdown>
       </section>
 
       <section class="mb-10">

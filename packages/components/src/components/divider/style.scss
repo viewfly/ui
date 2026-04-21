@@ -5,11 +5,7 @@
 
 // —— 水平：纯线 ——
 .vfui-divider--horizontal:not(.vfui-divider--with-text) {
-  @apply w-full border-t border-solid my-6;
-}
-
-.vfui-divider--horizontal.vfui-divider--plain:not(.vfui-divider--with-text) {
-  @apply my-4;
+  @apply w-full border-t border-solid;
 }
 
 .vfui-divider--horizontal.vfui-divider--dashed:not(.vfui-divider--with-text) {
@@ -18,7 +14,7 @@
 
 // —— 水平：带文案 ——
 .vfui-divider--with-text {
-  @apply flex items-center gap-4 w-full border-0 my-6 text-sm text-[var(--vfui-fg-muted)];
+  @apply flex items-center gap-4 w-full border-0 text-sm text-[var(--vfui-fg-muted)];
 
   &::before,
   &::after {
@@ -26,10 +22,6 @@
     @apply flex-1 border-0 border-t border-solid;
     border-color: var(--vfui-border-muted);
   }
-}
-
-.vfui-divider--with-text.vfui-divider--plain {
-  @apply my-4;
 }
 
 .vfui-divider--with-text.vfui-divider--dashed {
@@ -65,12 +57,33 @@
 
 // —— 垂直 ——
 .vfui-divider--vertical {
-  @apply inline-block align-middle self-stretch w-0 min-h-[1em] mx-3 my-0 border-0 border-l border-solid;
+  @apply inline-block align-middle self-stretch w-0 min-h-[1em] my-0 border-0 border-l border-solid;
   border-color: var(--vfui-border-muted);
 }
 
-.vfui-divider--vertical.vfui-divider--plain {
-  @apply mx-2;
+/* 间距配置：默认较旧版收紧一档 */
+.vfui-divider--horizontal.vfui-divider--spacing-default {
+  @apply my-4;
+}
+
+.vfui-divider--horizontal.vfui-divider--spacing-compact {
+  @apply my-2;
+}
+
+.vfui-divider--horizontal.vfui-divider--spacing-none {
+  @apply my-0;
+}
+
+.vfui-divider--vertical.vfui-divider--spacing-default {
+  @apply mx-2.5;
+}
+
+.vfui-divider--vertical.vfui-divider--spacing-compact {
+  @apply mx-1.5;
+}
+
+.vfui-divider--vertical.vfui-divider--spacing-none {
+  @apply mx-0;
 }
 
 .vfui-divider--vertical.vfui-divider--dashed {

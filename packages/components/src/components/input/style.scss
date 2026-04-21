@@ -28,7 +28,7 @@
 }
 
 .vfui-input--size-small {
-  @apply text-xs px-2.5 py-1;
+  @apply text-[13px] px-2.5 py-1;
 }
 
 .vfui-input--size-large {
@@ -119,7 +119,7 @@
 }
 
 .vfui-input-affix--size-small {
-  @apply text-xs;
+  @apply text-[13px];
 }
 
 .vfui-input-affix--size-large {
@@ -137,7 +137,7 @@
 }
 
 .vfui-input--in-affix.vfui-input--size-small {
-  @apply px-1.5 py-1 text-xs;
+  @apply px-1.5 py-1 text-[13px];
 }
 
 .vfui-input--in-affix.vfui-input--size-large {

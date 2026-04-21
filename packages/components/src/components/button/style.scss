@@ -276,7 +276,7 @@
 
 // —— size（默认 middle 即根上 px / text，不挂修饰符）——
 .vfui-button--size-small {
-  @apply text-xs px-2.5 py-1;
+  @apply text-[13px] px-2.5 py-1;
 }
 
 .vfui-button--size-large {
@@ -294,7 +294,7 @@
 }
 
 .vfui-button--shape-circle.vfui-button--size-small {
-  @apply min-h-7 min-w-7 h-7 w-7 text-xs;
+  @apply min-h-7 min-w-7 h-7 w-7 text-[13px];
 }
 
 .vfui-button--shape-circle.vfui-button--size-large {

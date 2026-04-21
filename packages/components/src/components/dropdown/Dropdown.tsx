@@ -83,6 +83,8 @@ export interface DropdownProps {
    * @default false
    */
   block?: boolean
+  /** 菜单列紧凑布局（给内层 `MenuList` 提供紧凑列样式） */
+  menuColumnCompact?: boolean
 }
 
 const HOVER_CLOSE_MS = 160
@@ -440,6 +442,7 @@ export function Dropdown(props: DropdownProps) {
     return () => {
       const ex = expanded()
       const openCls = ex ? ' vfui-dropdown__panel--open' : ''
+      const compactMenuCls = props.menuColumnCompact ? ' vfui-dropdown__panel--menu-column-compact' : ''
       const animByPlacement: Record<typeof layout.placement, string> = {
         top: ' vfui-dropdown__panel--anim-top',
         bottom: ' vfui-dropdown__panel--anim-bottom',
@@ -453,7 +456,7 @@ export function Dropdown(props: DropdownProps) {
           {mounted() ? (
             <div
               ref={panelRef}
-              class={`vfui-dropdown__panel${animCls}${openCls}`}
+              class={`vfui-dropdown__panel${animCls}${openCls}${compactMenuCls}`}
               style={{
                 top: `${layout.top}px`,
                 left: `${layout.left}px`,
