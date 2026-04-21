@@ -54,6 +54,9 @@ export function App() {
           <Link to="/tooltip" class={linkBase} active={linkActive}>
             Tooltip
           </Link>
+          <Link to="/popover" class={linkBase} active={linkActive}>
+            Popover
+          </Link>
           <Link to="/slider" class={linkBase} active={linkActive}>
             Slider
           </Link>

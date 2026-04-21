@@ -5,6 +5,7 @@ import { InputPage } from './pages/InputPage'
 import { InputNumberPage } from './pages/InputNumberPage'
 import { DropdownPage } from './pages/DropdownPage'
 import { TooltipPage } from './pages/TooltipPage'
+import { PopoverPage } from './pages/PopoverPage'
 import { SliderPage } from './pages/SliderPage'
 import { SwitchPage } from './pages/SwitchPage'
 import { CheckboxPage } from './pages/CheckboxPage'
@@ -24,6 +25,7 @@ export const routes: RouteConfig[] = [
   { path: 'input-number', component: InputNumberPage },
   { path: 'dropdown', component: DropdownPage },
   { path: 'tooltip', component: TooltipPage },
+  { path: 'popover', component: PopoverPage },
   { path: 'slider', component: SliderPage },
   { path: 'switch', component: SwitchPage },
   { path: 'checkbox', component: CheckboxPage },

@@ -1,0 +1,184 @@
+.vfui-popover {
+  @apply inline-flex max-w-full align-middle;
+}
+
+.vfui-popover__trigger {
+  @apply inline-flex max-w-full cursor-default;
+}
+
+.vfui-popover--disabled .vfui-popover__trigger {
+  @apply cursor-not-allowed opacity-60 pointer-events-none;
+}
+
+@keyframes vfui-popover-enter-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes vfui-popover-enter-top {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes vfui-popover-enter-left {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes vfui-popover-enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.vfui-popover__panel {
+  --vfui-popover-arrow-fill: #ffffff;
+
+  @apply fixed z-[60] min-w-[220px] max-w-[320px] rounded-lg px-4 py-3 shadow-lg;
+  @apply bg-white text-gray-800 border border-gray-200;
+  @apply dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translate3d(0, 0, 0);
+  will-change: opacity, transform;
+}
+
+html.dark .vfui-popover__panel {
+  --vfui-popover-arrow-fill: #1e293b;
+}
+
+.vfui-popover__title {
+  @apply mb-1 text-sm leading-5 font-medium text-gray-900 dark:text-slate-50;
+}
+
+.vfui-popover__content {
+  @apply text-sm leading-5 text-gray-600 dark:text-slate-300;
+}
+
+.vfui-popover__panel::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  pointer-events: none;
+}
+
+.vfui-popover__panel[data-placement^='top']::after {
+  bottom: -7px;
+  border-width: 7px 7px 0;
+  border-color: var(--vfui-popover-arrow-fill) transparent transparent;
+}
+
+.vfui-popover__panel[data-placement='top-start']::after {
+  left: 14px;
+}
+
+.vfui-popover__panel[data-placement='top-center']::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.vfui-popover__panel[data-placement='top-end']::after {
+  right: 14px;
+}
+
+.vfui-popover__panel[data-placement^='bottom']::after {
+  top: -7px;
+  border-width: 0 7px 7px;
+  border-color: transparent transparent var(--vfui-popover-arrow-fill);
+}
+
+.vfui-popover__panel[data-placement='bottom-start']::after {
+  left: 14px;
+}
+
+.vfui-popover__panel[data-placement='bottom-center']::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.vfui-popover__panel[data-placement='bottom-end']::after {
+  right: 14px;
+}
+
+.vfui-popover__panel[data-placement^='left']::after {
+  right: -7px;
+  border-width: 7px 0 7px 7px;
+  border-color: transparent transparent transparent var(--vfui-popover-arrow-fill);
+}
+
+.vfui-popover__panel[data-placement='left-start']::after {
+  top: 12px;
+}
+
+.vfui-popover__panel[data-placement='left-center']::after {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.vfui-popover__panel[data-placement='left-end']::after {
+  bottom: 12px;
+}
+
+.vfui-popover__panel[data-placement^='right']::after {
+  left: -7px;
+  border-width: 7px 7px 7px 0;
+  border-color: transparent var(--vfui-popover-arrow-fill) transparent transparent;
+}
+
+.vfui-popover__panel[data-placement='right-start']::after {
+  top: 12px;
+}
+
+.vfui-popover__panel[data-placement='right-center']::after {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.vfui-popover__panel[data-placement='right-end']::after {
+  bottom: 12px;
+}
+
+.vfui-popover__panel--open.vfui-popover__panel--anim-bottom {
+  animation: vfui-popover-enter-bottom 0.16s ease-out forwards;
+}
+
+.vfui-popover__panel--open.vfui-popover__panel--anim-top {
+  animation: vfui-popover-enter-top 0.16s ease-out forwards;
+}
+
+.vfui-popover__panel--open.vfui-popover__panel--anim-left {
+  animation: vfui-popover-enter-left 0.16s ease-out forwards;
+}
+
+.vfui-popover__panel--open.vfui-popover__panel--anim-right {
+  animation: vfui-popover-enter-right 0.16s ease-out forwards;
+}
