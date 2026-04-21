@@ -56,6 +56,25 @@ export function PopoverPage() {
       </section>
 
       <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">无箭头 / 无边框</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          <code class="text-xs">{'showArrow={false}'}</code> 隐藏小三角；<code class="text-xs">{'bordered={false}'}</code>{' '}
+          去掉面板描边（仍保留阴影与圆角）。
+        </p>
+        <Space size={16}>
+          <Popover showArrow={false} title="无箭头" content={basicContent}>
+            <Button type="default">无箭头</Button>
+          </Popover>
+          <Popover bordered={false} title="无边框" content={basicContent}>
+            <Button type="default">无边框</Button>
+          </Popover>
+          <Popover showArrow={false} bordered={false} content="无箭头且无边框，适合贴卡片或极简浮层。">
+            <Button type="default">两者皆无</Button>
+          </Popover>
+        </Space>
+      </section>
+
+      <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">纯内容 / 标题 + 内容</h3>
         <Space size={16}>
           <Popover content="仅内容模式，适合简短说明。">

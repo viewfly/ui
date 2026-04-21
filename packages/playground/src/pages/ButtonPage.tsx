@@ -1,8 +1,10 @@
-import { Fragment } from '@viewfly/core'
-import { Button } from '@viewfly/ui-components'
+import { Fragment, createSignal } from '@viewfly/core'
+import { Button, Dropdown, MenuItem, MenuList } from '@viewfly/ui-components'
 import { IconCheck } from '@viewfly/ui-icons'
 
 export function ButtonPage() {
+  const toggleHighlight = createSignal(true)
+
   return () => (
     <div>
       <h2 class="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-6">Button</h2>
@@ -50,6 +52,30 @@ export function ButtonPage() {
           </Button>
           <Button type="primary" variant="link" href="https://example.com">
             link（a · primary 色）
+          </Button>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">高亮（highlighted）</h3>
+        <p class="text-sm vfui-text-muted mb-3">
+          仅 <span class="font-mono text-xs">variant=&quot;text&quot;</span> 且默认语义色（<span class="font-mono text-xs">type</span> 为 default
+          或未指定）时生效，文案变为主色；其它变体传入会被忽略。禁用时、<span class="font-mono text-xs">loading</span> 时不会加高亮类。
+        </p>
+        <div class="flex flex-wrap gap-2 items-center mb-3">
+          <Button variant="text" highlighted>
+            已筛选
+          </Button>
+          <Button variant="text">未高亮</Button>
+        </div>
+        <div class="flex flex-wrap gap-2 items-center">
+          <Button
+            variant="text"
+            highlighted={toggleHighlight()}
+            aria-pressed={toggleHighlight() ? true : undefined}
+            onClick={() => toggleHighlight.set(!toggleHighlight())}
+          >
+            点击切换（模拟条件为真）
           </Button>
         </div>
       </section>
@@ -116,6 +142,33 @@ export function ButtonPage() {
           <Button type="primary" icon={<IconCheck size={14} />} iconPosition="end">
             右侧图标
           </Button>
+        </div>
+        <div class="mb-2 text-sm vfui-text-muted">下拉触发：默认文案与箭头有间距；`chevronGapless` 为真时无间距</div>
+        <div class="flex flex-wrap gap-4 items-center mb-3">
+          <Dropdown
+            trigger="click"
+            dropdown={
+              <MenuList role="menu">
+                <MenuItem>项 A</MenuItem>
+                <MenuItem>项 B</MenuItem>
+              </MenuList>
+            }
+          >
+            <Button type="primary">默认间距</Button>
+          </Dropdown>
+          <Dropdown
+            trigger="click"
+            dropdown={
+              <MenuList role="menu">
+                <MenuItem>项 A</MenuItem>
+                <MenuItem>项 B</MenuItem>
+              </MenuList>
+            }
+          >
+            <Button type="primary" chevronGapless>
+              无间距
+            </Button>
+          </Dropdown>
         </div>
         <div class="max-w-xs flex flex-col gap-2">
           <Button type="primary" block>

@@ -62,16 +62,32 @@
   --vfui-popover-arrow-fill: #ffffff;
 
   @apply fixed z-[60] min-w-[220px] max-w-[320px] rounded-lg px-4 py-3 shadow-lg;
-  @apply bg-white text-gray-800 border border-gray-200;
-  @apply dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700;
+  @apply bg-white text-gray-800;
+  @apply dark:bg-slate-800 dark:text-slate-100;
   box-sizing: border-box;
   opacity: 0;
   transform: translate3d(0, 0, 0);
   will-change: opacity, transform;
 }
 
+/* 与 `.vfui-dropdown__panel` 描边一致 */
+.vfui-popover__panel:not(.vfui-popover__panel--borderless) {
+  border: 1px solid #d1d5db;
+  html.dark & {
+    border-color: #64748b;
+  }
+}
+
+.vfui-popover__panel--borderless {
+  @apply border-0;
+}
+
 html.dark .vfui-popover__panel {
   --vfui-popover-arrow-fill: #1e293b;
+}
+
+.vfui-popover__panel--no-arrow::after {
+  display: none;
 }
 
 .vfui-popover__title {

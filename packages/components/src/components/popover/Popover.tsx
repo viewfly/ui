@@ -33,6 +33,10 @@ export interface PopoverProps {
   onOpenChange?: (open: boolean) => void
   getContainer?: () => HTMLElement
   disabled?: boolean
+  /** 是否显示指向触发器的小三角，默认 `true` */
+  showArrow?: boolean
+  /** 是否显示面板描边，默认 `true` */
+  bordered?: boolean
 }
 
 const VIEWPORT_EDGE = 8
@@ -392,6 +396,10 @@ export function Popover(props: PopoverProps) {
     const v = visible()
     const openCls = v ? ' vfui-popover__panel--open' : ''
     const withTitleCls = props.title != null ? ' vfui-popover__panel--with-title' : ''
+    const showArrow = props.showArrow ?? true
+    const bordered = props.bordered ?? true
+    const noArrowCls = showArrow ? '' : ' vfui-popover__panel--no-arrow'
+    const borderCls = bordered ? '' : ' vfui-popover__panel--borderless'
     const animBySide: Record<typeof layout.animSide, string> = {
       top: ' vfui-popover__panel--anim-top',
       bottom: ' vfui-popover__panel--anim-bottom',
@@ -437,7 +445,7 @@ export function Popover(props: PopoverProps) {
             <div
               ref={panelRef}
               data-placement={layout.resolvedPlacement}
-              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}`}
+              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}`}
               style={{
                 top: `${layout.top}px`,
                 left: `${layout.left}px`,

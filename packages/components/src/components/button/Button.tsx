@@ -29,6 +29,11 @@ export interface ButtonProps {
   target?: string
   /** 显式 `rel`；未传且 `target="_blank"` 时默认 `noopener noreferrer` */
   rel?: string
+  /**
+   * 高亮：仅在 `variant="text"` 且 `type="default"`（属性可省略）时生效，文案改为主色，
+   * 适合「查询/筛选等条件为真」时的强调。其它变体传入时忽略。禁用时无效果。
+   */
+  highlighted?: boolean
   /** 展示加载中状态；为真时会禁用按钮并显示转圈 */
   loading?: boolean
   /** 左侧或右侧图标（`loading` 为真时不展示，由转圈替代起始位） */
@@ -40,6 +45,11 @@ export interface ButtonProps {
    * 未传且位于 `Dropdown` 触发区内时默认为展示；显式 `false` 可关闭。
    */
   chevronDown?: boolean
+  /**
+   * 在展示下箭头（`chevronDown` 为真或处于 `Dropdown` 触发区）时，使文案与箭头之间无额外空隙；
+   * `iconPosition="end"` 的图标与箭头同组，三者之间也无空隙。默认 `false`，沿用根节点 `gap`。
+   */
+  chevronGapless?: boolean
   /** 块级宽度（`width: 100%`） */
   block?: boolean
   /** 追加到根节点 `class` */
@@ -62,10 +72,12 @@ export function Button(props: ButtonProps) {
       href,
       target,
       rel,
+      highlighted = false,
       loading = false,
       icon,
       iconPosition = 'start',
       chevronDown,
+      chevronGapless = false,
       block = false,
       class: rootClass,
       disabled = false,
@@ -76,6 +88,9 @@ export function Button(props: ButtonProps) {
     const sizeMod = size === 'middle' ? '' : ` vfui-button--size-${size}`
     const shapeMod = shape === 'default' ? '' : ` vfui-button--shape-${shape}`
     const loadingMod = loading ? ' vfui-button--loading' : ''
+    const inactive = disabled || loading
+    const highlightedMod =
+      highlighted && !inactive && variant === 'text' && type === 'default' ? ' vfui-button--highlighted' : ''
     const blockMod = block ? ' vfui-button--block' : ''
 
     const showStartIcon = !loading && icon && iconPosition === 'start'
@@ -87,20 +102,33 @@ export function Button(props: ButtonProps) {
     const chevronSize = size === 'small' ? 12 : size === 'large' ? 16 : 14
 
     const extraCls = rootClass ? ` ${rootClass}` : ''
-    const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${blockMod}${extraCls}`
-    const inactive = disabled || loading
+    const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${highlightedMod}${blockMod}${extraCls}`
 
-    const body = (
+    const chevronEl = showChevronDown ? (
+      <span class="vfui-button__chevron" aria-hidden="true">
+        <IconGlyph name="arrow-bottom" size={chevronSize} class="vfui-button__chevron-icon" />
+      </span>
+    ) : null
+
+    const useChevronTrail = showChevronDown && chevronGapless
+
+    const body = useChevronTrail ? (
+      <>
+        {loading ? <span class="vfui-button__spinner" aria-hidden="true" /> : null}
+        {showStartIcon ? <span class="vfui-button__icon">{icon}</span> : null}
+        <span class="vfui-button__trail">
+          {children}
+          {showEndIcon ? <span class="vfui-button__icon">{icon}</span> : null}
+          {chevronEl}
+        </span>
+      </>
+    ) : (
       <>
         {loading ? <span class="vfui-button__spinner" aria-hidden="true" /> : null}
         {showStartIcon ? <span class="vfui-button__icon">{icon}</span> : null}
         {children}
         {showEndIcon ? <span class="vfui-button__icon">{icon}</span> : null}
-        {showChevronDown ? (
-          <span class="vfui-button__chevron" aria-hidden="true">
-            <IconGlyph name="arrow-bottom" size={chevronSize} class="vfui-button__chevron-icon" />
-          </span>
-        ) : null}
+        {chevronEl}
       </>
     )
 
