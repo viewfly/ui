@@ -437,21 +437,45 @@ export function Dropdown(props: DropdownProps) {
     return () => document.removeEventListener('mousedown', onDocMouseDown, true)
   })
 
-  function DropdownPortal() {
+  return () => {
+    const triggerMode = props.trigger ?? 'click'
+    const disabled = props.disabled ?? false
+    const disabledClass = disabled ? ' vfui-dropdown--disabled' : ''
+    const blockClass = props.block ? ' vfui-dropdown--block' : ''
     const portalHost = props.getContainer?.() ?? defaultContainer()
-    return () => {
-      const ex = expanded()
-      const openCls = ex ? ' vfui-dropdown__panel--open' : ''
-      const compactMenuCls = props.menuColumnCompact ? ' vfui-dropdown__panel--menu-column-compact' : ''
-      const animByPlacement: Record<typeof layout.placement, string> = {
-        top: ' vfui-dropdown__panel--anim-top',
-        bottom: ' vfui-dropdown__panel--anim-bottom',
-        left: ' vfui-dropdown__panel--anim-left',
-        right: ' vfui-dropdown__panel--anim-right',
-      }
-      const animCls = animByPlacement[layout.placement]
+    const ex = expanded()
+    const openCls = ex ? ' vfui-dropdown__panel--open' : ''
+    const compactMenuCls = props.menuColumnCompact ? ' vfui-dropdown__panel--menu-column-compact' : ''
+    const animByPlacement: Record<typeof layout.placement, string> = {
+      top: ' vfui-dropdown__panel--anim-top',
+      bottom: ' vfui-dropdown__panel--anim-bottom',
+      left: ' vfui-dropdown__panel--anim-left',
+      right: ' vfui-dropdown__panel--anim-right',
+    }
+    const animCls = animByPlacement[layout.placement]
 
-      return (
+    return (
+      <div class={`vfui-dropdown${disabledClass}${blockClass}`}>
+        <VfuiDropdownTriggerProvider useValue={{ expanded }}>
+          <div
+            class="vfui-dropdown__trigger"
+            ref={triggerRef}
+            onClick={() => {
+              if (triggerMode !== 'click' || disabled) return
+              toggleClick()
+            }}
+            onMouseEnter={() => {
+              if (triggerMode !== 'hover' || disabled) return
+              openPanel()
+            }}
+            onMouseLeave={() => {
+              if (triggerMode !== 'hover' || disabled) return
+              scheduleHoverClose()
+            }}
+          >
+            {props.children}
+          </div>
+        </VfuiDropdownTriggerProvider>
         <Portal host={portalHost}>
           {mounted() ? (
             <div
@@ -477,39 +501,6 @@ export function Dropdown(props: DropdownProps) {
             </div>
           ) : null}
         </Portal>
-      )
-    }
-  }
-
-  return () => {
-    const triggerMode = props.trigger ?? 'click'
-    const disabled = props.disabled ?? false
-    const disabledClass = disabled ? ' vfui-dropdown--disabled' : ''
-    const blockClass = props.block ? ' vfui-dropdown--block' : ''
-
-    return (
-      <div class={`vfui-dropdown${disabledClass}${blockClass}`}>
-        <VfuiDropdownTriggerProvider useValue={{ expanded }}>
-          <div
-            class="vfui-dropdown__trigger"
-            ref={triggerRef}
-            onClick={() => {
-              if (triggerMode !== 'click' || disabled) return
-              toggleClick()
-            }}
-            onMouseEnter={() => {
-              if (triggerMode !== 'hover' || disabled) return
-              openPanel()
-            }}
-            onMouseLeave={() => {
-              if (triggerMode !== 'hover' || disabled) return
-              scheduleHoverClose()
-            }}
-          >
-            {props.children}
-          </div>
-        </VfuiDropdownTriggerProvider>
-        <DropdownPortal />
       </div>
     )
   }

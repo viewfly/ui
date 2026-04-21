@@ -384,59 +384,21 @@ export function Popover(props: PopoverProps) {
     return () => document.removeEventListener('mousedown', onDocMouseDown, true)
   })
 
-  function PopoverPortal() {
-    const portalHost = props.getContainer?.() ?? defaultContainer()
-    return () => {
-      const v = visible()
-      const openCls = v ? ' vfui-popover__panel--open' : ''
-      const withTitleCls = props.title != null ? ' vfui-popover__panel--with-title' : ''
-      const animBySide: Record<typeof layout.animSide, string> = {
-        top: ' vfui-popover__panel--anim-top',
-        bottom: ' vfui-popover__panel--anim-bottom',
-        left: ' vfui-popover__panel--anim-left',
-        right: ' vfui-popover__panel--anim-right',
-      }
-      const animCls = animBySide[layout.animSide]
-
-      return (
-        <Portal host={portalHost}>
-          {mounted() ? (
-            <div
-              ref={panelRef}
-              data-placement={layout.resolvedPlacement}
-              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}`}
-              style={{
-                top: `${layout.top}px`,
-                left: `${layout.left}px`,
-              }}
-              role="dialog"
-              aria-modal="false"
-              onMouseEnter={() => {
-                if (props.disabled) return
-                if (props.open !== undefined) return
-                if ((props.trigger ?? 'click') !== 'hover') return
-                clearClose()
-              }}
-              onMouseLeave={() => {
-                if (props.disabled) return
-                if (props.open !== undefined) return
-                if ((props.trigger ?? 'click') !== 'hover') return
-                scheduleClose()
-              }}
-            >
-              {props.title != null ? <div class="vfui-popover__title">{props.title}</div> : null}
-              <div class="vfui-popover__content">{props.content}</div>
-            </div>
-          ) : null}
-        </Portal>
-      )
-    }
-  }
-
   return () => {
     const triggerMode = props.trigger ?? 'click'
     const disabled = props.disabled ?? false
     const disabledClass = disabled ? ' vfui-popover--disabled' : ''
+    const portalHost = props.getContainer?.() ?? defaultContainer()
+    const v = visible()
+    const openCls = v ? ' vfui-popover__panel--open' : ''
+    const withTitleCls = props.title != null ? ' vfui-popover__panel--with-title' : ''
+    const animBySide: Record<typeof layout.animSide, string> = {
+      top: ' vfui-popover__panel--anim-top',
+      bottom: ' vfui-popover__panel--anim-bottom',
+      left: ' vfui-popover__panel--anim-left',
+      right: ' vfui-popover__panel--anim-right',
+    }
+    const animCls = animBySide[layout.animSide]
 
     const onTriggerEnter = () => {
       if (disabled) return
@@ -470,7 +432,36 @@ export function Popover(props: PopoverProps) {
         >
           {props.children}
         </span>
-        <PopoverPortal />
+        <Portal host={portalHost}>
+          {mounted() ? (
+            <div
+              ref={panelRef}
+              data-placement={layout.resolvedPlacement}
+              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}`}
+              style={{
+                top: `${layout.top}px`,
+                left: `${layout.left}px`,
+              }}
+              role="dialog"
+              aria-modal="false"
+              onMouseEnter={() => {
+                if (props.disabled) return
+                if (props.open !== undefined) return
+                if ((props.trigger ?? 'click') !== 'hover') return
+                clearClose()
+              }}
+              onMouseLeave={() => {
+                if (props.disabled) return
+                if (props.open !== undefined) return
+                if ((props.trigger ?? 'click') !== 'hover') return
+                scheduleClose()
+              }}
+            >
+              {props.title != null ? <div class="vfui-popover__title">{props.title}</div> : null}
+              <div class="vfui-popover__content">{props.content}</div>
+            </div>
+          ) : null}
+        </Portal>
       </span>
     )
   }

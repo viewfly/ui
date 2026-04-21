@@ -374,57 +374,21 @@ export function Tooltip(props: TooltipProps) {
     }
   })
 
-  function TooltipPortal() {
-    const portalHost = props.getContainer?.() ?? defaultContainer()
-    return () => {
-      const v = visible()
-      const openCls = v ? ' vfui-tooltip__panel--open' : ''
-      const animBySide: Record<typeof layout.animSide, string> = {
-        top: ' vfui-tooltip__panel--anim-top',
-        bottom: ' vfui-tooltip__panel--anim-bottom',
-        left: ' vfui-tooltip__panel--anim-left',
-        right: ' vfui-tooltip__panel--anim-right',
-      }
-      const animCls = animBySide[layout.animSide]
-
-      return (
-        <Portal host={portalHost}>
-          {mounted() ? (
-            <div
-              ref={panelRef}
-              id={tooltipId}
-              data-placement={layout.resolvedPlacement}
-              class={`vfui-tooltip__panel${animCls}${openCls}`}
-              style={{
-                top: `${layout.top}px`,
-                left: `${layout.left}px`,
-              }}
-              role="tooltip"
-              onMouseEnter={() => {
-                if (props.disabled) return
-                if (props.open !== undefined) return
-                clearClose()
-              }}
-              onMouseLeave={() => {
-                if (props.disabled) return
-                if (props.open !== undefined) return
-                if ((props.trigger ?? 'hover') !== 'hover') return
-                scheduleClose()
-              }}
-            >
-              {props.content}
-            </div>
-          ) : null}
-        </Portal>
-      )
-    }
-  }
-
   return () => {
     const triggerMode = props.trigger ?? 'hover'
     const disabled = props.disabled ?? false
     const disabledClass = disabled ? ' vfui-tooltip--disabled' : ''
     const describedBy = mounted() && visible() ? tooltipId : undefined
+    const portalHost = props.getContainer?.() ?? defaultContainer()
+    const v = visible()
+    const openCls = v ? ' vfui-tooltip__panel--open' : ''
+    const animBySide: Record<typeof layout.animSide, string> = {
+      top: ' vfui-tooltip__panel--anim-top',
+      bottom: ' vfui-tooltip__panel--anim-bottom',
+      left: ' vfui-tooltip__panel--anim-left',
+      right: ' vfui-tooltip__panel--anim-right',
+    }
+    const animCls = animBySide[layout.animSide]
 
     const onTriggerEnter = () => {
       if (disabled) return
@@ -475,7 +439,34 @@ export function Tooltip(props: TooltipProps) {
         >
           {props.children}
         </span>
-        <TooltipPortal />
+        <Portal host={portalHost}>
+          {mounted() ? (
+            <div
+              ref={panelRef}
+              id={tooltipId}
+              data-placement={layout.resolvedPlacement}
+              class={`vfui-tooltip__panel${animCls}${openCls}`}
+              style={{
+                top: `${layout.top}px`,
+                left: `${layout.left}px`,
+              }}
+              role="tooltip"
+              onMouseEnter={() => {
+                if (props.disabled) return
+                if (props.open !== undefined) return
+                clearClose()
+              }}
+              onMouseLeave={() => {
+                if (props.disabled) return
+                if (props.open !== undefined) return
+                if ((props.trigger ?? 'hover') !== 'hover') return
+                scheduleClose()
+              }}
+            >
+              {props.content}
+            </div>
+          ) : null}
+        </Portal>
       </span>
     )
   }
