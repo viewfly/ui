@@ -61,7 +61,7 @@
 .vfui-popover__panel {
   --vfui-popover-arrow-fill: #ffffff;
 
-  @apply fixed z-[60] min-w-[220px] max-w-[320px] rounded-lg px-4 py-3 shadow-lg;
+  @apply fixed z-[60] min-w-[220px] rounded-lg px-4 py-3 shadow-lg;
   @apply bg-white text-gray-800;
   @apply dark:bg-slate-800 dark:text-slate-100;
   box-sizing: border-box;
@@ -80,6 +80,10 @@
 
 .vfui-popover__panel--borderless {
   @apply border-0;
+}
+
+.vfui-popover__panel--no-padding {
+  @apply p-0;
 }
 
 html.dark .vfui-popover__panel {

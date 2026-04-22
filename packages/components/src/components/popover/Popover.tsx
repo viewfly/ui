@@ -44,6 +44,8 @@ export interface PopoverProps {
   showArrow?: boolean
   /** 是否显示面板描边，默认 `true` */
   bordered?: boolean
+  /** 是否移除面板内边距，默认 `false` */
+  noPadding?: boolean
   /** 参考盒子（视口坐标系）。传入后按该矩形定位弹层，而不是触发器 DOM */
   referenceBox?: PopoverReferenceBox
 }
@@ -430,8 +432,10 @@ export function Popover(props: PopoverProps) {
     const withTitleCls = props.title != null ? ' vfui-popover__panel--with-title' : ''
     const showArrow = props.showArrow ?? true
     const bordered = props.bordered ?? true
+    const noPadding = props.noPadding ?? false
     const noArrowCls = showArrow ? '' : ' vfui-popover__panel--no-arrow'
     const borderCls = bordered ? '' : ' vfui-popover__panel--borderless'
+    const noPaddingCls = noPadding ? ' vfui-popover__panel--no-padding' : ''
     const animBySide: Record<typeof layout.animSide, string> = {
       top: ' vfui-popover__panel--anim-top',
       bottom: ' vfui-popover__panel--anim-bottom',
@@ -477,7 +481,7 @@ export function Popover(props: PopoverProps) {
             <div
               ref={panelRef}
               data-placement={layout.resolvedPlacement}
-              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}`}
+              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}${noPaddingCls}`}
               style={{
                 top: `${layout.top}px`,
                 left: `${layout.left}px`,

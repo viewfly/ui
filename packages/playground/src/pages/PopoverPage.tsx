@@ -1,4 +1,5 @@
 import { Button, Divider, Popover, Space } from '@viewfly/ui-components'
+import { createSignal, reactive } from '@viewfly/core'
 
 const basicContent = (
   <div>
@@ -8,6 +9,14 @@ const basicContent = (
 )
 
 export function PopoverPage() {
+  const externalOpen = createSignal(false)
+  const externalRefBox = reactive({
+    left: 520,
+    top: 220,
+    width: 1,
+    height: 1,
+  })
+
   return () => (
     <div>
       <h2 class="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-6">Popover</h2>
@@ -72,6 +81,67 @@ export function PopoverPage() {
             <Button type="default">两者皆无</Button>
           </Popover>
         </Space>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">外部受控（open + referenceBox）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          该示例不通过 Popover 内部触发区控制显隐，而是由外部传入 <code class="text-xs">open</code> 与{' '}
+          <code class="text-xs">referenceBox</code> 完全控制。
+        </p>
+        <Space size={12} wrap>
+          <Button type="primary" onClick={() => externalOpen.set(true)}>
+            外部打开
+          </Button>
+          <Button type="default" onClick={() => externalOpen.set(false)}>
+            外部关闭
+          </Button>
+          <Button
+            type="default"
+            onClick={() => {
+              externalRefBox.left -= 30
+            }}
+          >
+            左移锚点
+          </Button>
+          <Button
+            type="default"
+            onClick={() => {
+              externalRefBox.left += 30
+            }}
+          >
+            右移锚点
+          </Button>
+          <Button
+            type="default"
+            onClick={() => {
+              externalRefBox.top -= 20
+            }}
+          >
+            上移锚点
+          </Button>
+          <Button
+            type="default"
+            onClick={() => {
+              externalRefBox.top += 20
+            }}
+          >
+            下移锚点
+          </Button>
+        </Space>
+        <Popover
+          open={externalOpen()}
+          referenceBox={externalRefBox}
+          placement="bottom-center"
+          content={
+            <div>
+              <p class="mb-1">这是一个外部受控 Popover。</p>
+              <p class="text-xs vfui-text-muted">
+                参考盒子：left={externalRefBox.left}，top={externalRefBox.top}
+              </p>
+            </div>
+          }
+        />
       </section>
 
       <section class="mb-10">
