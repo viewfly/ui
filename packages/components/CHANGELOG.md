@@ -1,5 +1,11 @@
 # @viewfly/ui-components
 
+## 0.0.5
+
+### Patch Changes
+
+- Popover 支持传实时计算参考位置计算的回调函数
+
 ## 0.0.4
 
 ### Patch Changes
