@@ -13,6 +13,10 @@ importers:
         version: 2.31.0(@types/node@20.19.39)
 
   packages/components:
+    dependencies:
+      '@tanbo/color':
+        specifier: ^0.1.1
+        version: 0.1.1
     devDependencies:
       '@types/node':
         specifier: ^20.19.0
@@ -955,6 +959,9 @@ packages:
 
   '@rushstack/ts-command-line@5.3.7':
     resolution: {integrity: sha512-HY6jNlxjJPdYKlBvy9Kk3xzt4IH+rYKz5XvcC5XqFY/dhA5BcSBz8qAd+i9qDC+21H7Og6tofBaNJsYpPYKUjw==}
+
+  '@tanbo/color@0.1.1':
+    resolution: {integrity: sha512-at2A3rju+rl7bayn62k6sp05bSrRPKOu/L5HefuF6VNeZtu3670mnggFh1xKa+rsVacAiVYM8f2WTtwBBohPgg==}
 
   '@tanbo/stream@1.2.7':
     resolution: {integrity: sha512-ATKVjpQFmr7x+iCKGOGWFzrtB5ZsNef6UKATWZs1R1eE16pyrBwl2AZrnALi+eQQTxOo5Ol6Rmck2BBBgBAnmA==}
@@ -2706,6 +2713,8 @@ snapshots:
       string-argv: 0.3.2
     transitivePeerDependencies:
       - '@types/node'
+
+  '@tanbo/color@0.1.1': {}
 
   '@tanbo/stream@1.2.7': {}
 

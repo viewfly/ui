@@ -72,6 +72,9 @@ export function App() {
           <Link to="/select" class={linkBase} active={linkActive}>
             Select
           </Link>
+          <Link to="/color-picker" class={linkBase} active={linkActive}>
+            ColorPicker
+          </Link>
           <Link to="/space" class={linkBase} active={linkActive}>
             Space
           </Link>

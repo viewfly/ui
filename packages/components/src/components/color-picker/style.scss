@@ -1,0 +1,313 @@
+// 取色器：色板与调色盘。颜色与焦点态使用全局 vfui 设计 token。
+
+.vfui-color-picker {
+  @apply inline-block text-left text-xs select-none relative;
+  @apply w-[165px] box-content;
+  background: var(--vfui-surface);
+  color: var(--vfui-fg-default);
+
+  // Dropdown 的触发区仍在本组件内，显式与根同字号，避免与 trigger 的 inline-flex 组合下继承异常
+  .vfui-dropdown {
+    @apply text-xs;
+  }
+}
+
+.vfui-color-picker__preset > div:first-child {
+  @apply mb-[5px];
+}
+
+.vfui-color-picker__recent-label {
+  @apply p-0.5;
+  color: var(--vfui-fg-muted);
+}
+
+.vfui-color-picker__row {
+  @apply flex items-center justify-between p-[3px];
+}
+
+// 调色盘、返回等行内小图标
+.vfui-color-picker__icon {
+  @apply w-[1em] align-middle overflow-hidden;
+  fill: currentColor;
+}
+
+.vfui-color-picker__to-palette {
+  @apply flex items-center text-xs border-0 bg-transparent cursor-pointer pr-0 outline-none;
+  color: var(--vfui-fg-default);
+
+  &:hover {
+    color: var(--vfui-color-primary);
+  }
+}
+
+// 浮层挂 body，不继承主区；与预设区同 12px，避免沿用 .vfui-dropdown__panel 的 text-sm
+.vfui-color-picker__menu {
+  @apply w-[165px] min-w-[165px] max-w-[165px] shrink-0;
+  @apply text-xs box-border leading-tight;
+  background: transparent;
+  color: var(--vfui-fg-default);
+
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+.vfui-color-picker__viewer {
+  @apply h-40;
+}
+
+.vfui-color-picker__viewer-left {
+  @apply float-left;
+}
+
+.vfui-color-picker__palette {
+  @apply h-[130px] w-[130px] relative cursor-pointer;
+
+  background: var(--vfui-surface);
+
+  &::before {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(to bottom, rgb(0 0 0 / 0), rgb(0 0 0 / 1));
+  }
+
+  &--empty {
+    @apply border border-[var(--vfui-border-default)];
+
+    // 棋盘格（空状态）
+    background-color: var(--vfui-surface);
+    background-image:
+      linear-gradient(45deg, var(--vfui-border-default) 25%, transparent 25%, transparent 75%, var(--vfui-border-default) 75%, var(--vfui-border-default)),
+      linear-gradient(45deg, var(--vfui-border-default) 26%, transparent 26%, transparent 74%, var(--vfui-border-default) 74%, var(--vfui-border-default));
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+
+    &::before {
+      @apply hidden;
+    }
+  }
+}
+
+.vfui-color-picker__palette-point {
+  @apply absolute w-4 h-4 rounded-full border-0 pointer-events-none;
+  background: #fff;
+  box-shadow: 1px 1px 3px rgb(0 0 0 / 0.2);
+}
+
+.vfui-color-picker__alpha {
+  @apply relative h-2.5 mt-2.5;
+  background: var(--vfui-surface);
+  // 白底透明格
+  background-image:
+    linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
+    linear-gradient(45deg, #fff 26%, transparent 26%, transparent 74%, #fff 74%, #fff);
+  background-size: 10px 10px;
+  background-position: -5px -5px, 0 0;
+  background-color: var(--vfui-border-default);
+}
+
+.vfui-color-picker__alpha-bar {
+  @apply h-full relative z-[1] cursor-pointer;
+  border-radius: inherit;
+}
+
+.vfui-color-picker__alpha-pointer {
+  @apply absolute left-0 right-0 top-0 h-full;
+
+  &::before,
+  &::after {
+    @apply absolute;
+    content: '';
+    @apply w-0 h-0;
+    width: 0;
+    height: 0;
+    border-width: 7px 4px;
+    border-style: solid;
+    left: -4px;
+  }
+
+  &::before {
+    border-color: var(--vfui-fg-default) transparent transparent transparent;
+    top: -6px;
+  }
+
+  &::after {
+    border-color: transparent transparent var(--vfui-fg-default) transparent;
+    top: 2px;
+  }
+}
+
+.vfui-color-picker__viewer-right {
+  @apply float-left ml-2.5 w-5;
+}
+
+.vfui-color-picker__tools {
+  @apply mb-2.5;
+}
+
+.vfui-color-picker__alpha-label {
+  @apply text-center leading-none w-[34px] -ml-[7px] text-[13px];
+  font-family: ui-monospace, 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
+  color: var(--vfui-fg-default);
+}
+
+.vfui-color-picker__value-preview {
+  @apply w-5 h-5 mb-2.5;
+  background: var(--vfui-surface);
+  background-image:
+    linear-gradient(45deg, var(--vfui-border-default) 25%, transparent 25%, transparent 75%, var(--vfui-border-default) 75%, var(--vfui-border-default)),
+    linear-gradient(45deg, var(--vfui-border-default) 26%, transparent 26%, transparent 74%, var(--vfui-border-default) 74%, var(--vfui-border-default));
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
+}
+
+.vfui-color-picker__value-swatch {
+  @apply w-5 h-5;
+}
+
+.vfui-color-picker__hue {
+  @apply relative cursor-pointer;
+  height: 100px;
+  width: 20px;
+  background: linear-gradient(
+    #f00,
+    #f90,
+    #ff0 16.6%,
+    #0f0 33.3%,
+    #0ff,
+    #00f 66.6%,
+    #f09,
+    #f00
+  );
+}
+
+.vfui-color-picker__hue-pointer {
+  @apply absolute top-0 left-0 bottom-0 pointer-events-none;
+  height: 0;
+
+  &::before,
+  &::after {
+    content: '';
+    @apply absolute top-0 w-0 h-0;
+    border-width: 4px 7px;
+    border-style: solid;
+  }
+
+  &::before {
+    border-color: transparent transparent transparent var(--vfui-fg-default);
+    right: -8px;
+  }
+
+  &::after {
+    border-color: transparent var(--vfui-fg-default) transparent transparent;
+    left: 12px;
+  }
+}
+
+.vfui-color-picker__inputs {
+  @apply leading-[22px];
+  color: var(--vfui-fg-muted);
+
+  .vfui-color-picker__hsl,
+  .vfui-color-picker__rgb,
+  .vfui-color-picker__hex {
+    @apply flex py-1;
+  }
+
+  .vfui-color-picker__input-cell {
+    @apply flex flex-1 min-w-0 items-center;
+    @apply gap-[5px] px-1;
+  }
+
+  .vfui-color-picker__input-infix {
+    @apply shrink-0;
+  }
+
+  // 与旧版 22px 行高、13px 等宽字一致，并覆盖 .vfui-input 默认 min-width
+  .vfui-color-picker__field.vfui-input {
+    @apply box-border w-full min-w-0;
+    @apply h-[22px] min-h-[22px] max-h-[22px];
+    @apply py-[3px] px-[5px] text-[13px] leading-4;
+    @apply text-center;
+    @apply [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
+    z-index: 0;
+    font-family: ui-monospace, 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
+
+    &:focus-visible {
+      @apply z-[1];
+    }
+  }
+}
+
+.vfui-color-picker__swatches {
+  @apply flex flex-wrap justify-center content-center;
+  gap: 3px;
+
+  &--row-main {
+    @apply h-[50px];
+  }
+
+  &--row-colors {
+    @apply h-[118px];
+  }
+
+  &--row-recent {
+    @apply h-[25px];
+  }
+
+  > div {
+    @apply shrink-0 cursor-pointer;
+    @apply w-5 h-5 rounded;
+    @apply border-box transition-transform duration-100;
+    box-shadow:
+      0 1px 2px rgb(15 23 42 / 0.08),
+      0 2px 4px rgb(15 23 42 / 0.06);
+    // 棋盘格底
+    background: var(--vfui-surface);
+    background-image:
+      linear-gradient(45deg, var(--vfui-border-default) 25%, transparent 25%, transparent 75%, var(--vfui-border-default) 75%, var(--vfui-border-default)),
+      linear-gradient(45deg, var(--vfui-border-default) 26%, transparent 26%, transparent 74%, var(--vfui-border-default) 74%, var(--vfui-border-default));
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+
+    &.vfui-color-picker__swatch--current {
+      @apply border-[rgb(0_0_0_/_0.3)] shadow-none;
+    }
+
+    &[data-color=''] {
+      @apply relative overflow-hidden;
+
+      // 用透明覆盖棋盘后显示「无」斜线
+      background: var(--vfui-surface);
+      background-image: none;
+
+      &::after {
+        content: '';
+        @apply absolute left-0 right-0 top-1/2;
+        @apply h-px;
+        background: var(--vfui-color-danger);
+        transform: rotateZ(-45deg) scaleX(1.5);
+      }
+    }
+
+    &:hover {
+      @apply scale-110;
+    }
+  }
+}
+
+html.dark .vfui-color-picker__swatches > div:not(.vfui-color-picker__swatch--current) {
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.28),
+    0 2px 5px rgb(0 0 0 / 0.32);
+}
+
+.vfui-color-picker__actions {
+  @apply pt-[5px];
+
+  .vfui-color-picker__submit-button.vfui-button {
+    @apply h-[26px] min-h-[26px] max-h-[26px] py-0;
+  }
+}

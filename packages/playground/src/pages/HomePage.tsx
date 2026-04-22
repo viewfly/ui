@@ -102,6 +102,15 @@ export function HomePage() {
         </li>
         <li>
           <Link
+            to="/color-picker"
+            class="block rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/60 px-4 py-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors"
+          >
+            <span class="font-medium text-gray-900 dark:text-slate-100">ColorPicker</span>
+            <span class="block text-xs vfui-text-muted mt-1">预设色、调色盘、HSL / RGB / HEX 与透明度</span>
+          </Link>
+        </li>
+        <li>
+          <Link
             to="/space"
             class="block rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/60 px-4 py-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors"
           >

@@ -420,7 +420,6 @@ export function Dropdown(props: DropdownProps) {
 
   createEffect([mounted, expanded], ([m, ex]) => {
     if (!m || !ex) return
-    if ((props.trigger ?? 'click') === 'hover') return
 
     const onDocMouseDown = (ev: MouseEvent) => {
       const n = ev.target as Node | null

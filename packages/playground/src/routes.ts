@@ -11,6 +11,7 @@ import { SwitchPage } from './pages/SwitchPage'
 import { CheckboxPage } from './pages/CheckboxPage'
 import { RadioPage } from './pages/RadioPage'
 import { SelectPage } from './pages/SelectPage'
+import { ColorPickerPage } from './pages/ColorPickerPage'
 import { SpacePage } from './pages/SpacePage'
 import { TabsPage } from './pages/TabsPage'
 import { IconsPage } from './pages/IconsPage'
@@ -31,6 +32,7 @@ export const routes: RouteConfig[] = [
   { path: 'checkbox', component: CheckboxPage },
   { path: 'radio', component: RadioPage },
   { path: 'select', component: SelectPage },
+  { path: 'color-picker', component: ColorPickerPage },
   { path: 'space', component: SpacePage },
   { path: 'tabs', component: TabsPage },
   { path: 'icons', component: IconsPage },
