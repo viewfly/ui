@@ -1,5 +1,11 @@
 # @viewfly/ui-components
 
+## 0.0.4
+
+### Patch Changes
+
+- 优化 Popover UI
+
 ## 0.0.3
 
 ### Patch Changes
