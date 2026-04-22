@@ -8,6 +8,7 @@ import {
   Portal,
   reactive,
 } from '@viewfly/core'
+import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
 import {
   VfuiDropdownNestProvider,
   VfuiDropdownNestToken,
@@ -117,12 +118,21 @@ function getScrollableAncestors(el: HTMLElement): HTMLElement[] {
   return list
 }
 
+function resolveOwnerPopoverId(triggerEl: HTMLElement | null | undefined): string | null {
+  if (!triggerEl) return null
+  const ownerPanel = triggerEl.closest('[data-vfui-popover-id]') as HTMLElement | null
+  if (ownerPanel) return ownerPanel.dataset.vfuiPopoverId ?? null
+  const ownerDropdown = triggerEl.closest('[data-vfui-popover-owner]') as HTMLElement | null
+  return ownerDropdown?.dataset.vfuiPopoverOwner ?? null
+}
+
 export function Dropdown(props: DropdownProps) {
   const mounted = createSignal(false)
   const expanded = createSignal(false)
   const layout = reactive({
     top: 0,
     left: 0,
+    zIndex: 0,
     minWidth: 0,
     placement: 'bottom' as 'top' | 'bottom' | 'left' | 'right',
   })
@@ -131,6 +141,7 @@ export function Dropdown(props: DropdownProps) {
   /** 子级 Dropdown 的 Portal 面板（不在本节点 DOM 子树内），点击外部关闭时需一并视为「菜单内」 */
   const nestedPanels = new Set<HTMLElement>()
   const parentNest = inject(VfuiDropdownNestToken, null)
+  let ownerPopoverId: string | null = null
 
   let hoverCloseTimer: ReturnType<typeof setTimeout> | undefined
   let openAnimTimer: ReturnType<typeof setTimeout> | undefined
@@ -323,6 +334,8 @@ export function Dropdown(props: DropdownProps) {
     if (props.disabled) return
     clearHoverClose()
     clearOpenAnimTimer()
+    ownerPopoverId = resolveOwnerPopoverId(triggerRef.current)
+    layout.zIndex = acquireOverlayZIndex()
     mounted.set(true)
     computeLayout()
     queueMicrotask(() => {
@@ -355,6 +368,13 @@ export function Dropdown(props: DropdownProps) {
 
   const panelRef = createDynamicRef<HTMLElement>((node) => {
     panelElement = node
+    if (node) {
+      if (ownerPopoverId) {
+        node.dataset.vfuiPopoverOwner = ownerPopoverId
+      } else {
+        delete node.dataset.vfuiPopoverOwner
+      }
+    }
     let unregisterFromParent: (() => void) | undefined
     if (node) {
       unregisterFromParent = parentNest?.registerNestedPanel(node)
@@ -483,6 +503,7 @@ export function Dropdown(props: DropdownProps) {
               style={{
                 top: `${layout.top}px`,
                 left: `${layout.left}px`,
+                zIndex: `${layout.zIndex}`,
                 minWidth: `${layout.minWidth}px`,
               }}
               role="menu"

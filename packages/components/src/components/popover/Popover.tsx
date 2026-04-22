@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDynamicRef, createEffect, createRef, createSignal, Portal, reactive } from '@viewfly/core'
+import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
 import './style.scss'
 
 export type PopoverPlacement =
@@ -51,6 +52,7 @@ export interface PopoverProps {
 }
 
 const VIEWPORT_EDGE = 8
+let popoverIdSeq = 0
 
 function defaultContainer(): HTMLElement {
   return typeof document !== 'undefined' ? document.body : (null as unknown as HTMLElement)
@@ -206,11 +208,13 @@ export function Popover(props: PopoverProps) {
   const layout = reactive({
     top: 0,
     left: 0,
+    zIndex: 0,
     animSide: 'top' as 'top' | 'bottom' | 'left' | 'right',
     resolvedPlacement: 'top-center' as PopoverPlacement,
   })
   const triggerRef = createRef<HTMLElement>()
   let panelElement: HTMLElement | null = null
+  const popoverId = `vfui-popover-${++popoverIdSeq}`
   let didScheduleDefaultOpen = false
 
   let openTimer: ReturnType<typeof setTimeout> | undefined
@@ -252,6 +256,7 @@ export function Popover(props: PopoverProps) {
     if (props.disabled) return
     clearOpen()
     clearClose()
+    layout.zIndex = acquireOverlayZIndex()
     mounted.set(true)
     compute()
     queueMicrotask(() => {
@@ -415,6 +420,10 @@ export function Popover(props: PopoverProps) {
       if (!n) return
       if (triggerRef.current?.contains(n)) return
       if (panelElement?.contains(n)) return
+      if (n instanceof Element) {
+        const ownerDropdown = n.closest('[data-vfui-popover-owner]') as HTMLElement | null
+        if (ownerDropdown?.dataset.vfuiPopoverOwner === popoverId) return
+      }
       closeNow()
     }
 
@@ -480,11 +489,13 @@ export function Popover(props: PopoverProps) {
           {mounted() ? (
             <div
               ref={panelRef}
+              data-vfui-popover-id={popoverId}
               data-placement={layout.resolvedPlacement}
               class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}${noPaddingCls}`}
               style={{
                 top: `${layout.top}px`,
                 left: `${layout.left}px`,
+                zIndex: `${layout.zIndex}`,
               }}
               role="dialog"
               aria-modal="false"

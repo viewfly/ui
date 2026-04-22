@@ -1,4 +1,4 @@
-import { Button, Divider, Popover, Space } from '@viewfly/ui-components'
+import { Button, Divider, Dropdown, MenuItem, MenuList, Popover, Space } from '@viewfly/ui-components'
 import { createSignal, reactive } from '@viewfly/core'
 
 const basicContent = (
@@ -8,11 +8,26 @@ const basicContent = (
   </div>
 )
 
+const popoverDropdownMenu = (
+  <MenuList role="menu" class="min-w-40">
+    <MenuItem onClick={() => console.log('popover-dropdown', 'edit')}>编辑</MenuItem>
+    <MenuItem onClick={() => console.log('popover-dropdown', 'copy')}>复制链接</MenuItem>
+    <MenuItem onClick={() => console.log('popover-dropdown', 'archive')}>归档</MenuItem>
+  </MenuList>
+)
+
 export function PopoverPage() {
   const externalOpen = createSignal(false)
   const externalRefBox = reactive({
     left: 520,
     top: 220,
+    width: 1,
+    height: 1,
+  })
+  const externalComboOpen = createSignal(false)
+  const externalComboRefBox = reactive({
+    left: 520,
+    top: 300,
     width: 1,
     height: 1,
   })
@@ -81,6 +96,52 @@ export function PopoverPage() {
             <Button type="default">两者皆无</Button>
           </Popover>
         </Space>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">组合场景：Popover 内嵌 Dropdown</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          点击 Dropdown 菜单时，Popover 不会误关闭。下面同时演示「点击触发 Popover」与「外部受控 Popover」两种场景。
+        </p>
+        <Space size={16} wrap>
+          <Popover
+            title="点击触发 + Dropdown"
+            content={
+              <div class="flex items-center gap-2">
+                <span class="text-sm">更多操作：</span>
+                <Dropdown trigger="click" dropdown={popoverDropdownMenu}>
+                  <Button type="default" size="small">
+                    打开菜单
+                  </Button>
+                </Dropdown>
+              </div>
+            }
+          >
+            <Button type="default">点击触发组合</Button>
+          </Popover>
+          <Button type="primary" onClick={() => externalComboOpen.set(true)}>
+            打开外部受控组合
+          </Button>
+          <Button type="default" onClick={() => externalComboOpen.set(false)}>
+            关闭外部受控组合
+          </Button>
+        </Space>
+        <Popover
+          open={externalComboOpen()}
+          referenceBox={externalComboRefBox}
+          placement="bottom-start"
+          title="外部受控 + Dropdown"
+          content={
+            <div class="flex items-center gap-2">
+              <span class="text-sm">菜单交互：</span>
+              <Dropdown trigger="click" dropdown={popoverDropdownMenu}>
+                <Button type="default" size="small">
+                  受控内菜单
+                </Button>
+              </Dropdown>
+            </div>
+          }
+        />
       </section>
 
       <section class="mb-10">

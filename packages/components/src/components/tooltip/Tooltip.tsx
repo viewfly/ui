@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDynamicRef, createEffect, createRef, createSignal, Portal, reactive } from '@viewfly/core'
+import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
 import './style.scss'
 
 /**
@@ -207,6 +208,7 @@ export function Tooltip(props: TooltipProps) {
   const layout = reactive({
     top: 0,
     left: 0,
+    zIndex: 0,
     animSide: 'top' as 'top' | 'bottom' | 'left' | 'right',
     /** 经翻转解析后的方位，用于定位、箭头与入场方向 */
     resolvedPlacement: 'top-center' as TooltipPlacement,
@@ -255,6 +257,7 @@ export function Tooltip(props: TooltipProps) {
     if (props.disabled) return
     clearOpen()
     clearClose()
+    layout.zIndex = acquireOverlayZIndex()
     mounted.set(true)
     compute()
     queueMicrotask(() => {
@@ -449,6 +452,7 @@ export function Tooltip(props: TooltipProps) {
               style={{
                 top: `${layout.top}px`,
                 left: `${layout.left}px`,
+                zIndex: `${layout.zIndex}`,
               }}
               role="tooltip"
               onMouseEnter={() => {
