@@ -1,5 +1,5 @@
 import { Button, Divider, Dropdown, MenuItem, MenuList, Popover, Space } from '@viewfly/ui-components'
-import { createSignal, reactive } from '@viewfly/core'
+import { createRef, createSignal, reactive } from '@viewfly/core'
 
 const basicContent = (
   <div>
@@ -25,12 +25,8 @@ export function PopoverPage() {
     height: 1,
   })
   const externalComboOpen = createSignal(false)
-  const externalComboRefBox = reactive({
-    left: 520,
-    top: 300,
-    width: 1,
-    height: 1,
-  })
+  const externalAnchorRef = createRef<HTMLElement>()
+  const externalComboAnchorRef = createRef<HTMLElement>()
 
   return () => (
     <div>
@@ -119,7 +115,7 @@ export function PopoverPage() {
           >
             <Button type="default">点击触发组合</Button>
           </Popover>
-          <Button type="primary" onClick={() => externalComboOpen.set(true)}>
+          <Button ref={externalComboAnchorRef} type="primary" onClick={() => externalComboOpen.set(true)}>
             打开外部受控组合
           </Button>
           <Button type="default" onClick={() => externalComboOpen.set(false)}>
@@ -128,7 +124,7 @@ export function PopoverPage() {
         </Space>
         <Popover
           open={externalComboOpen()}
-          referenceBox={externalComboRefBox}
+          getReferenceBox={() => externalComboAnchorRef.current?.getBoundingClientRect() ?? null}
           placement="bottom-start"
           title="外部受控 + Dropdown"
           content={
@@ -145,13 +141,13 @@ export function PopoverPage() {
       </section>
 
       <section class="mb-10">
-        <h3 class="text-sm font-medium vfui-text-muted mb-3">外部受控（open + referenceBox）</h3>
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">外部受控（open + referenceBox / getReferenceBox）</h3>
         <p class="text-sm vfui-text-muted mb-4">
           该示例不通过 Popover 内部触发区控制显隐，而是由外部传入 <code class="text-xs">open</code> 与{' '}
-          <code class="text-xs">referenceBox</code> 完全控制。
+          <code class="text-xs">referenceBox</code> / <code class="text-xs">getReferenceBox</code> 完全控制。
         </p>
         <Space size={12} wrap>
-          <Button type="primary" onClick={() => externalOpen.set(true)}>
+          <Button ref={externalAnchorRef} type="primary" onClick={() => externalOpen.set(true)}>
             外部打开
           </Button>
           <Button type="default" onClick={() => externalOpen.set(false)}>
@@ -192,7 +188,7 @@ export function PopoverPage() {
         </Space>
         <Popover
           open={externalOpen()}
-          referenceBox={externalRefBox}
+          getReferenceBox={() => externalAnchorRef.current?.getBoundingClientRect() ?? externalRefBox}
           placement="bottom-center"
           content={
             <div>

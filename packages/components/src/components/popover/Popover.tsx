@@ -49,6 +49,8 @@ export interface PopoverProps {
   noPadding?: boolean
   /** 参考盒子（视口坐标系）。传入后按该矩形定位弹层，而不是触发器 DOM */
   referenceBox?: PopoverReferenceBox
+  /** 实时获取参考盒子（视口坐标系）；优先级高于 `referenceBox`，用于滚动等场景动态定位 */
+  getReferenceBox?: () => PopoverReferenceBox | null | undefined
 }
 
 const VIEWPORT_EDGE = 8
@@ -195,7 +197,12 @@ function getScrollableAncestors(el: HTMLElement): HTMLElement[] {
 function resolveReferenceRect(
   triggerEl: HTMLElement | null | undefined,
   referenceBox: PopoverReferenceBox | undefined,
+  getReferenceBox: (() => PopoverReferenceBox | null | undefined) | undefined,
 ): DOMRect | null {
+  const dynamicBox = getReferenceBox?.()
+  if (dynamicBox != null) {
+    return new DOMRect(dynamicBox.left, dynamicBox.top, dynamicBox.width, dynamicBox.height)
+  }
   if (referenceBox != null) {
     return new DOMRect(referenceBox.left, referenceBox.top, referenceBox.width, referenceBox.height)
   }
@@ -235,7 +242,7 @@ export function Popover(props: PopoverProps) {
   }
 
   const compute = () => {
-    const r = resolveReferenceRect(triggerRef.current, props.referenceBox)
+    const r = resolveReferenceRect(triggerRef.current, props.referenceBox, props.getReferenceBox)
     if (!r) return
     const gap = props.gap ?? 10
     const preferred = props.placement ?? 'top-center'
@@ -361,9 +368,13 @@ export function Popover(props: PopoverProps) {
     () => {
       void mounted()
       void visible()
-      const box = props.referenceBox
-      if (box == null) return null
-      return `${box.left},${box.top},${box.width},${box.height}`
+      const dynamicBox = props.getReferenceBox?.()
+      if (dynamicBox != null) {
+        return `dynamic:${dynamicBox.left},${dynamicBox.top},${dynamicBox.width},${dynamicBox.height}`
+      }
+      const staticBox = props.referenceBox
+      if (staticBox == null) return null
+      return `static:${staticBox.left},${staticBox.top},${staticBox.width},${staticBox.height}`
     },
     () => {
       if (!mounted() || !visible()) return
