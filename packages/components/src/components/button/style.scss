@@ -292,6 +292,19 @@
   @apply text-base px-5 py-2.5;
 }
 
+// —— 紧凑左右内边距（与 size 垂直体系叠加）——
+.vfui-button--inline-compact {
+  @apply px-2;
+}
+
+.vfui-button--inline-compact.vfui-button--size-small {
+  @apply px-1.5;
+}
+
+.vfui-button--inline-compact.vfui-button--size-large {
+  @apply px-3;
+}
+
 // —— shape ——
 .vfui-button--shape-round {
   @apply rounded-full;

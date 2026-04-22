@@ -122,6 +122,21 @@ export function ButtonPage() {
             htmlType=reset
           </Button>
         </form>
+        <p class="text-sm vfui-text-muted mt-4 mb-2">
+          <code class="text-xs">inlineCompact</code>：在保持 <code class="text-xs">size</code> 垂直高度不变的前提下缩小左右内边距，适合分段控件、下拉内按钮等。
+        </p>
+        <div class="flex flex-wrap gap-2 items-center">
+          <Button type="primary">默认 padding</Button>
+          <Button type="primary" inlineCompact>
+            inlineCompact
+          </Button>
+          <Button type="primary" size="small" inlineCompact>
+            small + inlineCompact
+          </Button>
+          <Button type="default" variant="outlined" inlineCompact icon={<IconCheck size={14} />}>
+            紧凑 + 图标
+          </Button>
+        </div>
       </section>
 
       <section class="mb-8">

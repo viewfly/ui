@@ -52,6 +52,10 @@ export interface ButtonProps {
   chevronGapless?: boolean
   /** 块级宽度（`width: 100%`） */
   block?: boolean
+  /**
+   * 为 true 时缩小左右内边距，适合作为下拉、分段控件里的「紧凑」按钮，与默认纵向高度体系（size）一致。
+   */
+  inlineCompact?: boolean
   /** 追加到根节点 `class` */
   class?: string
   disabled?: boolean
@@ -79,6 +83,7 @@ export function Button(props: ButtonProps) {
       chevronDown,
       chevronGapless = false,
       block = false,
+      inlineCompact = false,
       class: rootClass,
       disabled = false,
       onClick,
@@ -92,6 +97,7 @@ export function Button(props: ButtonProps) {
     const highlightedMod =
       highlighted && !inactive && variant === 'text' && type === 'default' ? ' vfui-button--highlighted' : ''
     const blockMod = block ? ' vfui-button--block' : ''
+    const inlineCompactMod = inlineCompact ? ' vfui-button--inline-compact' : ''
 
     const showStartIcon = !loading && icon && iconPosition === 'start'
     const showEndIcon = !loading && icon && iconPosition === 'end'
@@ -102,7 +108,7 @@ export function Button(props: ButtonProps) {
     const chevronSize = size === 'small' ? 12 : size === 'large' ? 16 : 14
 
     const extraCls = rootClass ? ` ${rootClass}` : ''
-    const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${highlightedMod}${blockMod}${extraCls}`
+    const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${highlightedMod}${blockMod}${inlineCompactMod}${extraCls}`
 
     const chevronEl = showChevronDown ? (
       <span class="vfui-button__chevron" aria-hidden="true">

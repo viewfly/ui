@@ -1,4 +1,5 @@
-import { Divider, MenuItem, MenuList } from '@viewfly/ui-components'
+import { Link } from '@viewfly/router'
+import { Divider } from '@viewfly/ui-components'
 
 export function DividerPage() {
   return () => (
@@ -47,30 +48,15 @@ export function DividerPage() {
       </section>
 
       <section class="mb-8">
-        <h3 class="text-sm font-medium vfui-text-muted mb-3">MenuList 组合示例</h3>
-        <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">常规与紧凑布局对比，并演示与 Divider 的分组搭配。</p>
-        <div class="grid gap-4 md:grid-cols-2">
-          <div class="rounded-md border border-gray-200 dark:border-slate-700 p-2">
-            <p class="text-xs vfui-text-muted mb-2">常规</p>
-            <MenuList role="menu" class="min-w-52">
-              <MenuItem>概览</MenuItem>
-              <MenuItem>成员管理</MenuItem>
-              <Divider spacing="none" />
-              <MenuItem>权限设置</MenuItem>
-              <MenuItem>审计日志</MenuItem>
-            </MenuList>
-          </div>
-          <div class="rounded-md border border-gray-200 dark:border-slate-700 p-2">
-            <p class="text-xs vfui-text-muted mb-2">紧凑</p>
-            <MenuList role="menu" columnCompact class="min-w-52">
-              <MenuItem density="compact">概览</MenuItem>
-              <MenuItem density="compact">成员管理</MenuItem>
-              <Divider spacing="none" />
-              <MenuItem density="compact">权限设置</MenuItem>
-              <MenuItem density="compact">审计日志</MenuItem>
-            </MenuList>
-          </div>
-        </div>
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">与 MenuList 组合</h3>
+        <p class="text-sm text-gray-600 dark:text-slate-400">
+          在{' '}
+          <code class="text-xs">MenuList</code> 中穿插 <code class="text-xs">Divider</code> 做分组、以及 <code class="text-xs">MenuList</code> 各类用法的详细演示见{' '}
+          <Link to="/menu-list" class="text-primary-600 dark:text-primary-400 hover:underline">
+            MenuList
+          </Link>{' '}
+          页面。
+        </p>
       </section>
     </div>
   )

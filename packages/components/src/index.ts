@@ -1,4 +1,6 @@
 import './styles/index.scss'
+/** 保证 Menu 样式进入 `ui-components.css`（barrel 重导出可能绕过 `menu/index` 的副作用） */
+import './components/menu/style.scss'
 
 export * from './components/button'
 export * from './components/space'

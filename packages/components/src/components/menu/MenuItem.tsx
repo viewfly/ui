@@ -9,6 +9,8 @@ export type MenuItemHtmlType = 'button' | 'submit' | 'reset'
 
 export interface MenuItemProps {
   children?: JSXNode
+  /** 左侧图标，与文案同一行；多列菜单时占固定槽宽以便对齐 */
+  icon?: JSXNode
   selected?: boolean
   disabled?: boolean
   /** `compact`：更小的内边距与字号 */
@@ -29,6 +31,7 @@ export function MenuItem(props: MenuItemProps) {
   return () => {
     const {
       children,
+      icon,
       selected = false,
       disabled = false,
       density = 'default',
@@ -39,10 +42,12 @@ export function MenuItem(props: MenuItemProps) {
       onClick,
     } = props
 
+    const hasIcon = icon != null
+    const iconMod = hasIcon ? ' vfui-menu__item--with-icon' : ''
     const densityMod = density === 'compact' ? ' vfui-menu__item--compact' : ''
     const selectedMod = selected ? ' vfui-menu__item--selected' : ''
     const chevronMod = chevronRight ? ' vfui-menu__item--with-chevron' : ''
-    const cls = `vfui-menu__item${densityMod}${selectedMod}${chevronMod}${extra ? ` ${extra}` : ''}`
+    const cls = `vfui-menu__item${iconMod}${densityMod}${selectedMod}${chevronMod}${extra ? ` ${extra}` : ''}`
 
     const ariaSelected = role === 'option' ? selected : undefined
 
@@ -60,10 +65,16 @@ export function MenuItem(props: MenuItemProps) {
       >
         {chevronRight ? (
           <>
+            {hasIcon ? <span class="vfui-menu__item__icon">{icon}</span> : null}
             <span class="vfui-menu__item__main">{children}</span>
             <span class="vfui-menu__item__chevron" aria-hidden="true">
               <IconGlyph name="arrow-right" size={density === 'compact' ? 12 : 14} class="vfui-menu__item__chevron-icon" />
             </span>
+          </>
+        ) : hasIcon ? (
+          <>
+            <span class="vfui-menu__item__icon">{icon}</span>
+            <span class="vfui-menu__item__text">{children}</span>
           </>
         ) : (
           children

@@ -51,6 +51,9 @@ export function App() {
           <Link to="/dropdown" class={linkBase} active={linkActive}>
             Dropdown
           </Link>
+          <Link to="/menu-list" class={linkBase} active={linkActive}>
+            MenuList
+          </Link>
           <Link to="/tooltip" class={linkBase} active={linkActive}>
             Tooltip
           </Link>

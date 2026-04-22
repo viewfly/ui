@@ -4,6 +4,7 @@ import { DividerPage } from './pages/DividerPage'
 import { InputPage } from './pages/InputPage'
 import { InputNumberPage } from './pages/InputNumberPage'
 import { DropdownPage } from './pages/DropdownPage'
+import { MenuListPage } from './pages/MenuListPage'
 import { TooltipPage } from './pages/TooltipPage'
 import { PopoverPage } from './pages/PopoverPage'
 import { SliderPage } from './pages/SliderPage'
@@ -25,6 +26,7 @@ export const routes: RouteConfig[] = [
   { path: 'input', component: InputPage },
   { path: 'input-number', component: InputNumberPage },
   { path: 'dropdown', component: DropdownPage },
+  { path: 'menu-list', component: MenuListPage },
   { path: 'tooltip', component: TooltipPage },
   { path: 'popover', component: PopoverPage },
   { path: 'slider', component: SliderPage },

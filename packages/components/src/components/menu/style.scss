@@ -12,8 +12,24 @@
   color: var(--vfui-fg-default);
 }
 
+.vfui-menu__item--with-icon {
+  @apply gap-2;
+}
+
 .vfui-menu__item--with-chevron {
   @apply justify-between gap-2;
+}
+
+.vfui-menu__item__icon {
+  @apply inline-flex h-[1.125em] w-4 shrink-0 items-center justify-center self-center text-[1.125em] leading-none text-inherit;
+}
+
+.vfui-menu__item--compact .vfui-menu__item__icon {
+  @apply w-3.5;
+}
+
+.vfui-menu__item__text {
+  @apply min-w-0 flex-1 text-left;
 }
 
 .vfui-menu__item__main {

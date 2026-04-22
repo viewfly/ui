@@ -30,6 +30,15 @@ export function HomePage() {
         </li>
         <li>
           <Link
+            to="/menu-list"
+            class="block rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/60 px-4 py-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors"
+          >
+            <span class="font-medium text-gray-900 dark:text-slate-100">MenuList</span>
+            <span class="block text-xs vfui-text-muted mt-1">菜单/列表容器、项密度、与 Divider 组合</span>
+          </Link>
+        </li>
+        <li>
+          <Link
             to="/input"
             class="block rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/60 px-4 py-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors"
           >
