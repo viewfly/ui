@@ -2,12 +2,13 @@ import type { IconProps } from '../icon-base'
 
 export function IconCheck(props: IconProps = {}) {
   return () => {
-    const { size = 16, color = 'currentColor', class: className = '' } = props
+    const { size, color = 'currentColor', class: className = '' } = props
+    const dim = size === undefined ? '1em' : typeof size === 'number' ? size : size
     return (
       <svg
         class={className}
-        width={size}
-        height={size}
+        width={dim}
+        height={dim}
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

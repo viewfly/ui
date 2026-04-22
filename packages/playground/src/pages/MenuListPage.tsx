@@ -56,22 +56,23 @@ export function MenuListPage() {
         <h3 class="text-sm font-medium vfui-text-muted mb-3">左侧 icon</h3>
         <p class="text-sm vfui-text-muted mb-4">
           通过 <code class="text-xs">icon</code> 插入左侧图标槽（固定列宽，便于多行文案对齐）；可与 <code class="text-xs">chevronRight</code> 同用。
+          <code class="text-xs">IconGlyph</code> 未传 <code class="text-xs">size</code> 时随所在文案继承 <code class="text-xs">font-size</code>。
         </p>
         <div class="rounded-md border border-gray-200 dark:border-slate-700 p-3 max-w-sm">
           <MenuList role="menu" class="min-w-56">
-            <MenuItem icon={<IconGlyph name="plus" class="text-gray-500 dark:text-slate-400" size={16} />}>新建</MenuItem>
-            <MenuItem icon={<IconGlyph name="image" class="text-gray-500 dark:text-slate-400" size={16} />}>
+            <MenuItem icon={<IconGlyph name="plus" class="text-gray-500 dark:text-slate-400" />}>新建</MenuItem>
+            <MenuItem icon={<IconGlyph name="image" class="text-gray-500 dark:text-slate-400" />}>
               打开
             </MenuItem>
             <MenuItem
               selected
-              icon={<IconGlyph name="checkmark" class="text-primary-500 dark:text-primary-400" size={16} />}
+              icon={<IconGlyph name="checkmark" class="text-primary-500 dark:text-primary-400" />}
             >
               当前选中
             </MenuItem>
             <MenuItem
               chevronRight
-              icon={<IconGlyph name="more" class="text-gray-500 dark:text-slate-400" size={16} />}
+              icon={<IconGlyph name="more" class="text-gray-500 dark:text-slate-400" />}
             >
               更多设置
             </MenuItem>

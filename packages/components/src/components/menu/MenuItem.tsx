@@ -69,7 +69,7 @@ export function MenuItem(props: MenuItemProps) {
             {hasIcon ? <span class="vfui-menu__item__icon">{icon}</span> : null}
             <span class="vfui-menu__item__main">{children}</span>
             <span class="vfui-menu__item__chevron" aria-hidden="true">
-              <IconGlyph name="arrow-right" size={density === 'compact' ? 12 : 14} class="vfui-menu__item__chevron-icon" />
+              <IconGlyph name="arrow-right" class="vfui-menu__item__chevron-icon" />
             </span>
           </>
         ) : hasIcon ? (
