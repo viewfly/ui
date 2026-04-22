@@ -18,6 +18,13 @@ export type PopoverPlacement =
 
 export type PopoverTrigger = 'click' | 'hover'
 
+export interface PopoverReferenceBox {
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
 export interface PopoverProps {
   title?: JSXNode
   content: JSXNode
@@ -37,6 +44,8 @@ export interface PopoverProps {
   showArrow?: boolean
   /** 是否显示面板描边，默认 `true` */
   bordered?: boolean
+  /** 参考盒子（视口坐标系）。传入后按该矩形定位弹层，而不是触发器 DOM */
+  referenceBox?: PopoverReferenceBox
 }
 
 const VIEWPORT_EDGE = 8
@@ -179,6 +188,16 @@ function getScrollableAncestors(el: HTMLElement): HTMLElement[] {
   return list
 }
 
+function resolveReferenceRect(
+  triggerEl: HTMLElement | null | undefined,
+  referenceBox: PopoverReferenceBox | undefined,
+): DOMRect | null {
+  if (referenceBox != null) {
+    return new DOMRect(referenceBox.left, referenceBox.top, referenceBox.width, referenceBox.height)
+  }
+  return triggerEl?.getBoundingClientRect() ?? null
+}
+
 export function Popover(props: PopoverProps) {
   const mounted = createSignal(false)
   const visible = createSignal(false)
@@ -210,12 +229,11 @@ export function Popover(props: PopoverProps) {
   }
 
   const compute = () => {
-    const el = triggerRef.current
-    if (!el) return
+    const r = resolveReferenceRect(triggerRef.current, props.referenceBox)
+    if (!r) return
     const gap = props.gap ?? 10
     const preferred = props.placement ?? 'top-center'
     const flipEnabled = props.flip ?? true
-    const r = el.getBoundingClientRect()
     const vw = typeof window !== 'undefined' ? window.innerWidth : 0
     const vh = typeof window !== 'undefined' ? window.innerHeight : 0
     const pw = panelElement?.offsetWidth ?? 0
@@ -325,6 +343,20 @@ export function Popover(props: PopoverProps) {
       void mounted()
       void visible()
       return props.content
+    },
+    () => {
+      if (!mounted() || !visible()) return
+      queueMicrotask(() => compute())
+    },
+  )
+
+  createEffect(
+    () => {
+      void mounted()
+      void visible()
+      const box = props.referenceBox
+      if (box == null) return null
+      return `${box.left},${box.top},${box.width},${box.height}`
     },
     () => {
       if (!mounted() || !visible()) return
