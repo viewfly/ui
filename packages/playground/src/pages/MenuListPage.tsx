@@ -27,6 +27,32 @@ export function MenuListPage() {
       </section>
 
       <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">style</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          用 <code class="text-xs">style=&#123;&#123; ... &#125;&#125;</code> 或行内 CSS 字符串定制根节点（含 <code class="text-xs">width</code> / <code class="text-xs">minWidth</code> 等）。
+        </p>
+        <div class="flex flex-col gap-4 max-w-md">
+          <div class="rounded-md border border-gray-200 dark:border-slate-700 p-3">
+            <p class="text-xs vfui-text-muted mb-2">style=&#123;&#123; width: &apos;220px&apos; &#125;&#125;</p>
+            <MenuList role="menu" style={{ width: '220px' }}>
+              <MenuItem>固定 220px</MenuItem>
+              <MenuItem>第二项</MenuItem>
+            </MenuList>
+          </div>
+          <div class="rounded-md border border-gray-200 dark:border-slate-700 p-3">
+            <p class="text-xs vfui-text-muted mb-2">style=&#123;&#123; minWidth: &apos;12rem&apos;, maxWidth: &apos;100%&apos; &#125;&#125;</p>
+            <MenuList
+              role="menu"
+              style={{ minWidth: '12rem', maxWidth: '100%', boxSizing: 'border-box' }}
+            >
+              <MenuItem>min 12rem</MenuItem>
+              <MenuItem>随父级不超出</MenuItem>
+            </MenuList>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">左侧 icon</h3>
         <p class="text-sm vfui-text-muted mb-4">
           通过 <code class="text-xs">icon</code> 插入左侧图标槽（固定列宽，便于多行文案对齐）；可与 <code class="text-xs">chevronRight</code> 同用。
@@ -110,9 +136,12 @@ export function MenuListPage() {
 
       <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">分组与滚动</h3>
-        <p class="text-sm vfui-text-muted mb-4">穿插 <code class="text-xs">Divider</code> 分组；容器默认 <code class="text-xs">max-h-60</code> 超出可竖向滚动。</p>
+        <p class="text-sm vfui-text-muted mb-4">
+          穿插 <code class="text-xs">Divider</code> 分组。列表本身不限制高度；在 <code class="text-xs">Dropdown</code> 内时由弹出层面板限制为最高 400px 并滚动。下方示例在静态容器上用了{' '}
+          <code class="text-xs">max-h-36</code> 模拟长列表。
+        </p>
         <div class="rounded-md border border-gray-200 dark:border-slate-700 p-3 max-w-sm">
-          <MenuList role="menu" class="min-w-52 max-h-36">
+          <MenuList role="menu" class="min-w-52 max-h-36 overflow-y-auto">
             <MenuItem>第一项</MenuItem>
             <MenuItem>第二项</MenuItem>
             <Divider spacing="none" />

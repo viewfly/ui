@@ -1,8 +1,14 @@
 import type { JSXNode } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 
 export interface MenuListProps {
   children?: JSXNode
-  class?: string
+  class?: ClassNames
+  /**
+   * 根节点内联样式；传对象时使用与 DOM 一致的 camelCase（如 `width`、`minWidth`、`maxHeight`）。
+   * 亦可传行内 CSS 字符串。
+   */
+  style?: string | Record<string, string>
   /** Select 等 listbox 容器 */
   role?: 'listbox' | 'menu'
   id?: string
@@ -12,11 +18,11 @@ export interface MenuListProps {
 
 export function MenuList(props: MenuListProps) {
   return () => {
-    const { children, class: extra, role, id, columnCompact = false } = props
+    const { children, class: extra, role, id, columnCompact = false, style } = props
     const compactMod = columnCompact ? ' vfui-menu--column-compact' : ''
-    const cls = `vfui-menu${compactMod}${extra ? ` ${extra}` : ''}`
+    const baseCls = `vfui-menu${compactMod}`
     return (
-      <div class={cls} role={role} id={id}>
+      <div class={[baseCls, extra]} role={role} id={id} style={style}>
         {children}
       </div>
     )

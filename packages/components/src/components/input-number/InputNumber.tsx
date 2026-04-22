@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDerived, createSignal } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 import type { InputSize } from '../input/Input'
 import '../input/style.scss'
 import './style.scss'
@@ -47,7 +48,7 @@ export interface InputNumberProps {
   readOnly?: boolean
   size?: InputSize
   block?: boolean
-  class?: string
+  class?: ClassNames
   prefix?: JSXNode
   suffix?: JSXNode
   /** 是否展示减号 / 加号步进按钮，默认 `true` */
@@ -176,8 +177,8 @@ export function InputNumber(props: InputNumberProps) {
     const disabledMod = disabled ? ' vfui-input-affix--disabled' : ''
     const disabledModSingle = disabled ? ' vfui-input--disabled' : ''
 
-    const affixCls = `vfui-input-affix${sizeMod}${blockMod}${disabledMod}${rootClass ? ` ${rootClass}` : ''}`
-    const singleCls = `vfui-input${sizeModInput}${blockModSingle}${disabledModSingle}${rootClass ? ` ${rootClass}` : ''}`
+    const affixCls = `vfui-input-affix${sizeMod}${blockMod}${disabledMod}`
+    const singleCls = `vfui-input${sizeModInput}${blockModSingle}${disabledModSingle}`
     const nestedInputCls = `vfui-input vfui-input--in-affix${sizeModInput}`
 
     const handleFocus = (e: FocusEvent) => {
@@ -218,7 +219,7 @@ export function InputNumber(props: InputNumberProps) {
         id={id}
         type="text"
         inputMode="decimal"
-        class={useAffix ? nestedInputCls : singleCls}
+        class={useAffix ? [nestedInputCls, rootClass] : [singleCls, rootClass]}
         value={displayText()}
         placeholder={placeholder}
         disabled={disabled}
@@ -274,7 +275,7 @@ export function InputNumber(props: InputNumberProps) {
     )
 
     return (
-      <div class={affixCls} aria-disabled={disabled ? true : undefined}>
+      <div class={[affixCls, rootClass]} aria-disabled={disabled ? true : undefined}>
         {prefix != null ? <span class="vfui-input-affix__addon vfui-input-affix__addon--prefix">{prefix}</span> : null}
         {controls && controlsLayout === 'split' ? decBtn : null}
         {field}

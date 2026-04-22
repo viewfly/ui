@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDerived, createSignal } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 import type { ButtonSize } from '../button/Button'
 import type { VfuiRadioGroupContext, VfuiRadioGroupOptionType } from './context'
 import { VfuiRadioGroupProvider } from './context'
@@ -26,7 +27,7 @@ export interface RadioGroupProps {
    */
   size?: ButtonSize
   children?: JSXNode
-  class?: string
+  class?: ClassNames
 }
 
 export function RadioGroup(props: RadioGroupProps) {
@@ -63,13 +64,11 @@ export function RadioGroup(props: RadioGroupProps) {
     const typeMod = optionTypeSig() === 'button' ? ' vfui-radio-group--button' : ''
     const sizeMod =
       optionTypeSig() === 'button' && size !== 'middle' ? ` vfui-radio-group--size-${size}` : ''
-    const rootClass = groupClass
-      ? `vfui-radio-group${typeMod}${sizeMod} ${groupClass}`
-      : `vfui-radio-group${typeMod}${sizeMod}`
+    const baseCls = `vfui-radio-group${typeMod}${sizeMod}`
 
     return (
       <VfuiRadioGroupProvider useValue={ctx}>
-        <div role="radiogroup" class={rootClass}>
+        <div role="radiogroup" class={[baseCls, groupClass]}>
           {children}
         </div>
       </VfuiRadioGroupProvider>

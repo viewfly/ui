@@ -67,7 +67,7 @@
 }
 
 .vfui-dropdown__panel {
-  @apply fixed z-[70] min-w-0 rounded-lg p-[6px] shadow-lg;
+  @apply fixed z-[70] min-w-0 max-h-[400px] overflow-y-auto rounded-lg p-[6px] shadow-lg;
   @apply bg-white dark:bg-slate-800;
   @apply text-left text-sm text-gray-800 dark:text-slate-100;
   border: 1px solid #d1d5db;

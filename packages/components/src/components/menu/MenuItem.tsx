@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { IconGlyph } from '@viewfly/ui-icons'
+import type { ClassNames } from '@viewfly/core'
 
 export type MenuItemDensity = 'default' | 'compact'
 
@@ -20,7 +21,7 @@ export interface MenuItemProps {
    * 普通下拉菜单传 `menuitem`（默认）。
    */
   role?: MenuItemRole
-  class?: string
+  class?: ClassNames
   htmlType?: MenuItemHtmlType
   /** 为 true 时在右侧展示子菜单式右箭头（与 `Dropdown` 内嵌套项一致） */
   chevronRight?: boolean
@@ -47,14 +48,14 @@ export function MenuItem(props: MenuItemProps) {
     const densityMod = density === 'compact' ? ' vfui-menu__item--compact' : ''
     const selectedMod = selected ? ' vfui-menu__item--selected' : ''
     const chevronMod = chevronRight ? ' vfui-menu__item--with-chevron' : ''
-    const cls = `vfui-menu__item${iconMod}${densityMod}${selectedMod}${chevronMod}${extra ? ` ${extra}` : ''}`
+    const baseCls = `vfui-menu__item${iconMod}${densityMod}${selectedMod}${chevronMod}`
 
     const ariaSelected = role === 'option' ? selected : undefined
 
     return (
       <button
         type={htmlType}
-        class={cls}
+        class={[baseCls, extra]}
         role={role}
         aria-selected={ariaSelected}
         disabled={disabled}

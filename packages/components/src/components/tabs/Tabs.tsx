@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDerived, createSignal } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 import type { VfuiTabsContext, VfuiTabsOrientation } from './context'
 import { VfuiTabsProvider } from './context'
 import './style.scss'
@@ -16,7 +17,7 @@ export interface TabsProps {
   /** 标签排列方向；`vertical` 时标签列在左侧 */
   orientation?: VfuiTabsOrientation
   children?: JSXNode
-  class?: string
+  class?: ClassNames
 }
 
 export function Tabs(props: TabsProps) {
@@ -50,12 +51,11 @@ export function Tabs(props: TabsProps) {
     const { class: rootClass, children } = props
     const orient = orientationSig()
     const orientMod = orient === 'vertical' ? ' vfui-tabs--vertical' : ''
-    const base = `vfui-tabs${orientMod}`
-    const cls = rootClass ? `${base} ${rootClass}` : base
+    const baseCls = `vfui-tabs${orientMod}`
 
     return (
       <VfuiTabsProvider useValue={ctx}>
-        <div class={cls}>{children}</div>
+        <div class={[baseCls, rootClass]}>{children}</div>
       </VfuiTabsProvider>
     )
   }

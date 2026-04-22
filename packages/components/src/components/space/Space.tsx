@@ -1,4 +1,5 @@
 import type { JSXNode } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 import { SpaceCompact } from '../space-compact/SpaceCompact'
 import './style.scss'
 
@@ -23,7 +24,7 @@ export interface SpaceProps {
   split?: JSXNode
   /** 占满父级宽度 */
   block?: boolean
-  class?: string
+  class?: ClassNames
   children?: JSXNode
 }
 
@@ -69,7 +70,7 @@ function SpaceRoot(props: SpaceProps) {
     const blockMod = block ? ' vfui-space--block' : ''
     const alignMod = ` vfui-space--align-${align}`
     const gapMod = gapClassForPreset(size)
-    const cls = `vfui-space${dirMod}${wrapMod}${blockMod}${alignMod}${gapMod}${extra ? ` ${extra}` : ''}`
+    const cls = `vfui-space${dirMod}${wrapMod}${blockMod}${alignMod}${gapMod}`
     const style = gapStyle(
       typeof size === 'number' || Array.isArray(size) ? size : undefined,
     )
@@ -88,7 +89,7 @@ function SpaceRoot(props: SpaceProps) {
     }
 
     return (
-      <div class={cls} style={style}>
+      <div class={[cls, extra]} style={style}>
         {nodes}
       </div>
     )

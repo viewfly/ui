@@ -1,12 +1,13 @@
 import type { JSXNode } from '@viewfly/core'
 import { inject } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 import { VfuiTabsToken } from './context'
 import './style.scss'
 
 export interface TabPanelProps {
   value: string
   children?: JSXNode
-  class?: string
+  class?: ClassNames
 }
 
 export function TabPanel(props: TabPanelProps) {
@@ -25,11 +26,11 @@ export function TabPanel(props: TabPanelProps) {
 
     const base = 'vfui-tabs__panel'
     const activeMod = active ? ' vfui-tabs__panel--active' : ''
-    const cls = panelClass ? `${base}${activeMod} ${panelClass}` : `${base}${activeMod}`
+    const baseCls = `${base}${activeMod}`
 
     return (
       <div
-        class={cls}
+        class={[baseCls, panelClass]}
         role="tabpanel"
         id={panelId}
         aria-labelledby={tabId}

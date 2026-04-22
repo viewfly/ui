@@ -1,6 +1,7 @@
 import type { JSXNode } from '@viewfly/core'
 import { inject } from '@viewfly/core'
 import { IconGlyph } from '@viewfly/ui-icons'
+import type { ClassNames } from '@viewfly/core'
 import { VfuiDropdownTriggerToken } from '../dropdown/trigger-context'
 import './style.scss'
 
@@ -57,7 +58,7 @@ export interface ButtonProps {
    */
   inlineCompact?: boolean
   /** 追加到根节点 `class` */
-  class?: string
+  class?: ClassNames
   disabled?: boolean
   onClick?: () => void
   children?: JSXNode
@@ -107,8 +108,7 @@ export function Button(props: ButtonProps) {
 
     const chevronSize = size === 'small' ? 12 : size === 'large' ? 16 : 14
 
-    const extraCls = rootClass ? ` ${rootClass}` : ''
-    const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${highlightedMod}${blockMod}${inlineCompactMod}${extraCls}`
+    const className = `vfui-button vfui-button--${type} vfui-button--variant-${variant}${sizeMod}${shapeMod}${loadingMod}${highlightedMod}${blockMod}${inlineCompactMod}`
 
     const chevronEl = showChevronDown ? (
       <span class="vfui-button__chevron" aria-hidden="true">
@@ -153,7 +153,7 @@ export function Button(props: ButtonProps) {
           href={href}
           target={target}
           rel={relResolved}
-          class={className}
+          class={[className, rootClass]}
           aria-busy={loading ? true : undefined}
           aria-disabled={inactive ? true : undefined}
           tabIndex={inactive ? -1 : undefined}
@@ -167,7 +167,7 @@ export function Button(props: ButtonProps) {
     return (
       <button
         type={htmlType}
-        class={className}
+        class={[className, rootClass]}
         disabled={inactive}
         aria-busy={loading ? true : undefined}
         onClick={onClick}

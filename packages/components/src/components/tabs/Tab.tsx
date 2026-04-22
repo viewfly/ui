@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { inject } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 import { VfuiTabsToken } from './context'
 import './style.scss'
 
@@ -8,7 +9,7 @@ export interface TabProps {
   value: string
   disabled?: boolean
   children?: JSXNode
-  class?: string
+  class?: ClassNames
 }
 
 export function Tab(props: TabProps) {
@@ -30,12 +31,12 @@ export function Tab(props: TabProps) {
     const base = 'vfui-tabs__tab'
     const activeMod = selected ? ' vfui-tabs__tab--active' : ''
     const disMod = disabled ? ' vfui-tabs__tab--disabled' : ''
-    const cls = tabClass ? `${base}${activeMod}${disMod} ${tabClass}` : `${base}${activeMod}${disMod}`
+    const baseCls = `${base}${activeMod}${disMod}`
 
     return (
       <button
         type="button"
-        class={cls}
+        class={[baseCls, tabClass]}
         role="tab"
         id={tabId}
         data-vfui-tab-value={value}

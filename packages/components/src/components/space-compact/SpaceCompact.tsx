@@ -1,10 +1,11 @@
 import type { JSXNode } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 import './style.scss'
 
 export interface SpaceCompactProps {
   children?: JSXNode
   /** 追加到根容器 */
-  class?: string
+  class?: ClassNames
   /** 占满父级宽度（`width: 100%`） */
   block?: boolean
 }
@@ -14,7 +15,7 @@ export function SpaceCompact(props: SpaceCompactProps) {
   return () => {
     const { children, class: extra, block = false } = props
     const blockMod = block ? ' vfui-space-compact--block' : ''
-    const cls = `vfui-space-compact${blockMod}${extra ? ` ${extra}` : ''}`
-    return <div class={cls}>{children}</div>
+    const cls = `vfui-space-compact${blockMod}`
+    return <div class={[cls, extra]}>{children}</div>
   }
 }

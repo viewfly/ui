@@ -1,11 +1,12 @@
 import type { JSXNode } from '@viewfly/core'
 import { inject } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 import { VfuiTabsToken } from './context'
 import './style.scss'
 
 export interface TabListProps {
   children?: JSXNode
-  class?: string
+  class?: ClassNames
 }
 
 export function TabList(props: TabListProps) {
@@ -19,8 +20,7 @@ export function TabList(props: TabListProps) {
 
     const { class: listClass, children } = props
     const orient = tabsCtx.orientation()
-    const base = 'vfui-tabs__tablist'
-    const cls = listClass ? `${base} ${listClass}` : base
+    const baseCls = 'vfui-tabs__tablist'
 
     const selectAndFocus = (el: HTMLButtonElement | null | undefined) => {
       if (!el) return
@@ -87,7 +87,7 @@ export function TabList(props: TabListProps) {
 
     return (
       <div
-        class={cls}
+        class={[baseCls, listClass]}
         role="tablist"
         aria-orientation={orient === 'vertical' ? 'vertical' : 'horizontal'}
         onKeyDown={onKeyDown}

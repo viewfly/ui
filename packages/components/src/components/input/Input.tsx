@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDerived, createSignal } from '@viewfly/core'
+import type { ClassNames } from '@viewfly/core'
 import './style.scss'
 
 export type InputSize = 'small' | 'middle' | 'large'
@@ -23,7 +24,7 @@ export interface InputProps {
   size?: InputSize
   /** 块级宽度 */
   block?: boolean
-  class?: string
+  class?: ClassNames
   /** 前置内容：图标、文案或按钮等 */
   prefix?: JSXNode
   /** 后置内容：图标、文案或按钮等 */
@@ -93,15 +94,15 @@ export function Input(props: InputProps) {
     const disabledMod = disabled ? ' vfui-input-affix--disabled' : ''
     const disabledModSingle = disabled ? ' vfui-input--disabled' : ''
 
-    const affixCls = `vfui-input-affix${sizeMod}${blockMod}${disabledMod}${rootClass ? ` ${rootClass}` : ''}`
-    const singleCls = `vfui-input${sizeModInput}${blockModSingle}${disabledModSingle}${rootClass ? ` ${rootClass}` : ''}`
+    const affixCls = `vfui-input-affix${sizeMod}${blockMod}${disabledMod}`
+    const singleCls = `vfui-input${sizeModInput}${blockModSingle}${disabledModSingle}`
     const nestedInputCls = `vfui-input vfui-input--in-affix${sizeModInput}`
 
     const field = (
       <input
         id={id}
         type={type}
-        class={useAffix ? nestedInputCls : singleCls}
+        class={useAffix ? [nestedInputCls, rootClass] : [singleCls, rootClass]}
         value={text()}
         placeholder={placeholder}
         disabled={disabled}
@@ -128,7 +129,7 @@ export function Input(props: InputProps) {
     }
 
     return (
-      <div class={affixCls} aria-disabled={disabled ? true : undefined}>
+      <div class={[affixCls, rootClass]} aria-disabled={disabled ? true : undefined}>
         {prefix != null ? <span class="vfui-input-affix__addon vfui-input-affix__addon--prefix">{prefix}</span> : null}
         {field}
         {suffix != null ? <span class="vfui-input-affix__addon vfui-input-affix__addon--suffix">{suffix}</span> : null}

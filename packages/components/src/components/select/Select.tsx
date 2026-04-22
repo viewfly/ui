@@ -1,6 +1,7 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDerived, createSignal } from '@viewfly/core'
 import { IconGlyph } from '@viewfly/ui-icons'
+import type { ClassNames } from '@viewfly/core'
 import { Dropdown } from '../dropdown/Dropdown'
 import { MenuItem, MenuList, type MenuItemDensity } from '../menu'
 import './style.scss'
@@ -32,7 +33,7 @@ export interface SelectProps {
   menuColumnCompact?: boolean
   /** 块级宽度 */
   block?: boolean
-  class?: string
+  class?: ClassNames
   /** 下拉层挂载节点，与 `Dropdown` 一致 */
   getContainer?: () => HTMLElement
 }
@@ -78,7 +79,7 @@ export function Select(props: SelectProps) {
     const sizeMod = size === 'middle' ? '' : ` vfui-select--size-${size}`
     const blockMod = block ? ' vfui-select--block' : ''
     const disabledMod = disabled ? ' vfui-select--disabled' : ''
-    const rootCls = `vfui-select${sizeMod}${blockMod}${disabledMod}${rootClass ? ` ${rootClass}` : ''}`
+    const rootCls = `vfui-select${sizeMod}${blockMod}${disabledMod}`
     const chevronSize = size === 'small' ? 12 : size === 'large' ? 16 : 14
 
     const open = listOpen()
@@ -108,7 +109,7 @@ export function Select(props: SelectProps) {
     )
 
     return (
-      <div class={rootCls}>
+      <div class={[rootCls, rootClass]}>
         <Dropdown
           trigger="click"
           disabled={disabled}
