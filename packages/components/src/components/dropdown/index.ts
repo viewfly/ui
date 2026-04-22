@@ -5,5 +5,5 @@ export type {
   DropdownProps,
   DropdownTrigger,
   DropdownVerticalPanelAlign,
-} from './Dropdown'
+} from './dropdown-types'
 export { Dropdown } from './Dropdown'

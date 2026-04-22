@@ -315,6 +315,215 @@ export function DropdownPage() {
           <Button type="default">工作区（悬停 + 子菜单）</Button>
         </Dropdown>
       </section>
+
+      <Divider class="my-10" />
+      <h2 class="text-base font-semibold text-gray-900 dark:text-slate-100 mb-2">Hover / 嵌套 / 组合（调试用）</h2>
+      <p class="text-sm vfui-text-muted mb-8">
+        覆盖根级排他、嵌套不参与根排他、与点击混排等。后续若 hover/Portal 有回归，可在此逐项对照。
+      </p>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-2">1. 两枚根级悬停，排他（移入 B 时 A 应收起）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          同屏两个 <code class="text-xs">trigger=&quot;hover&quot;</code>、均非嵌套；指针从「根 A」按钮移到「根 B」时，A 的浮层应关闭，只保留 B。
+        </p>
+        <div class="flex flex-wrap gap-4 items-center rounded-lg border border-dashed border-gray-300 dark:border-slate-600 p-4">
+          <Dropdown
+            trigger="hover"
+            dropdown={
+              <MenuList role="menu" class="min-w-40">
+                <MenuItem>根 A-1</MenuItem>
+                <MenuItem>根 A-2</MenuItem>
+              </MenuList>
+            }
+          >
+            <Button type="default">根 A 悬停</Button>
+          </Dropdown>
+          <Dropdown
+            trigger="hover"
+            dropdown={
+              <MenuList role="menu" class="min-w-40">
+                <MenuItem>根 B-1</MenuItem>
+                <MenuItem>根 B-2</MenuItem>
+              </MenuList>
+            }
+          >
+            <Button type="primary">根 B 悬停</Button>
+          </Dropdown>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-2">2. 根点击 + 根悬停 并排</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          根级 <code class="text-xs">hover</code> 互斥（再移入他根时上一枚根级悬停会收）。根级
+          <code class="text-xs">click</code> 不参与：未点「页面其它处」时仅移入他根，左侧由点击打开的根可保持。嵌套的 <code class="text-xs">hover</code>
+          子菜单仍应在指针离开子区域时自收（见各层 pointermove 逻辑）。
+        </p>
+        <div class="flex flex-wrap gap-4 items-center rounded-lg border border-dashed border-gray-300 dark:border-slate-600 p-4">
+          <Dropdown
+            trigger="click"
+            dropdown={
+              <MenuList role="menu" class="min-w-40">
+                <MenuItem>点 opening-1</MenuItem>
+                <MenuItem>点 opening-2</MenuItem>
+              </MenuList>
+            }
+          >
+            <Button type="default">根 · 点击</Button>
+          </Dropdown>
+          <Dropdown
+            trigger="hover"
+            dropdown={
+              <MenuList role="menu" class="min-w-40">
+                <MenuItem>根 · 悬停-1</MenuItem>
+                <MenuItem>根 · 悬停-2</MenuItem>
+              </MenuList>
+            }
+          >
+            <Button type="primary">根 · 悬停</Button>
+          </Dropdown>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-2">3. 根悬停 + 子悬停（两层层级，均 hover）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          子级有 <code class="text-xs">VfuiDropdownNestToken</code> 时不参与根级排他。验证：A、B 两枚根级悬停互斥时，子菜单全悬停时父不应被互斥误关。操作：根展开 →
+          移入子项浮层开二级 → 在二级内移动/移回一级。
+        </p>
+        <div class="rounded-lg border border-dashed border-gray-300 dark:border-slate-600 p-4 inline-block">
+          <Dropdown
+            trigger="hover"
+            dropdown={
+              <MenuList role="menu" class="min-w-48">
+                <MenuItem>仅一级项</MenuItem>
+                <Dropdown
+                  block
+                  trigger="hover"
+                  orientation="horizontal"
+                  horizontalAlign="right"
+                  dropdown={
+                    <MenuList role="menu" class="min-w-44">
+                      <MenuItem>二级悬停 A</MenuItem>
+                      <MenuItem>二级悬停 B</MenuItem>
+                    </MenuList>
+                  }
+                >
+                  <MenuItem chevronRight>子菜单（全悬停）</MenuItem>
+                </Dropdown>
+              </MenuList>
+            }
+          >
+            <Button type="default">根悬停 → 子悬停</Button>
+          </Dropdown>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-2">4. 根悬停 + 子点 + 孙悬停（三层层级，混合 trigger）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          与「多级（点击）」同结构，将第二、三层的 <code class="text-xs">trigger</code> 换为
+          <code class="text-xs">hover</code> 或 <code class="text-xs">click</code>，测 Portal 与嵌套计时。孙级为悬停时，在「子→孙」间移动应无父级被误关。
+        </p>
+        <div class="rounded-lg border border-dashed border-gray-300 dark:border-slate-600 p-4 inline-block">
+          <Dropdown
+            trigger="hover"
+            dropdown={
+              <MenuList role="menu" class="min-w-52">
+                <MenuItem>一层项</MenuItem>
+                <Dropdown
+                  block
+                  trigger="click"
+                  orientation="horizontal"
+                  horizontalAlign="right"
+                  dropdown={
+                    <MenuList role="menu" class="min-w-44">
+                      <MenuItem>二层（点）</MenuItem>
+                      <Dropdown
+                        block
+                        trigger="hover"
+                        orientation="horizontal"
+                        horizontalAlign="right"
+                        dropdown={
+                          <MenuList role="menu" class="min-w-40">
+                            <MenuItem>三层悬停-1</MenuItem>
+                            <MenuItem>三层悬停-2</MenuItem>
+                          </MenuList>
+                        }
+                      >
+                        <MenuItem chevronRight>更多（子点·孙悬停）</MenuItem>
+                      </Dropdown>
+                    </MenuList>
+                  }
+                >
+                  <MenuItem chevronRight>子（点击开）</MenuItem>
+                </Dropdown>
+              </MenuList>
+            }
+          >
+            <Button type="primary">根悬 / 子点 / 孙悬</Button>
+          </Dropdown>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-2">5. 根点击 + 子悬停 + 孙点击（子级不触发根排他）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          子级是嵌套 <code class="text-xs">Dropdown</code>。先 <code class="text-xs">click</code> 打开本根，再展开
+          <code class="text-xs">hover</code> 子与 <code class="text-xs">click</code> 孙：在孙级仍展开时，父根（点击）不应被误关；父级若为悬停则规则 2c
+          要求「子弹出层（点击）未关前父悬停层也不能关」。再仅移入「另一根悬停」时，第一个根保持、子悬停应收起。
+        </p>
+        <div class="flex flex-wrap gap-4 items-start rounded-lg border border-dashed border-gray-300 dark:border-slate-600 p-4">
+          <Dropdown
+            trigger="click"
+            dropdown={
+              <MenuList role="menu" class="min-w-52">
+                <MenuItem>项</MenuItem>
+                <Dropdown
+                  block
+                  trigger="hover"
+                  orientation="horizontal"
+                  horizontalAlign="right"
+                  dropdown={
+                    <MenuList role="menu" class="min-w-40">
+                      <MenuItem>孙级前步</MenuItem>
+                      <Dropdown
+                        block
+                        trigger="click"
+                        orientation="horizontal"
+                        horizontalAlign="right"
+                        dropdown={
+                          <MenuList role="menu" class="min-w-36">
+                            <MenuItem>再深一层</MenuItem>
+                          </MenuList>
+                        }
+                      >
+                        <MenuItem chevronRight>子悬停·孙点</MenuItem>
+                      </Dropdown>
+                    </MenuList>
+                  }
+                >
+                  <MenuItem chevronRight>子（悬停）</MenuItem>
+                </Dropdown>
+              </MenuList>
+            }
+          >
+            <Button type="default">根点/子悬/孙点</Button>
+          </Dropdown>
+          <Dropdown
+            trigger="hover"
+            dropdown={
+              <MenuList role="menu" class="min-w-36">
+                <MenuItem>他根-1</MenuItem>
+                <MenuItem>他根-2</MenuItem>
+              </MenuList>
+            }
+          >
+            <Button type="primary">另一根悬停</Button>
+          </Dropdown>
+        </div>
+      </section>
     </div>
   )
 }

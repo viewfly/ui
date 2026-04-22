@@ -25,8 +25,8 @@ export function PopoverPage() {
     height: 1,
   })
   const externalComboOpen = createSignal(false)
-  const externalAnchorRef = createRef<HTMLElement>()
-  const externalComboAnchorRef = createRef<HTMLElement>()
+  const externalAnchorRef = createRef<HTMLSpanElement>()
+  const externalComboAnchorRef = createRef<HTMLSpanElement>()
 
   return () => (
     <div>
@@ -115,9 +115,11 @@ export function PopoverPage() {
           >
             <Button type="default">点击触发组合</Button>
           </Popover>
-          <Button ref={externalComboAnchorRef} type="primary" onClick={() => externalComboOpen.set(true)}>
-            打开外部受控组合
-          </Button>
+          <span ref={externalComboAnchorRef}>
+            <Button type="primary" onClick={() => externalComboOpen.set(true)}>
+              打开外部受控组合
+            </Button>
+          </span>
           <Button type="default" onClick={() => externalComboOpen.set(false)}>
             关闭外部受控组合
           </Button>
@@ -147,9 +149,11 @@ export function PopoverPage() {
           <code class="text-xs">referenceBox</code> / <code class="text-xs">getReferenceBox</code> 完全控制。
         </p>
         <Space size={12} wrap>
-          <Button ref={externalAnchorRef} type="primary" onClick={() => externalOpen.set(true)}>
-            外部打开
-          </Button>
+          <span>
+            <Button type="primary" onClick={() => externalOpen.set(true)}>
+              外部打开
+            </Button>
+          </span>
           <Button type="default" onClick={() => externalOpen.set(false)}>
             外部关闭
           </Button>

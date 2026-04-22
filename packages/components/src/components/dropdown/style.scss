@@ -78,6 +78,12 @@
   opacity: 0;
   transform: translate3d(0, 0, 0);
   will-change: opacity, transform;
+  /* 未展开时仍 opacity:0 但会参与命中，会误触发 mouseenter 并清掉触发器上的关闭定时器 */
+  pointer-events: none;
+}
+
+.vfui-dropdown__panel--open {
+  pointer-events: auto;
 }
 
 .vfui-dropdown__panel--open.vfui-dropdown__panel--anim-bottom {
