@@ -23,6 +23,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+[class^="vf-icon-"]::before,
+[class*=" vf-icon-"]::before {
+  color: currentColor;
+}
+
 .vf-icon-enrich:before {
   content: "\e932";
 }

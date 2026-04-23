@@ -11,7 +11,7 @@ export interface IconGlyphProps extends IconProps {
 /** 使用图标字体（`@font-face`）按名称显示字形 */
 export function IconGlyph(props: IconGlyphProps) {
   return () => {
-    const { name, size, color = 'currentColor', class: className = '' } = props
+    const { name, size, class: className = '' } = props
     const iconClass = `vf-icon-${name}`
     const sizeCss =
       size === undefined
@@ -20,7 +20,6 @@ export function IconGlyph(props: IconGlyphProps) {
           ? `${size}px`
           : size
     const style: Record<string, string> = {
-      color,
       lineHeight: '1',
       display: 'inline-block',
       verticalAlign: 'middle',
