@@ -15,6 +15,12 @@ const searchIcon = (
 export function InputPage() {
   const draft = createSignal('受控内容')
 
+  const setLink = (e: Event) => {
+    console.log(e)
+  }
+
+  const value = createSignal('')
+
   return () => (
     <div>
       <h2 class="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-6">Input</h2>
@@ -106,6 +112,11 @@ export function InputPage() {
             suffix={<span class="text-xs vfui-text-muted">.com</span>}
             placeholder="example"
           />
+          <form onSubmit={setLink} class={'p-1'}>
+            <Input block={true} size={'small'} placeholder={'请输入链接地址'} onChange={v => {
+              value.set(v)
+            }} suffix={<Button type={'primary'} size={'small'} htmlType="submit">确定</Button>}/>
+          </form>
         </div>
       </section>
 

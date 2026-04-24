@@ -30,8 +30,8 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.0",
-    "@viewfly/core": "^2.1.0",
-    "@viewfly/platform-browser": "^2.1.0",
+    "@viewfly/core": "^2.2.0",
+    "@viewfly/platform-browser": "^2.2.1",
     "@viewfly/ui-icons": "workspace:*",
     "sass": "^1.99.0",
     "typescript": "^6.0.3",
