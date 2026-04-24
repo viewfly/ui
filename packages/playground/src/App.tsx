@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from '@viewfly/core'
+import { createSignal } from '@viewfly/core'
 import { Link, RouterOutlet } from '@viewfly/router'
 import { routes } from './routes'
 
@@ -9,12 +9,10 @@ const linkActive =
 
 export function App() {
   const dark = createSignal(false)
-  createEffect(() => dark(), (isDark) => {
-    document.documentElement.classList.toggle('dark', isDark)
-  })
 
   return () => (
-    <div class="vfui-page min-h-screen p-6 md:p-8 font-sans transition-colors duration-200">
+    <div class={dark() ? 'min-h-screen dark' : 'min-h-screen'}>
+      <div class="vfui-page p-6 md:p-8 font-sans transition-colors duration-200">
       <header class="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div class="flex items-center gap-3">
           <Link to="/" class="text-xl font-semibold text-primary-600 dark:text-primary-400 hover:opacity-90" exact>
@@ -93,6 +91,7 @@ export function App() {
           <RouterOutlet config={routes} />
         </main>
       </div>
+    </div>
     </div>
   )
 }

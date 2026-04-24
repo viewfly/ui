@@ -1,21 +1,26 @@
-@use 'sass:color';
+@use 'sass:string' as str;
 @use './variables' as v;
 
-// Design tokens：语义命名 + 浅色 / html.dark 两套取值
+$vfui-semantic: primary, success, warning, danger, info;
+
+// Design tokens：浅色在 :root；深色在 .dark 上（可挂在 html 或任意祖先，子树继承 CSS 变量）。
+// 主色与语义色的 hover 使用 color-mix + var()，在任意祖先上覆写如 --vfui-color-primary 时，子树内会随该色重算（无需为每个子 token 手抄一遍）。
+
+// —— 浅色：默认写在 :root，也可在任意祖先上覆写同名字段
+
 :root {
   color-scheme: light;
 
-  // —— 品牌与状态色（填充、强调）——
+  // —— 品牌与状态色（基色；hover 在下方 @each 中按色派生）——
   --vfui-color-primary: #{v.$vfui-color-primary};
-  --vfui-color-primary-hover: #{color.adjust(v.$vfui-color-primary, $lightness: -6%)};
   --vfui-color-success: #{v.$vfui-color-success};
-  --vfui-color-success-hover: #{color.adjust(v.$vfui-color-success, $lightness: -6%)};
   --vfui-color-warning: #{v.$vfui-color-warning};
-  --vfui-color-warning-hover: #{color.adjust(v.$vfui-color-warning, $lightness: -6%)};
   --vfui-color-danger: #{v.$vfui-color-danger};
-  --vfui-color-danger-hover: #{color.adjust(v.$vfui-color-danger, $lightness: -6%)};
   --vfui-color-info: #{v.$vfui-color-info};
-  --vfui-color-info-hover: #{color.adjust(v.$vfui-color-info, $lightness: -6%)};
+
+  @each $name in $vfui-semantic {
+    --vfui-color-#{$name}-hover: #{str.unquote('color-mix(in srgb, var(--vfui-color-#{$name}) 90%, black)')};
+  }
 
   // 与 danger 同值，便于兼容「error」命名习惯
   --vfui-color-error: var(--vfui-color-danger);
@@ -49,11 +54,11 @@
   // —— 焦点环 ——
   --vfui-ring-width: 2px;
   --vfui-ring-offset: 2px;
-  --vfui-ring-color: rgb(41 110 255 / 35%);
+  --vfui-ring-color: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 35%, transparent)')};
 
-  // —— 链接 ——
-  --vfui-link-color: #{v.$vfui-color-primary};
-  --vfui-link-hover: #{color.adjust(v.$vfui-color-primary, $lightness: -8%)};
+  // —— 链接（随主色）——
+  --vfui-link-color: var(--vfui-color-primary);
+  --vfui-link-hover: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 86%, black)')};
 
   // —— 状态弱背景（提示条、Alert 等）——
   --vfui-tone-success-bg: #ecfdf5;
@@ -68,9 +73,10 @@
   --vfui-tone-info-bg: #ecfeff;
   --vfui-tone-info-border: #67e8f9;
   --vfui-tone-info-fg: #155e75;
-  --vfui-tone-primary-bg: #eef4ff;
-  --vfui-tone-primary-border: #93c5fd;
-  --vfui-tone-primary-fg: #1e3a8a;
+  // 主色弱色块：与品牌主色联动，便于在子树覆写主色
+  --vfui-tone-primary-bg: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 6%, #ffffff)')};
+  --vfui-tone-primary-border: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 28%, #ffffff)')};
+  --vfui-tone-primary-fg: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 48%, #0f172a)')};
 
   // —— 默认按钮（与旧 token 兼容）——
   --vfui-muted: var(--vfui-fg-muted);
@@ -81,19 +87,19 @@
   --vfui-btn-default-hover-border: #9ca3af;
 }
 
-html.dark {
+.dark {
   color-scheme: dark;
 
+  // 深色模式下的基色（可在子树中覆写基色 token，派生色仍从 color-mix 重算）
   --vfui-color-primary: #4d8dff;
-  --vfui-color-primary-hover: #6ba3ff;
   --vfui-color-success: #22c55e;
-  --vfui-color-success-hover: #4ade80;
   --vfui-color-warning: #fbbf24;
-  --vfui-color-warning-hover: #fcd34d;
   --vfui-color-danger: #f87171;
-  --vfui-color-danger-hover: #fca5a5;
   --vfui-color-info: #22d3ee;
-  --vfui-color-info-hover: #67e8f9;
+
+  @each $name in $vfui-semantic {
+    --vfui-color-#{$name}-hover: #{str.unquote('color-mix(in srgb, var(--vfui-color-#{$name}) 22%, white)')};
+  }
 
   --vfui-color-error: var(--vfui-color-danger);
   --vfui-color-error-hover: var(--vfui-color-danger-hover);
@@ -120,10 +126,10 @@ html.dark {
   --vfui-border-muted: #1e293b;
   --vfui-border-strong: #475569;
 
-  --vfui-ring-color: rgb(77 141 255 / 45%);
+  --vfui-ring-color: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 45%, transparent)')};
 
-  --vfui-link-color: #7eabff;
-  --vfui-link-hover: #a5c3ff;
+  --vfui-link-color: var(--vfui-color-primary);
+  --vfui-link-hover: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 20%, white)')};
 
   --vfui-tone-success-bg: rgb(34 197 94 / 12%);
   --vfui-tone-success-border: #166534;
@@ -137,9 +143,9 @@ html.dark {
   --vfui-tone-info-bg: rgb(34 211 238 / 12%);
   --vfui-tone-info-border: #155e75;
   --vfui-tone-info-fg: #a5f3fc;
-  --vfui-tone-primary-bg: rgb(77 141 255 / 12%);
-  --vfui-tone-primary-border: #1d4ed8;
-  --vfui-tone-primary-fg: #bfdbfe;
+  --vfui-tone-primary-bg: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 14%, #0f172a)')};
+  --vfui-tone-primary-border: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 42%, #1e3a8a)')};
+  --vfui-tone-primary-fg: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 20%, #bfdbfe)')};
 
   --vfui-muted: var(--vfui-fg-muted);
   --vfui-btn-default-bg: #1e293b;
@@ -148,3 +154,4 @@ html.dark {
   --vfui-btn-default-hover-bg: #334155;
   --vfui-btn-default-hover-border: #475569;
 }
+

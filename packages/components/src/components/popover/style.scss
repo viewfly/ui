@@ -73,7 +73,7 @@
 /* 与 `.vfui-dropdown__panel` 描边一致 */
 .vfui-popover__panel:not(.vfui-popover__panel--borderless) {
   border: 1px solid #d1d5db;
-  html.dark & {
+  .dark & {
     border-color: #64748b;
   }
 }
@@ -86,7 +86,7 @@
   @apply p-0;
 }
 
-html.dark .vfui-popover__panel {
+.dark .vfui-popover__panel {
   --vfui-popover-arrow-fill: #1e293b;
 }
 

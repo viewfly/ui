@@ -15,12 +15,12 @@
 }
 
 /* 深色：关态轨道与拇指与页面/卡片背景区分度低，改用更亮的轨道与浅色拇指 */
-html.dark .vfui-switch:not(.vfui-switch--checked) .vfui-switch__track {
+.dark .vfui-switch:not(.vfui-switch--checked) .vfui-switch__track {
   background: var(--vfui-border-default);
   box-shadow: inset 0 0 0 1px rgb(148 163 184 / 22%);
 }
 
-html.dark .vfui-switch--checked .vfui-switch__track {
+.dark .vfui-switch--checked .vfui-switch__track {
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 12%);
 }
 
@@ -37,7 +37,7 @@ html.dark .vfui-switch--checked .vfui-switch__track {
   box-shadow: 0 1px 2px rgb(15 23 42 / 12%);
 }
 
-html.dark .vfui-switch__thumb {
+.dark .vfui-switch__thumb {
   background: #f1f5f9;
   box-shadow:
     0 1px 2px rgb(0 0 0 / 35%),

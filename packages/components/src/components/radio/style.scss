@@ -55,11 +55,11 @@
   transform: translate(-50%, -50%) scale(1);
 }
 
-html.dark .vfui-radio__input:not(:checked) + .vfui-radio__box {
+.dark .vfui-radio__input:not(:checked) + .vfui-radio__box {
   box-shadow: inset 0 0 0 1px rgb(148 163 184 / 18%);
 }
 
-html.dark .vfui-radio__input:checked + .vfui-radio__box {
+.dark .vfui-radio__input:checked + .vfui-radio__box {
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 12%);
 }
 
