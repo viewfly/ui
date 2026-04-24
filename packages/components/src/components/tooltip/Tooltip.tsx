@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDynamicRef, createEffect, createRef, createSignal, Portal, reactive } from '@viewfly/core'
+import type { CSSProperties, StyleValue } from '@viewfly/platform-browser'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
 import './style.scss'
 
@@ -23,6 +24,13 @@ export type TooltipPlacement =
   | 'right-end'
 
 export type TooltipTrigger = 'hover' | 'focus'
+
+export interface TooltipReferenceBox {
+  left: number
+  top: number
+  width: number
+  height: number
+}
 
 export interface TooltipProps {
   /** 提示内容 */
@@ -55,6 +63,21 @@ export interface TooltipProps {
    */
   getContainer?: () => HTMLElement
   disabled?: boolean
+  /** 参考盒子（视口坐标系）。传入后按该矩形定位浮层，而不是触发器 DOM。 */
+  referenceBox?: TooltipReferenceBox
+  /** 实时获取参考盒子（视口坐标系）；优先级高于 `referenceBox`，用于滚动等场景动态定位。 */
+  getReferenceBox?: () => TooltipReferenceBox | null | undefined
+  /** 浮层根节点内联样式，用于覆盖默认样式 */
+  style?: StyleValue
+}
+
+function mergePanelStyle(base: CSSProperties, user: StyleValue | undefined): string | CSSProperties {
+  if (user == null) return base
+  if (typeof user === 'string') {
+    const baseCss = `top:${String(base.top)};left:${String(base.left)};z-index:${String(base.zIndex)};`
+    return `${baseCss}${user}`
+  }
+  return { ...base, ...user }
 }
 
 const VIEWPORT_EDGE = 8
@@ -200,6 +223,21 @@ function getScrollableAncestors(el: HTMLElement): HTMLElement[] {
   return list
 }
 
+function resolveReferenceRect(
+  triggerEl: HTMLElement | null | undefined,
+  referenceBox: TooltipReferenceBox | undefined,
+  getReferenceBox: (() => TooltipReferenceBox | null | undefined) | undefined,
+): DOMRect | null {
+  const dynamicBox = getReferenceBox?.()
+  if (dynamicBox != null) {
+    return new DOMRect(dynamicBox.left, dynamicBox.top, dynamicBox.width, dynamicBox.height)
+  }
+  if (referenceBox != null) {
+    return new DOMRect(referenceBox.left, referenceBox.top, referenceBox.width, referenceBox.height)
+  }
+  return triggerEl?.getBoundingClientRect() ?? null
+}
+
 let tooltipIdSeq = 0
 
 export function Tooltip(props: TooltipProps) {
@@ -235,12 +273,11 @@ export function Tooltip(props: TooltipProps) {
   }
 
   const compute = () => {
-    const el = triggerRef.current
-    if (!el) return
+    const r = resolveReferenceRect(triggerRef.current, props.referenceBox, props.getReferenceBox)
+    if (!r) return
     const gap = props.gap ?? 8
     const preferred = props.placement ?? 'top-center'
     const flipEnabled = props.flip ?? true
-    const r = el.getBoundingClientRect()
     const vw = typeof window !== 'undefined' ? window.innerWidth : 0
     const vh = typeof window !== 'undefined' ? window.innerHeight : 0
     const pw = panelElement?.offsetWidth ?? 0
@@ -337,6 +374,24 @@ export function Tooltip(props: TooltipProps) {
       void mounted()
       void visible()
       return props.content
+    },
+    () => {
+      if (!mounted() || !visible()) return
+      queueMicrotask(() => compute())
+    },
+  )
+
+  createEffect(
+    () => {
+      void mounted()
+      void visible()
+      const dynamicBox = props.getReferenceBox?.()
+      if (dynamicBox != null) {
+        return `dynamic:${dynamicBox.left},${dynamicBox.top},${dynamicBox.width},${dynamicBox.height}`
+      }
+      const staticBox = props.referenceBox
+      if (staticBox == null) return null
+      return `static:${staticBox.left},${staticBox.top},${staticBox.width},${staticBox.height}`
     },
     () => {
       if (!mounted() || !visible()) return
@@ -449,11 +504,14 @@ export function Tooltip(props: TooltipProps) {
               id={tooltipId}
               data-placement={layout.resolvedPlacement}
               class={`vfui-tooltip__panel${animCls}${openCls}`}
-              style={{
-                top: `${layout.top}px`,
-                left: `${layout.left}px`,
-                zIndex: `${layout.zIndex}`,
-              }}
+              style={mergePanelStyle(
+                {
+                  top: `${layout.top}px`,
+                  left: `${layout.left}px`,
+                  zIndex: `${layout.zIndex}`,
+                },
+                props.style,
+              )}
               role="tooltip"
               onMouseEnter={() => {
                 if (props.disabled) return

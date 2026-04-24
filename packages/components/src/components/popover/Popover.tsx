@@ -1,5 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
 import { createDynamicRef, createEffect, createRef, createSignal, Portal, reactive } from '@viewfly/core'
+import type { CSSProperties, StyleValue } from '@viewfly/platform-browser'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
 import './style.scss'
 
@@ -51,6 +52,17 @@ export interface PopoverProps {
   referenceBox?: PopoverReferenceBox
   /** 实时获取参考盒子（视口坐标系）；优先级高于 `referenceBox`，用于滚动等场景动态定位 */
   getReferenceBox?: () => PopoverReferenceBox | null | undefined
+  /** 弹层根节点内联样式，用于覆盖默认样式 */
+  style?: StyleValue
+}
+
+function mergePanelStyle(base: CSSProperties, user: StyleValue | undefined): string | CSSProperties {
+  if (user == null) return base
+  if (typeof user === 'string') {
+    const baseCss = `top:${String(base.top)};left:${String(base.left)};z-index:${String(base.zIndex)};`
+    return `${baseCss}${user}`
+  }
+  return { ...base, ...user }
 }
 
 const VIEWPORT_EDGE = 8
@@ -503,11 +515,14 @@ export function Popover(props: PopoverProps) {
               data-vfui-popover-id={popoverId}
               data-placement={layout.resolvedPlacement}
               class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}${noPaddingCls}`}
-              style={{
-                top: `${layout.top}px`,
-                left: `${layout.left}px`,
-                zIndex: `${layout.zIndex}`,
-              }}
+              style={mergePanelStyle(
+                {
+                  top: `${layout.top}px`,
+                  left: `${layout.left}px`,
+                  zIndex: `${layout.zIndex}`,
+                },
+                props.style,
+              )}
               role="dialog"
               aria-modal="false"
               onMouseEnter={() => {
