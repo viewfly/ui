@@ -225,11 +225,11 @@
     @apply shrink-0;
   }
 
-  // 与旧版 22px 行高、13px 等宽字一致，并覆盖 .vfui-input 默认 min-width
+  // 与 22px 行高、12px 等宽字一致，并覆盖 .vfui-input 默认 min-width
   .vfui-color-picker__field.vfui-input {
     @apply box-border w-full min-w-0;
     @apply h-[22px] min-h-[22px] max-h-[22px];
-    @apply py-[3px] px-[5px] text-[13px] leading-4;
+    @apply py-[3px] px-[5px] text-[12px] leading-4;
     @apply text-center;
     @apply [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
     z-index: 0;
