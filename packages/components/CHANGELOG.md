@@ -1,5 +1,13 @@
 # @viewfly/ui-components
 
+## 0.0.6
+
+### Patch Changes
+
+- 优化 UI、完善 Dropdwon 功能
+- Updated dependencies
+  - @viewfly/ui-icons@0.0.3
+
 ## 0.0.5
 
 ### Patch Changes
