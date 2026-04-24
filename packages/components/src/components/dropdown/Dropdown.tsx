@@ -152,6 +152,7 @@ export function Dropdown(props: DropdownProps) {
   const dropdownNestContext: VfuiDropdownNestContext = {
     onSubPanelClicked() {
       clickFromSelf = true
+      parentNest?.onSubPanelClicked()
     },
     onSubDropdownOpened() {
       canHide = false
@@ -213,6 +214,7 @@ export function Dropdown(props: DropdownProps) {
         clickFromSelf = false
         return
       }
+      canHide = true
       expanded.set(false)
     }))
     subscription.add(fromEvent(node, 'click').subscribe(() => {

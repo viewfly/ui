@@ -1,6 +1,6 @@
 import type { JSXNode } from '@viewfly/core'
-import { createRef } from '@viewfly/core'
-import { Button, Divider, Dropdown, MenuItem, MenuList, Space } from '@viewfly/ui-components'
+import { createRef, createSignal } from '@viewfly/core'
+import { Button, ColorPicker, Divider, Dropdown, MenuItem, MenuList, Space, type Picker } from '@viewfly/ui-components'
 import { IconGlyph } from '@viewfly/ui-icons'
 
 const wideMenu = (
@@ -19,6 +19,10 @@ const triggerShell = (inner: JSXNode) => (
 
 export function DropdownPage() {
   const horizontalTopRef = createRef<HTMLElement>()
+  const dropdownClickClose = createSignal(0)
+  const dropdownHoverClose = createSignal(0)
+  const dropdownClickHex = createSignal<string | null>(null)
+  const dropdownHoverHex = createSignal<string | null>(null)
 
   return () => (
     <div>
@@ -43,6 +47,68 @@ export function DropdownPage() {
         >
           <Button type="primary">打开菜单</Button>
         </Dropdown>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">下拉弹出颜色选择器（双悬停）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          两个示例都用 <code class="text-xs">trigger=&quot;hover&quot;</code>；在 <code class="text-xs">onSelected</code> 里递增 <code class="text-xs">closeTick</code>，选色后自动收起。
+        </p>
+        <div class="flex flex-wrap items-start gap-3">
+          <div class="flex items-center gap-3">
+            <Dropdown
+              trigger="hover"
+              closeTick={dropdownClickClose}
+              verticalPanelAlign="left"
+              gap={8}
+              dropdown={(
+                <div onMousedown={(e: MouseEvent) => e.stopPropagation()}>
+                  <ColorPicker
+                    value="#296eff"
+                    recentColorsName="playground-dropdown-click"
+                    onSelected={(p: Picker) => {
+                      dropdownClickHex.set(p.hex)
+                      dropdownClickClose.set(dropdownClickClose() + 1)
+                    }}
+                  />
+                </div>
+              )}
+            >
+              <Button type="primary">悬停选色 A</Button>
+            </Dropdown>
+            <span class="text-sm vfui-text-muted">
+              已选：
+              <span class="font-mono text-xs text-gray-900 dark:text-slate-100">{dropdownClickHex() ?? '—'}</span>
+            </span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <Dropdown
+              trigger="hover"
+              closeTick={dropdownHoverClose}
+              verticalPanelAlign="left"
+              gap={8}
+              dropdown={(
+                <div onMousedown={(e: MouseEvent) => e.stopPropagation()}>
+                  <ColorPicker
+                    value="#16a34a"
+                    recentColorsName="playground-dropdown-hover"
+                    onSelected={(p: Picker) => {
+                      dropdownHoverHex.set(p.hex)
+                      dropdownHoverClose.set(dropdownHoverClose() + 1)
+                    }}
+                  />
+                </div>
+              )}
+            >
+              <Button type="default">悬停选色 B</Button>
+            </Dropdown>
+            <span class="text-sm vfui-text-muted">
+              已选：
+              <span class="font-mono text-xs text-gray-900 dark:text-slate-100">{dropdownHoverHex() ?? '—'}</span>
+            </span>
+          </div>
+        </div>
       </section>
 
       <section class="mb-10">
