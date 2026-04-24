@@ -1,8 +1,9 @@
 import {
+  Component,
   computed,
   createDynamicRef, createEffect,
   createRef,
-  createSignal, inject,
+  createSignal, getCurrentInstance, inject,
   onMounted,
   Portal,
   reactive
@@ -16,6 +17,8 @@ import './style.scss'
 import { VfuiDropdownTriggerProvider } from './trigger-context'
 import { VfuiDropdownNestContext, VfuiDropdownNestProvider, VfuiDropdownNestToken } from './nest-context'
 import { DROPDOWN_HOVER_CLOSE_MS } from './dropdown-constants'
+
+const dropdownCloseRecord = new Map<Component, () => void>()
 
 export function Dropdown(props: DropdownProps) {
   const expanded = createSignal(false)
@@ -128,6 +131,24 @@ export function Dropdown(props: DropdownProps) {
     expanded.set(false)
   })
 
+  const instance = getCurrentInstance()
+  dropdownCloseRecord.set(instance, () => {
+    if (triggerType.value === 'hover' && canHide) {
+      expanded.set(false)
+    }
+  })
+  createEffect(expanded, (v) => {
+    if (v) {
+      dropdownCloseRecord.forEach((close, comp) => {
+        if (comp !== instance) {
+          close()
+        }
+      })
+    }
+  })
+
+  let pointerInSelf = false
+
   const dropdownNestContext: VfuiDropdownNestContext = {
     onSubPanelClicked() {
       clickFromSelf = true
@@ -145,7 +166,12 @@ export function Dropdown(props: DropdownProps) {
     },
     onMouseLeaveSubPanel() {
       canHide = true
-      triggerMouseLeave()
+      if (pointerInSelf) {
+        return
+      }
+      if (triggerType.value === 'hover' && canHide) {
+        expanded.set(false)
+      }
     }
   }
 
@@ -171,12 +197,14 @@ export function Dropdown(props: DropdownProps) {
     const subscription = new Subscription()
 
     subscription.add(fromEvent(node, 'mouseenter').subscribe(() => {
+      pointerInSelf = true
       parentNest?.onMouseEnterSubPanel()
       if (triggerType.value === 'hover') {
         clearTimeout(leaveTimer)
       }
     }))
     subscription.add(fromEvent(node, 'mouseleave').subscribe(() => {
+      pointerInSelf = false
       triggerMouseLeave()
     }))
 
