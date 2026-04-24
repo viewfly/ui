@@ -1,14 +1,13 @@
-import type { JSXNode } from '@viewfly/core'
-import type { ClassNames } from '@viewfly/core'
+import type { JSXNode, ClassNames } from '@viewfly/core'
+import type { StyleValue } from '@viewfly/platform-browser'
 
 export interface MenuListProps {
   children?: JSXNode
   class?: ClassNames
   /**
-   * 根节点内联样式；传对象时使用与 DOM 一致的 camelCase（如 `width`、`minWidth`、`maxHeight`）。
-   * 亦可传行内 CSS 字符串。
+   * 根节点内联样式；与 DOM `style` 一致（`StyleValue`：字符串、对象或 `null` 清除）。
    */
-  style?: string | Record<string, string>
+  style?: StyleValue
   /** Select 等 listbox 容器 */
   role?: 'listbox' | 'menu'
   id?: string

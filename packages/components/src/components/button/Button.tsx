@@ -2,6 +2,7 @@ import type { JSXNode } from '@viewfly/core'
 import { inject } from '@viewfly/core'
 import { IconGlyph } from '@viewfly/ui-icons'
 import type { ClassNames } from '@viewfly/core'
+import type { StyleValue } from '@viewfly/platform-browser'
 import { VfuiDropdownTriggerToken } from '../dropdown/trigger-context'
 import './style.scss'
 
@@ -59,6 +60,8 @@ export interface ButtonProps {
   inlineCompact?: boolean
   /** 追加到根节点 `class` */
   class?: ClassNames
+  /** 根节点内联样式，用于覆盖默认样式 */
+  style?: StyleValue
   disabled?: boolean
   onClick?: () => void
   children?: JSXNode
@@ -86,6 +89,7 @@ export function Button(props: ButtonProps) {
       block = false,
       inlineCompact = false,
       class: rootClass,
+      style,
       disabled = false,
       onClick,
       children,
@@ -154,6 +158,7 @@ export function Button(props: ButtonProps) {
           target={target}
           rel={relResolved}
           class={[className, rootClass]}
+          style={style}
           aria-busy={loading ? true : undefined}
           aria-disabled={inactive ? true : undefined}
           tabIndex={inactive ? -1 : undefined}
@@ -168,6 +173,7 @@ export function Button(props: ButtonProps) {
       <button
         type={htmlType}
         class={[className, rootClass]}
+        style={style}
         disabled={inactive}
         aria-busy={loading ? true : undefined}
         onClick={onClick}
