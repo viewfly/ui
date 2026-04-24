@@ -176,7 +176,7 @@
   @apply bg-transparent border-transparent text-[var(--vfui-fg-default)];
 
   &:hover:not(:disabled):not([aria-disabled='true']) {
-    @apply bg-[var(--vfui-surface-muted)] border-transparent;
+    @apply bg-gray-100 dark:bg-slate-700/90 border-transparent;
   }
 }
 
