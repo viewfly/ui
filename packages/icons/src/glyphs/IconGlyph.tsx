@@ -1,4 +1,4 @@
-import type { IconProps } from '../icon-base'
+import { mergeIconStyle, type IconProps } from '../icon-base'
 import type { IconGlyphName } from './icon-names'
 
 export type { IconGlyphName } from './icon-names'
@@ -11,7 +11,7 @@ export interface IconGlyphProps extends IconProps {
 /** 使用图标字体（`@font-face`）按名称显示字形 */
 export function IconGlyph(props: IconGlyphProps) {
   return () => {
-    const { name, size, class: className = '' } = props
+    const { name, size, class: className = '', style: userStyle } = props
     const iconClass = `vf-icon-${name}`
     const sizeCss =
       size === undefined
@@ -19,18 +19,18 @@ export function IconGlyph(props: IconGlyphProps) {
         : typeof size === 'number'
           ? `${size}px`
           : size
-    const style: Record<string, string> = {
+    const base: Record<string, string> = {
       lineHeight: '1',
       display: 'inline-block',
       verticalAlign: 'middle',
     }
     if (sizeCss !== undefined) {
-      style.fontSize = sizeCss
+      base.fontSize = sizeCss
     }
     return (
       <span
         class={[iconClass, className].filter(Boolean).join(' ')}
-        style={style}
+        style={mergeIconStyle(base, userStyle)}
         aria-hidden="true"
       />
     )

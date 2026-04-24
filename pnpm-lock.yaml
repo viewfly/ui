@@ -57,6 +57,9 @@ importers:
       '@viewfly/core':
         specifier: ^2.2.0
         version: 2.2.0
+      '@viewfly/platform-browser':
+        specifier: ^2.2.1
+        version: 2.2.1
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
