@@ -1,5 +1,5 @@
-import type { JSXNode } from '@viewfly/core'
-import { createDynamicRef, createEffect, createRef, createSignal, Portal, reactive } from '@viewfly/core'
+import { JSXNode, watch } from '@viewfly/core'
+import { createDynamicRef, createRef, createSignal, Portal, reactive } from '@viewfly/core'
 import type { CSSProperties, StyleValue } from '@viewfly/platform-browser'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
 import './style.scss'
@@ -273,7 +273,7 @@ export function Tooltip(props: TooltipProps) {
   }
 
   const compute = () => {
-    const r = resolveReferenceRect(triggerRef.current, props.referenceBox, props.getReferenceBox)
+    const r = resolveReferenceRect(triggerRef.value, props.referenceBox, props.getReferenceBox)
     if (!r) return
     const gap = props.gap ?? 8
     const preferred = props.placement ?? 'top-center'
@@ -349,7 +349,7 @@ export function Tooltip(props: TooltipProps) {
     }
   })
 
-  createEffect(
+  watch(
     () => {
       if (props.open === undefined) return 'uc' as const
       if (props.disabled ?? false) return 'dis' as const
@@ -369,7 +369,7 @@ export function Tooltip(props: TooltipProps) {
     },
   )
 
-  createEffect(
+  watch(
     () => {
       void mounted()
       void visible()
@@ -381,7 +381,7 @@ export function Tooltip(props: TooltipProps) {
     },
   )
 
-  createEffect(
+  watch(
     () => {
       void mounted()
       void visible()
@@ -399,7 +399,7 @@ export function Tooltip(props: TooltipProps) {
     },
   )
 
-  createEffect([mounted], ([m]) => {
+  watch(mounted, (m) => {
     if (!m) return
     const onLayout = () => compute()
     window.addEventListener('resize', onLayout)
@@ -414,7 +414,7 @@ export function Tooltip(props: TooltipProps) {
     addScroll(window)
 
     const bindScrollParents = () => {
-      const el = triggerRef.current
+      const el = triggerRef.value
       if (!el) return
       for (const node of getScrollableAncestors(el)) {
         addScroll(node)
@@ -466,7 +466,7 @@ export function Tooltip(props: TooltipProps) {
       if (disabled) return
       if (props.open !== undefined) return
       if (triggerMode !== 'focus') return
-      const root = triggerRef.current
+      const root = triggerRef.value
       if (!root) return
       const t = ev.target as Node | null
       if (t && root.contains(t)) scheduleOpen()
@@ -475,7 +475,7 @@ export function Tooltip(props: TooltipProps) {
       if (disabled) return
       if (props.open !== undefined) return
       if (triggerMode !== 'focus') return
-      const root = triggerRef.current
+      const root = triggerRef.value
       if (!root) return
       const related = ev.relatedTarget as Node | null
       if (related && root.contains(related)) return

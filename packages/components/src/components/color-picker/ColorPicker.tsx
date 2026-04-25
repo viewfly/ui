@@ -3,7 +3,7 @@ import {
   type ColorHSL, type ColorHSV, type ColorRGB, type ColorRGBA, hex2Hsl, hex2Hsv, hex2Rgb,
   hsl2Hex, hsl2Hsv, hsl2Rgb, hsv2Hex, hsv2Hsl, hsv2Rgb, normalizeHex, parseCss, rgb2Hex, rgb2Hsl, rgb2Hsv
 } from '@tanbo/color'
-import { createEffect, createRef, createSignal, getCurrentInstance } from '@viewfly/core'
+import { createRef, createSignal, getCurrentInstance, watch } from '@viewfly/core'
 import { Button } from '../button/Button'
 import { Dropdown } from '../dropdown/Dropdown'
 import { Input } from '../input/Input'
@@ -186,7 +186,7 @@ export function ColorPicker(props: ColorPickerProps) {
     resolveInitialRecentColors(props.recentColorsName, props.recentColors)
   )
 
-  createEffect(
+  watch(
     () => props.recentColorsName,
     (name) => {
       if (name) {
@@ -217,11 +217,11 @@ export function ColorPicker(props: ColorPickerProps) {
     }
   }
 
-  const paletteRef = createRef<HTMLElement>()
+  const paletteRef = createRef<HTMLDivElement>()
 
   function bindPaletteEvent(ev: MouseEvent) {
     const update = (event: MouseEvent) => {
-      const position = paletteRef.current!.getBoundingClientRect()
+      const position = paletteRef.value!.getBoundingClientRect()
       const offsetX = event.clientX - position.left
       const offsetY = event.clientY - position.top
 
@@ -250,7 +250,7 @@ export function ColorPicker(props: ColorPickerProps) {
 
   function bindHueBarEvent(ev: MouseEvent) {
     const update = (event: MouseEvent) => {
-      const position = hueBarRef.current!.getBoundingClientRect()
+      const position = hueBarRef.value!.getBoundingClientRect()
       let offsetY = event.clientY - position.top
 
       offsetY = Math.max(0, offsetY)
@@ -271,11 +271,11 @@ export function ColorPicker(props: ColorPickerProps) {
     listenDocumentWhileDrag(update)
   }
 
-  const alphaBarRef = createRef<HTMLElement>()
+  const alphaBarRef = createRef<HTMLDivElement>()
 
   function bindAlphaEvent(ev: MouseEvent) {
     const update = (event: MouseEvent) => {
-      const position = alphaBarRef.current!.getBoundingClientRect()
+      const position = alphaBarRef.value!.getBoundingClientRect()
       let offsetX = event.clientX - position.left
 
       offsetX = Math.max(0, offsetX)

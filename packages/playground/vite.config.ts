@@ -1,6 +1,7 @@
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import UnoCSS from 'unocss/vite'
+import checker from 'vite-plugin-checker'
 
 export default defineConfig({
   resolve: {
@@ -14,5 +15,12 @@ export default defineConfig({
     jsx: 'automatic',
     jsxImportSource: '@viewfly/core',
   },
-  plugins: [UnoCSS()],
+  plugins: [
+    UnoCSS(),
+    checker({
+      typescript: {
+        tsconfigPath: 'tsconfig.json',
+      },
+    }),
+  ],
 })

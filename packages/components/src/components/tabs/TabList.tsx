@@ -19,7 +19,7 @@ export function TabList(props: TabListProps) {
     }
 
     const { class: listClass, children } = props
-    const orient = tabsCtx.orientation()
+    const orient = tabsCtx.orientation.value
     const baseCls = 'vfui-tabs__tablist'
 
     const selectAndFocus = (el: HTMLButtonElement | null | undefined) => {

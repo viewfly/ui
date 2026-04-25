@@ -54,6 +54,7 @@ export interface DropdownProps {
   getContainer?: () => HTMLElement
   /** 面板与触发器之间的间距（px）：纵向为上下边距，横向为左右间距；默认 10 */
   gap?: number
+  open?: boolean
   disabled?: boolean
   /**
    * 外部请求关闭：递增该 signal 的值会在面板打开时收起（如 Select 选中项后）。

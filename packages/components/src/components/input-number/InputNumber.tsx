@@ -1,5 +1,5 @@
-import type { JSXNode } from '@viewfly/core'
-import { createDerived, createSignal } from '@viewfly/core'
+import { computed, JSXNode } from '@viewfly/core'
+import { createSignal } from '@viewfly/core'
 import type { ClassNames } from '@viewfly/core'
 import type { InputSize } from '../input/Input'
 import '../input/style.scss'
@@ -73,7 +73,7 @@ export interface InputNumberProps {
 
 export function InputNumber(props: InputNumberProps) {
   const uncontrolled = createSignal<number | null>(props.defaultValue ?? null)
-  const effective = createDerived(() => (props.value !== undefined ? props.value : uncontrolled()))
+  const effective = computed(() => (props.value !== undefined ? props.value : uncontrolled()))
 
   const focused = createSignal(false)
   const draft = createSignal('')
@@ -90,13 +90,13 @@ export function InputNumber(props: InputNumberProps) {
     props.onChange?.(v)
   }
 
-  const displayText = createDerived(() => {
+  const displayText = computed(() => {
     if (focused()) return draft()
-    return formatDisplay(effective(), props.precision)
+    return formatDisplay(effective.value, props.precision)
   })
 
   const syncDraftFromEffective = () => {
-    draft.set(formatDisplay(effective(), props.precision))
+    draft.set(formatDisplay(effective.value, props.precision))
   }
 
   const onInput = (e: Event) => {
@@ -118,7 +118,7 @@ export function InputNumber(props: InputNumberProps) {
     if (props.disabled || props.readOnly) return
     const step = props.step ?? 1
     if (!Number.isFinite(step) || step <= 0) return
-    const cur = effective()
+    const cur = effective.value
     const base = cur ?? 0
     const next = roundToPrecision(base + dir * step, props.precision)
     const clamped = clamp(next, props.min, props.max)
@@ -128,18 +128,18 @@ export function InputNumber(props: InputNumberProps) {
     }
   }
 
-  const canDec = createDerived(() => {
+  const canDec = computed(() => {
     if (props.disabled || props.readOnly) return false
-    const cur = effective()
+    const cur = effective.value
     const step = props.step ?? 1
     if (props.min == null) return true
     const next = roundToPrecision((cur ?? 0) - step, props.precision)
     return next >= props.min - 1e-12
   })
 
-  const canInc = createDerived(() => {
+  const canInc = computed(() => {
     if (props.disabled || props.readOnly) return false
-    const cur = effective()
+    const cur = effective.value
     const step = props.step ?? 1
     if (props.max == null) return true
     const next = roundToPrecision((cur ?? 0) + step, props.precision)
@@ -220,7 +220,7 @@ export function InputNumber(props: InputNumberProps) {
         type="text"
         inputMode="decimal"
         class={useAffix ? [nestedInputCls, rootClass] : [singleCls, rootClass]}
-        value={displayText()}
+        value={displayText.value}
         placeholder={placeholder}
         disabled={disabled}
         readOnly={readOnly}
@@ -240,8 +240,8 @@ export function InputNumber(props: InputNumberProps) {
       return field
     }
 
-    const decDisabled = disabled || readOnly || !canDec()
-    const incDisabled = disabled || readOnly || !canInc()
+    const decDisabled = disabled || readOnly || !canDec.value
+    const incDisabled = disabled || readOnly || !canInc.value
 
     const decBtn = (
       <button

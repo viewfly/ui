@@ -35,7 +35,7 @@ export function Radio(props: RadioProps) {
     if (!el.checked) return
 
     if (group) {
-      const disabled = group.disabled() || (props.disabled ?? false)
+      const disabled = group.disabled.value || (props.disabled ?? false)
       if (disabled) return
       group.select(props.value ?? 'on')
       return
@@ -57,10 +57,10 @@ export function Radio(props: RadioProps) {
     const { disabled: propDisabled = false, children, id, name, value = 'on' } = props
 
     if (group) {
-      const disabled = group.disabled() || propDisabled
-      const checkedAttr = group.selected() === value
+      const disabled = group.disabled.value || propDisabled
+      const checkedAttr = group.selected.value === value
       const disabledMod = disabled ? ' vfui-radio--disabled' : ''
-      const isButton = group.optionType() === 'button'
+      const isButton = group.optionType.value === 'button'
 
       if (isButton) {
         return (
@@ -71,7 +71,7 @@ export function Radio(props: RadioProps) {
               class="vfui-radio__input"
               checked={checkedAttr}
               disabled={disabled}
-              name={group.name()}
+              name={group.name.value}
               value={value}
               onChange={onNativeChange}
             />
@@ -88,7 +88,7 @@ export function Radio(props: RadioProps) {
             class="vfui-radio__input"
             checked={checkedAttr}
             disabled={disabled}
-            name={group.name()}
+            name={group.name.value}
             value={value}
             onChange={onNativeChange}
           />

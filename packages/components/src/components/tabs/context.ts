@@ -1,13 +1,13 @@
-import { createContextProvider, InjectionToken, type Signal } from '@viewfly/core'
+import { Computed, createContextProvider, InjectionToken } from '@viewfly/core'
 
 export type VfuiTabsOrientation = 'horizontal' | 'vertical'
 
 /** Tabs 通过 DI 下发给 TabList / Tab / TabPanel；内含 Signal，请在渲染中调用以建立订阅 */
 export interface VfuiTabsContext {
-  selected: Signal<string>
+  selected: Computed<string>
   select: (value: string) => void
-  disabled: Signal<boolean>
-  orientation: Signal<VfuiTabsOrientation>
+  disabled: Computed<boolean>
+  orientation: Computed<VfuiTabsOrientation>
   /** 用于 Tab / TabPanel 的 `id` 与 `aria-*` 互引用 */
   idPrefix: string
 }

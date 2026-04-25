@@ -1,5 +1,5 @@
-import type { JSXNode } from '@viewfly/core'
-import { createDerived, createSignal } from '@viewfly/core'
+import { computed, JSXNode } from '@viewfly/core'
+import { createSignal } from '@viewfly/core'
 import type { ClassNames } from '@viewfly/core'
 import type { ButtonSize } from '../button/Button'
 import type { VfuiRadioGroupContext, VfuiRadioGroupOptionType } from './context'
@@ -34,15 +34,15 @@ export function RadioGroup(props: RadioGroupProps) {
   const fallbackName = `vfui-rg-${Math.random().toString(36).slice(2, 11)}`
   const uncontrolled = createSignal<string | undefined>(props.defaultValue)
 
-  const selected = createDerived(() =>
+  const selected = computed(() =>
     props.value !== undefined ? props.value : uncontrolled(),
   )
 
-  const nameSig = createDerived(() => props.name ?? fallbackName)
+  const nameSig = computed(() => props.name ?? fallbackName)
 
-  const disabledSig = createDerived(() => props.disabled ?? false)
+  const disabledSig = computed(() => props.disabled ?? false)
 
-  const optionTypeSig = createDerived(() => props.optionType ?? 'default')
+  const optionTypeSig = computed(() => props.optionType ?? 'default')
 
   const select = (v: string) => {
     if (props.value === undefined) {
@@ -61,9 +61,9 @@ export function RadioGroup(props: RadioGroupProps) {
 
   return () => {
     const { class: groupClass, children, size = 'middle' } = props
-    const typeMod = optionTypeSig() === 'button' ? ' vfui-radio-group--button' : ''
+    const typeMod = optionTypeSig.value === 'button' ? ' vfui-radio-group--button' : ''
     const sizeMod =
-      optionTypeSig() === 'button' && size !== 'middle' ? ` vfui-radio-group--size-${size}` : ''
+      optionTypeSig.value === 'button' && size !== 'middle' ? ` vfui-radio-group--size-${size}` : ''
     const baseCls = `vfui-radio-group${typeMod}${sizeMod}`
 
     return (

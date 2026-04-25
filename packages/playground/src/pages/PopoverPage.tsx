@@ -126,7 +126,7 @@ export function PopoverPage() {
         </Space>
         <Popover
           open={externalComboOpen()}
-          getReferenceBox={() => externalComboAnchorRef.current?.getBoundingClientRect() ?? null}
+          getReferenceBox={() => externalComboAnchorRef.value?.getBoundingClientRect() ?? null}
           placement="bottom-start"
           title="外部受控 + Dropdown"
           content={
@@ -192,7 +192,7 @@ export function PopoverPage() {
         </Space>
         <Popover
           open={externalOpen()}
-          getReferenceBox={() => externalAnchorRef.current?.getBoundingClientRect() ?? externalRefBox}
+          getReferenceBox={() => externalAnchorRef.value?.getBoundingClientRect() ?? externalRefBox}
           placement="bottom-center"
           content={
             <div>

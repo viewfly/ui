@@ -1,5 +1,5 @@
-import type { JSXNode } from '@viewfly/core'
-import { createDynamicRef, createEffect, createRef, createSignal, Portal, reactive } from '@viewfly/core'
+import { JSXNode, watch } from '@viewfly/core'
+import { createDynamicRef, createRef, createSignal, Portal, reactive } from '@viewfly/core'
 import type { CSSProperties, StyleValue } from '@viewfly/platform-browser'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
 import './style.scss'
@@ -254,7 +254,7 @@ export function Popover(props: PopoverProps) {
   }
 
   const compute = () => {
-    const r = resolveReferenceRect(triggerRef.current, props.referenceBox, props.getReferenceBox)
+    const r = resolveReferenceRect(triggerRef.value, props.referenceBox, props.getReferenceBox)
     if (!r) return
     const gap = props.gap ?? 10
     const preferred = props.placement ?? 'top-center'
@@ -344,7 +344,7 @@ export function Popover(props: PopoverProps) {
     }
   })
 
-  createEffect(
+  watch(
     () => {
       if (props.open === undefined) return 'uc' as const
       if (props.disabled ?? false) return 'dis' as const
@@ -364,7 +364,7 @@ export function Popover(props: PopoverProps) {
     },
   )
 
-  createEffect(
+  watch(
     () => {
       void mounted()
       void visible()
@@ -376,7 +376,7 @@ export function Popover(props: PopoverProps) {
     },
   )
 
-  createEffect(
+  watch(
     () => {
       void mounted()
       void visible()
@@ -401,7 +401,7 @@ export function Popover(props: PopoverProps) {
     })
   }
 
-  createEffect([mounted], ([m]) => {
+  watch(mounted, (m) => {
     if (!m) return
     const onLayout = () => compute()
     window.addEventListener('resize', onLayout)
@@ -416,7 +416,7 @@ export function Popover(props: PopoverProps) {
     addScroll(window)
 
     const bindScrollParents = () => {
-      const el = triggerRef.current
+      const el = triggerRef.value
       if (!el) return
       for (const node of getScrollableAncestors(el)) {
         addScroll(node)
@@ -434,14 +434,14 @@ export function Popover(props: PopoverProps) {
     }
   })
 
-  createEffect([mounted], ([m]) => {
+  watch(mounted, (m) => {
     if (!m) return
     if ((props.trigger ?? 'click') !== 'click') return
 
     const onDocMouseDown = (ev: MouseEvent) => {
       const n = ev.target as Node | null
       if (!n) return
-      if (triggerRef.current?.contains(n)) return
+      if (triggerRef.value?.contains(n)) return
       if (panelElement?.contains(n)) return
       if (n instanceof Element) {
         const ownerDropdown = n.closest('[data-vfui-popover-owner]') as HTMLElement | null

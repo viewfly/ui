@@ -18,7 +18,7 @@ const triggerShell = (inner: JSXNode) => (
 )
 
 export function DropdownPage() {
-  const horizontalTopRef = createRef<HTMLElement>()
+  const horizontalTopRef = createRef<HTMLDivElement>()
   const dropdownClickClose = createSignal(0)
   const dropdownHoverClose = createSignal(0)
   const dropdownClickHex = createSignal<string | null>(null)
@@ -226,7 +226,7 @@ export function DropdownPage() {
           orientation="horizontal"
           horizontalAlign="left"
           horizontalPanelAlign="top"
-          getHorizontalTopMinFrom={() => horizontalTopRef.current}
+          getHorizontalTopMinFrom={() => horizontalTopRef.value}
           trigger="click"
           dropdown={wideMenu}
         >
@@ -382,7 +382,7 @@ export function DropdownPage() {
         </Dropdown>
       </section>
 
-      <Divider class="my-10" />
+      <Divider/>
       <h2 class="text-base font-semibold text-gray-900 dark:text-slate-100 mb-2">Hover / 嵌套 / 组合（调试用）</h2>
       <p class="text-sm vfui-text-muted mb-8">
         覆盖根级排他、嵌套不参与根排他、与点击混排等。后续若 hover/Portal 有回归，可在此逐项对照。

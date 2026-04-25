@@ -1,12 +1,12 @@
 import {
   Component,
   computed,
-  createDynamicRef, createEffect,
+  createDynamicRef,
   createRef,
   createSignal, getCurrentInstance, inject,
   onMounted,
   Portal,
-  reactive
+  reactive, watch
 } from '@viewfly/core'
 import { fromEvent, Subscription } from '@tanbo/stream'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
@@ -35,13 +35,13 @@ export function Dropdown(props: DropdownProps) {
     placement: 'bottom' as 'top' | 'bottom' | 'left' | 'right',
   })
   /** 触发器元素（作为定位参考） */
-  const triggerRef = createRef<HTMLElement>()
+  const triggerRef = createRef<HTMLDivElement>()
   /** 面板元素（用于读取面板宽高） */
   let panelElement: HTMLElement | null = null
   let ownerPopoverId: string | null = null
 
   const computeLayout = () => {
-    const el = triggerRef.current
+    const el = triggerRef.value
     if (!el) return
     const gap = props.gap ?? 10
     const orientation = props.orientation ?? 'vertical'
@@ -71,7 +71,7 @@ export function Dropdown(props: DropdownProps) {
    * - trigger 的可滚动祖先滚动
    */
   onMounted(() => {
-    const triggerEl = triggerRef.current!
+    const triggerEl = triggerRef.value!
     ownerPopoverId = resolveOwnerPopoverId(triggerEl)
     const onLayout = () => computeLayout()
     window.addEventListener('resize', onLayout)
@@ -123,11 +123,11 @@ export function Dropdown(props: DropdownProps) {
 
   const parentNest = inject(VfuiDropdownNestToken, null)
 
-  createEffect(expanded, (v) => {
+  watch(expanded, (v) => {
     v ? parentNest?.onSubDropdownOpened() : parentNest?.onSubDropdownClosed()
     props.onOpenChange?.(v)
   })
-  createEffect(() => props.closeTick?.(), () => {
+  watch(() => props.closeTick?.(), () => {
     expanded.set(false)
   })
 
@@ -137,7 +137,7 @@ export function Dropdown(props: DropdownProps) {
       expanded.set(false)
     }
   })
-  createEffect(expanded, (v) => {
+  watch(expanded, (v) => {
     if (v) {
       dropdownCloseRecord.forEach((close, comp) => {
         if (comp !== instance) {

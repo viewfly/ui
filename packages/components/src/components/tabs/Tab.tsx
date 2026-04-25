@@ -22,9 +22,9 @@ export function Tab(props: TabProps) {
     }
 
     const { value, disabled: tabDisabled = false, children, class: tabClass } = props
-    const groupDisabled = tabsCtx.disabled()
+    const groupDisabled = tabsCtx.disabled.value
     const disabled = groupDisabled || tabDisabled
-    const selected = tabsCtx.selected() === value
+    const selected = tabsCtx.selected.value === value
     const tabId = `${tabsCtx.idPrefix}-tab-${value}`
     const panelId = `${tabsCtx.idPrefix}-panel-${value}`
 

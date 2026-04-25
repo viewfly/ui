@@ -89,7 +89,7 @@ export function Slider(props: SliderProps) {
     if (props.disabled) return
     const min = props.min ?? 0
     const max = props.max ?? 100
-    const el = railRef.current
+    const el = railRef.value
     if (!el) return
     const rect = el.getBoundingClientRect()
     if (rect.width <= 0) return

@@ -1,5 +1,5 @@
-import type { JSXNode } from '@viewfly/core'
-import { createDerived, createSignal } from '@viewfly/core'
+import { computed, JSXNode } from '@viewfly/core'
+import { createSignal } from '@viewfly/core'
 import type { ClassNames } from '@viewfly/core'
 import type { VfuiTabsContext, VfuiTabsOrientation } from './context'
 import { VfuiTabsProvider } from './context'
@@ -24,13 +24,13 @@ export function Tabs(props: TabsProps) {
   const idPrefix = `vfui-tabs-${Math.random().toString(36).slice(2, 11)}`
   const uncontrolled = createSignal(props.defaultValue ?? '')
 
-  const selected = createDerived(() =>
+  const selected = computed(() =>
     props.value !== undefined ? props.value : uncontrolled(),
   )
 
-  const disabledSig = createDerived(() => props.disabled ?? false)
+  const disabledSig = computed(() => props.disabled ?? false)
 
-  const orientationSig = createDerived(() => props.orientation ?? 'horizontal')
+  const orientationSig = computed(() => props.orientation ?? 'horizontal')
 
   const select = (v: string) => {
     if (props.value === undefined) {
@@ -49,7 +49,7 @@ export function Tabs(props: TabsProps) {
 
   return () => {
     const { class: rootClass, children } = props
-    const orient = orientationSig()
+    const orient = orientationSig.value
     const orientMod = orient === 'vertical' ? ' vfui-tabs--vertical' : ''
     const baseCls = `vfui-tabs${orientMod}`
 

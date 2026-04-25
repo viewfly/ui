@@ -1,5 +1,5 @@
-import type { JSXNode } from '@viewfly/core'
-import { createDerived, createSignal } from '@viewfly/core'
+import { computed, JSXNode } from '@viewfly/core'
+import { createSignal } from '@viewfly/core'
 import { IconGlyph } from '@viewfly/ui-icons'
 import type { ClassNames } from '@viewfly/core'
 import { Dropdown } from '../dropdown/Dropdown'
@@ -40,7 +40,7 @@ export interface SelectProps {
 
 export function Select(props: SelectProps) {
   const uncontrolled = createSignal<string | undefined>(props.defaultValue)
-  const selected = createDerived(() =>
+  const selected = computed(() =>
     props.value !== undefined ? props.value : uncontrolled(),
   )
   const closeTick = createSignal(0)
@@ -72,7 +72,7 @@ export function Select(props: SelectProps) {
       getContainer,
     } = props
 
-    const current = selected()
+    const current = selected.value
     const active = options.find((o) => o.value === current)
     const hasSelection = active != null
 

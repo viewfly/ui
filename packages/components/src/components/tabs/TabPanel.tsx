@@ -20,7 +20,7 @@ export function TabPanel(props: TabPanelProps) {
     }
 
     const { value, children, class: panelClass } = props
-    const active = tabsCtx.selected() === value
+    const active = tabsCtx.selected.value === value
     const tabId = `${tabsCtx.idPrefix}-tab-${value}`
     const panelId = `${tabsCtx.idPrefix}-panel-${value}`
 
