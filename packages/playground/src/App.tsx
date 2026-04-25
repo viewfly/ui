@@ -34,6 +34,9 @@ export function App() {
           <Link to="/" class={linkBase} active={linkActive} exact>
             首页
           </Link>
+          <Link to="/sandbox" class={linkBase} active={linkActive}>
+            沙盒
+          </Link>
           <Link to="/button" class={linkBase} active={linkActive}>
             Button
           </Link>

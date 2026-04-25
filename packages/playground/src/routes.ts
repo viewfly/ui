@@ -18,9 +18,11 @@ import { TabsPage } from './pages/TabsPage'
 import { IconsPage } from './pages/IconsPage'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { SandboxPage } from './pages/SandboxPage'
 
 export const routes: RouteConfig[] = [
   { path: '', component: HomePage },
+  { path: 'sandbox', component: SandboxPage },
   { path: 'button', component: ButtonPage },
   { path: 'divider', component: DividerPage },
   { path: 'input', component: InputPage },

@@ -10,6 +10,15 @@ export function HomePage() {
         通过导航栏或下方入口进入各组件子页面。
       </p>
       <ul class="grid gap-3 sm:grid-cols-2 max-w-xl">
+        <li class="sm:col-span-2">
+          <Link
+            to="/sandbox"
+            class="block rounded-xl border border-dashed border-gray-300 dark:border-slate-600 bg-gray-50/80 dark:bg-slate-800/40 px-4 py-3 hover:border-primary-400 dark:hover:border-primary-500 transition-colors"
+          >
+            <span class="font-medium text-gray-900 dark:text-slate-100">沙盒</span>
+            <span class="block text-xs vfui-text-muted mt-1">临时示例、联调与复现，不保证与正式文档一致</span>
+          </Link>
+        </li>
         <li>
           <Link
             to="/button"
