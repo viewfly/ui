@@ -24,14 +24,14 @@
     "build": "vite build"
   },
   "peerDependencies": {
-    "@viewfly/core": "3.0.0-alpha.0",
-    "@viewfly/platform-browser": "3.0.0-alpha.0",
+    "@viewfly/core": "3.0.0-alpha.1",
+    "@viewfly/platform-browser": "3.0.0-alpha.1",
     "@viewfly/ui-icons": "^0.0.3"
   },
   "devDependencies": {
     "@types/node": "^20.19.0",
-    "@viewfly/core": "3.0.0-alpha.0",
-    "@viewfly/platform-browser": "3.0.0-alpha.0",
+    "@viewfly/core": "3.0.0-alpha.1",
+    "@viewfly/platform-browser": "3.0.0-alpha.1",
     "@viewfly/ui-icons": "workspace:*",
     "sass": "^1.99.0",
     "typescript": "^6.0.3",

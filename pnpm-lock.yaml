@@ -25,11 +25,11 @@ importers:
         specifier: ^20.19.0
         version: 20.19.39
       '@viewfly/core':
-        specifier: 3.0.0-alpha.0
-        version: 3.0.0-alpha.0
+        specifier: 3.0.0-alpha.1
+        version: 3.0.0-alpha.1
       '@viewfly/platform-browser':
-        specifier: 3.0.0-alpha.0
-        version: 3.0.0-alpha.0
+        specifier: 3.0.0-alpha.1
+        version: 3.0.0-alpha.1
       '@viewfly/ui-icons':
         specifier: workspace:*
         version: link:../icons
@@ -55,11 +55,11 @@ importers:
         specifier: ^20.19.0
         version: 20.19.39
       '@viewfly/core':
-        specifier: 3.0.0-alpha.0
-        version: 3.0.0-alpha.0
+        specifier: 3.0.0-alpha.1
+        version: 3.0.0-alpha.1
       '@viewfly/platform-browser':
-        specifier: 3.0.0-alpha.0
-        version: 3.0.0-alpha.0
+        specifier: 3.0.0-alpha.1
+        version: 3.0.0-alpha.1
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -76,14 +76,14 @@ importers:
   packages/playground:
     dependencies:
       '@viewfly/core':
-        specifier: 3.0.0-alpha.0
-        version: 3.0.0-alpha.0
+        specifier: 3.0.0-alpha.1
+        version: 3.0.0-alpha.1
       '@viewfly/platform-browser':
-        specifier: 3.0.0-alpha.0
-        version: 3.0.0-alpha.0
+        specifier: 3.0.0-alpha.1
+        version: 3.0.0-alpha.1
       '@viewfly/router':
-        specifier: 3.0.0-alpha.0
-        version: 3.0.0-alpha.0
+        specifier: 3.0.0-alpha.1
+        version: 3.0.0-alpha.1
       '@viewfly/ui-components':
         specifier: workspace:*
         version: link:../components
@@ -1063,14 +1063,14 @@ packages:
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0 || ^6.0.0-0 || ^7.0.0-0 || ^8.0.0-0
 
-  '@viewfly/core@3.0.0-alpha.0':
-    resolution: {integrity: sha512-6OtJzCk8n16Est3+3cvtjfAHxTf3hr2Cr0+Hen72A6ZidG27ljVIxGVeIgOkKrL12HDRG80O4gb8kFG8j19sRA==}
+  '@viewfly/core@3.0.0-alpha.1':
+    resolution: {integrity: sha512-qS/wtQPrJAg/cGeVtchC8x6DfRZnV7JjyrW4rr0UeGRKUWTZm+T6bhpJYTRKC39AMt6i51DAFnIjNroISMVDTA==}
 
-  '@viewfly/platform-browser@3.0.0-alpha.0':
-    resolution: {integrity: sha512-wmQO1WpcJMK67ssLiyaQb2Ah4vmAcC+91aduEJYAmE9pOmn3uZZp6FzbXWcShhJAJJRu3F1svIIWu9FV8eOGWQ==}
+  '@viewfly/platform-browser@3.0.0-alpha.1':
+    resolution: {integrity: sha512-SIG78N8+Gs4cgenuyeQvElxoOrJNBYQEBtGANRQJ574im4fYejj4ljwM0ndha5Xb8I1B1IKz5frKbhzFfvNGQg==}
 
-  '@viewfly/router@3.0.0-alpha.0':
-    resolution: {integrity: sha512-0dXi3z+5awfu8SHNmLUOO/cRiR8x90fGAD0Hd28Ddy55mJbzIMOqXC51ip/Ioo50B6clSKCeLdxP/97QI5mMqg==}
+  '@viewfly/router@3.0.0-alpha.1':
+    resolution: {integrity: sha512-HxXuJrNsjPF9Asvbtv9orlMVVShSI7lhiwq3g18bITBOxEoDI8vuQAHT9dXpjbQ9QQDokHRxovGKEjIprXIuzA==}
 
   '@volar/language-core@2.4.28':
     resolution: {integrity: sha512-w4qhIJ8ZSitgLAkVay6AbcnC7gP3glYM3fYwKV3srj8m494E3xtrCv6E+bWviiK/8hs6e6t1ij1s2Endql7vzQ==}
@@ -2949,19 +2949,19 @@ snapshots:
       unplugin-utils: 0.3.1
       vite: 8.0.8(@types/node@20.19.39)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(tsx@4.21.0)
 
-  '@viewfly/core@3.0.0-alpha.0':
+  '@viewfly/core@3.0.0-alpha.1':
     dependencies:
       reflect-metadata: 0.2.2
 
-  '@viewfly/platform-browser@3.0.0-alpha.0':
+  '@viewfly/platform-browser@3.0.0-alpha.1':
     dependencies:
-      '@viewfly/core': 3.0.0-alpha.0
+      '@viewfly/core': 3.0.0-alpha.1
       csstype: 3.2.3
 
-  '@viewfly/router@3.0.0-alpha.0':
+  '@viewfly/router@3.0.0-alpha.1':
     dependencies:
       '@tanbo/stream': 1.2.7
-      '@viewfly/core': 3.0.0-alpha.0
+      '@viewfly/core': 3.0.0-alpha.1
       url: 0.11.4
 
   '@volar/language-core@2.4.28':
