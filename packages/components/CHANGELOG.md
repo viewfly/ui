@@ -1,5 +1,13 @@
 # @viewfly/ui-components
 
+## 0.0.7
+
+### Patch Changes
+
+- 增强弹窗类组件
+- Updated dependencies
+  - @viewfly/ui-icons@0.0.4
+
 ## 0.0.6
 
 ### Patch Changes
