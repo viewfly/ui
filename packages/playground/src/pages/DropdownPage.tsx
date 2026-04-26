@@ -21,6 +21,7 @@ export function DropdownPage() {
   const horizontalTopRef = createRef<HTMLDivElement>()
   const dropdownClickClose = createSignal(0)
   const dropdownHoverClose = createSignal(0)
+  const controlledOpen = createSignal(false)
   const dropdownClickHex = createSignal<string | null>(null)
   const dropdownHoverHex = createSignal<string | null>(null)
 
@@ -47,6 +48,40 @@ export function DropdownPage() {
         >
           <Button type="primary">打开菜单</Button>
         </Dropdown>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">受控模式：通过 open 外部控制</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          传入 <code class="text-xs">open</code> 后由外部状态决定显示；在{' '}
+          <code class="text-xs">onOpenChange</code> 中回写，保留点击触发与外部按钮的双向同步。
+        </p>
+        <div class="flex flex-wrap items-center gap-3">
+          <Dropdown
+            trigger="click"
+            open={controlledOpen()}
+            onOpenChange={(v) => controlledOpen.set(v)}
+            dropdown={(
+              <MenuList role="menu" class="min-w-40">
+                <MenuItem onClick={() => controlledOpen.set(false)}>关闭面板</MenuItem>
+                <MenuItem>受控项 A</MenuItem>
+                <MenuItem>受控项 B</MenuItem>
+              </MenuList>
+            )}
+          >
+            <Button type="primary">受控 Dropdown</Button>
+          </Dropdown>
+          <Button type="default" onClick={() => controlledOpen.set(!controlledOpen())}>
+            外部切换
+          </Button>
+          <Button type="default" onClick={() => controlledOpen.set(false)}>
+            外部关闭
+          </Button>
+          <span class="text-sm vfui-text-muted">
+            当前状态：
+            <span class="font-mono text-xs text-gray-900 dark:text-slate-100">{controlledOpen() ? 'open' : 'closed'}</span>
+          </span>
+        </div>
       </section>
 
       <section class="mb-10">

@@ -508,7 +508,7 @@ export function Popover(props: PopoverProps) {
         >
           {props.children}
         </span>
-        <Portal host={portalHost}>
+        <Portal container={portalHost}>
           {mounted() ? (
             <div
               ref={panelRef}

@@ -49,7 +49,7 @@ export interface DropdownProps {
   getHorizontalTopMinFrom?: () => HTMLElement | null
   /**
    * 弹出层挂载的 DOM 节点；未传时默认 `document.body`。
-   * 在子组件首次渲染时解析一次，与 `<Portal host>` 在挂载时确定容器的行为一致。
+   * 在子组件首次渲染时解析一次，与 `<Portal container>` 在挂载时确定容器的行为一致。
    */
   getContainer?: () => HTMLElement
   /** 面板与触发器之间的间距（px）：纵向为上下边距，横向为左右间距；默认 10 */

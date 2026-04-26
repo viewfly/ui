@@ -22,6 +22,9 @@ const dropdownCloseRecord = new Map<Component, () => void>()
 
 export function Dropdown(props: DropdownProps) {
   const expanded = createSignal(false)
+  const computedExpanded = computed(() => {
+    return typeof props.open === 'boolean' ? props.open : expanded()
+  })
   const triggerType = computed(() => {
     return props.trigger === 'hover' ? 'hover' : 'click'
   })
@@ -123,7 +126,7 @@ export function Dropdown(props: DropdownProps) {
 
   const parentNest = inject(VfuiDropdownNestToken, null)
 
-  watch(expanded, (v) => {
+  watch(() => computedExpanded.value, (v) => {
     v ? parentNest?.onSubDropdownOpened() : parentNest?.onSubDropdownClosed()
     props.onOpenChange?.(v)
   })
@@ -233,7 +236,7 @@ export function Dropdown(props: DropdownProps) {
     const disabledClass = disabled ? ' vfui-dropdown--disabled' : ''
     const blockClass = props.block ? ' vfui-dropdown--block' : ''
     const portalHost = props.getContainer?.() ?? defaultDropdownContainer()
-    const openCls = expanded() ? ' vfui-dropdown__panel--open' : ''
+    const openCls = computedExpanded.value ? ' vfui-dropdown__panel--open' : ''
     const compactMenuCls = props.menuColumnCompact ? ' vfui-dropdown__panel--menu-column-compact' : ''
     const animByPlacement: Record<typeof layout.placement, string> = {
       top: ' vfui-dropdown__panel--anim-top',
@@ -255,10 +258,10 @@ export function Dropdown(props: DropdownProps) {
             {props.children}
           </VfuiDropdownTriggerProvider>
         </div>
-        <Portal host={portalHost}>
+        <Portal container={portalHost}>
           <VfuiDropdownNestProvider useValue={dropdownNestContext}>
             {
-              expanded() && (
+              computedExpanded.value && (
                 <div
                   ref={panelRef}
                   data-vfui-popover-owner={ownerPopoverId ?? undefined}

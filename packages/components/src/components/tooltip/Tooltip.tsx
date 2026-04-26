@@ -59,7 +59,7 @@ export interface TooltipProps {
   flip?: boolean
   /**
    * 浮层挂载的 DOM 节点；未传时默认 `document.body`。
-   * 在子组件首次渲染时解析一次，与 `<Portal host>` 在挂载时确定容器的行为一致。
+   * 在子组件首次渲染时解析一次，与 `<Portal container>` 在挂载时确定容器的行为一致。
    */
   getContainer?: () => HTMLElement
   disabled?: boolean
@@ -497,7 +497,7 @@ export function Tooltip(props: TooltipProps) {
         >
           {props.children}
         </span>
-        <Portal host={portalHost}>
+        <Portal container={portalHost}>
           {mounted() ? (
             <div
               ref={panelRef}
