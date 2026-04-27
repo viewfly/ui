@@ -8,9 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@viewfly/core": "3.0.0-alpha.7",
-    "@viewfly/platform-browser": "3.0.0-alpha.7",
-    "@viewfly/router": "3.0.0-alpha.7",
+    "@viewfly/core": "^3.0.0-alpha.8",
+    "@viewfly/platform-browser": "^3.0.0-alpha.8",
+    "@viewfly/router": "^3.0.0-alpha.8",
     "@viewfly/ui-components": "workspace:*",
     "@viewfly/ui-icons": "workspace:*",
     "@viewfly/ui-utils": "workspace:*"
