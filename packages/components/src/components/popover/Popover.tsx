@@ -1,4 +1,4 @@
-import { JSXNode, watch } from '@viewfly/core'
+import { JSXNode, onMounted, watch } from '@viewfly/core'
 import { createDynamicRef, createRef, createSignal, Portal, reactive } from '@viewfly/core'
 import type { CSSProperties, StyleValue } from '@viewfly/platform-browser'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
@@ -238,6 +238,8 @@ export function Popover(props: PopoverProps) {
 
   let openTimer: ReturnType<typeof setTimeout> | undefined
   let closeTimer: ReturnType<typeof setTimeout> | undefined
+  let cleanupLayoutListeners: (() => void) | null = null
+  let cleanupDocMouseDown: (() => void) | null = null
 
   const clearOpen = () => {
     if (openTimer != null) {
@@ -402,6 +404,9 @@ export function Popover(props: PopoverProps) {
   }
 
   watch(mounted, (m) => {
+    cleanupLayoutListeners?.()
+    cleanupLayoutListeners = null
+
     if (!m) return
     const onLayout = () => compute()
     window.addEventListener('resize', onLayout)
@@ -426,7 +431,7 @@ export function Popover(props: PopoverProps) {
     queueMicrotask(bindScrollParents)
     requestAnimationFrame(bindScrollParents)
 
-    return () => {
+    cleanupLayoutListeners = () => {
       window.removeEventListener('resize', onLayout)
       for (const t of scrollTargets) {
         t.removeEventListener('scroll', onLayout, true)
@@ -435,6 +440,9 @@ export function Popover(props: PopoverProps) {
   })
 
   watch(mounted, (m) => {
+    cleanupDocMouseDown?.()
+    cleanupDocMouseDown = null
+
     if (!m) return
     if ((props.trigger ?? 'click') !== 'click') return
 
@@ -451,7 +459,18 @@ export function Popover(props: PopoverProps) {
     }
 
     document.addEventListener('mousedown', onDocMouseDown, true)
-    return () => document.removeEventListener('mousedown', onDocMouseDown, true)
+    cleanupDocMouseDown = () => document.removeEventListener('mousedown', onDocMouseDown, true)
+  })
+
+  onMounted(() => {
+    return () => {
+      clearOpen()
+      clearClose()
+      cleanupLayoutListeners?.()
+      cleanupLayoutListeners = null
+      cleanupDocMouseDown?.()
+      cleanupDocMouseDown = null
+    }
   })
 
   return () => {

@@ -1,4 +1,4 @@
-import { JSXNode, watch } from '@viewfly/core'
+import { JSXNode, onMounted, watch } from '@viewfly/core'
 import { createDynamicRef, createRef, createSignal, Portal, reactive } from '@viewfly/core'
 import type { CSSProperties, StyleValue } from '@viewfly/platform-browser'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
@@ -257,6 +257,7 @@ export function Tooltip(props: TooltipProps) {
 
   let openTimer: ReturnType<typeof setTimeout> | undefined
   let closeTimer: ReturnType<typeof setTimeout> | undefined
+  let cleanupLayoutListeners: (() => void) | null = null
 
   const clearOpen = () => {
     if (openTimer != null) {
@@ -400,6 +401,9 @@ export function Tooltip(props: TooltipProps) {
   )
 
   watch(mounted, (m) => {
+    cleanupLayoutListeners?.()
+    cleanupLayoutListeners = null
+
     if (!m) return
     const onLayout = () => compute()
     window.addEventListener('resize', onLayout)
@@ -424,11 +428,20 @@ export function Tooltip(props: TooltipProps) {
     queueMicrotask(bindScrollParents)
     requestAnimationFrame(bindScrollParents)
 
-    return () => {
+    cleanupLayoutListeners = () => {
       window.removeEventListener('resize', onLayout)
       for (const t of scrollTargets) {
         t.removeEventListener('scroll', onLayout, true)
       }
+    }
+  })
+
+  onMounted(() => {
+    return () => {
+      clearOpen()
+      clearClose()
+      cleanupLayoutListeners?.()
+      cleanupLayoutListeners = null
     }
   })
 
