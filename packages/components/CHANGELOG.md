@@ -1,5 +1,13 @@
 # @viewfly/ui-components
 
+## 0.0.9
+
+### Patch Changes
+
+- 升级依赖
+- Updated dependencies
+  - @viewfly/ui-icons@0.0.9
+
 ## 0.0.8
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @viewfly/ui-icons
 
+## 0.0.9
+
+### Patch Changes
+
+- 升级依赖
+
 ## 0.0.5
 
 ### Patch Changes
