@@ -42,8 +42,10 @@ export function Dropdown(props: DropdownProps) {
   /** 面板元素（用于读取面板宽高） */
   let panelElement: HTMLElement | null = null
   let ownerPopoverId: string | null = null
+  let cleanupLayoutFollow: (() => void) | null = null
 
   const computeLayout = () => {
+    if (!computedExpanded.value) return
     const el = triggerRef.value
     if (!el) return
     const gap = props.gap ?? 10
@@ -68,14 +70,9 @@ export function Dropdown(props: DropdownProps) {
     })
   }
 
-  /**
-   * 保留“定位跟随”：
-   * - 视口 resize
-   * - trigger 的可滚动祖先滚动
-   */
-  onMounted(() => {
-    const triggerEl = triggerRef.value!
-    ownerPopoverId = resolveOwnerPopoverId(triggerEl)
+  const bindLayoutFollow = () => {
+    const triggerEl = triggerRef.value
+    if (!triggerEl) return null
     const onLayout = () => computeLayout()
     window.addEventListener('resize', onLayout)
 
@@ -98,11 +95,28 @@ export function Dropdown(props: DropdownProps) {
     requestAnimationFrame(bindScrollParents)
 
     return () => {
-      clearTimeout(leaveTimer)
       window.removeEventListener('resize', onLayout)
       for (const t of scrollTargets) {
         t.removeEventListener('scroll', onLayout, true)
       }
+    }
+  }
+
+  /**
+   * 定位跟随仅在展开时启用：
+   * - 视口 resize
+   * - trigger 的可滚动祖先滚动
+   */
+  onMounted(() => {
+    const triggerEl = triggerRef.value
+    if (triggerEl) {
+      ownerPopoverId = resolveOwnerPopoverId(triggerEl)
+    }
+
+    return () => {
+      clearTimeout(leaveTimer)
+      cleanupLayoutFollow?.()
+      cleanupLayoutFollow = null
     }
   })
 
@@ -127,6 +141,15 @@ export function Dropdown(props: DropdownProps) {
   const parentNest = inject(VfuiDropdownNestToken, null)
 
   watch(() => computedExpanded.value, (v) => {
+    if (v) {
+      if (!cleanupLayoutFollow) {
+        cleanupLayoutFollow = bindLayoutFollow()
+      }
+      queueMicrotask(computeLayout)
+    } else {
+      cleanupLayoutFollow?.()
+      cleanupLayoutFollow = null
+    }
     v ? parentNest?.onSubDropdownOpened() : parentNest?.onSubDropdownClosed()
     props.onOpenChange?.(v)
   })
