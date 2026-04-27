@@ -1,5 +1,11 @@
 # @viewfly/ui-icons
 
+## 0.0.5
+
+### Patch Changes
+
+- 修复 viewfly 升级引起的 bug
+
 ## 0.0.4
 
 ### Patch Changes
