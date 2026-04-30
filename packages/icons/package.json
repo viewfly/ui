@@ -22,7 +22,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "prepublishOnly": "pnpm run build"
   },
   "peerDependencies": {
     "@viewfly/core": "^3.0.0-alpha.8",

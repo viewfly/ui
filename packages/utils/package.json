@@ -17,7 +17,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
     "@types/node": "^20.19.0",
