@@ -1,6 +1,5 @@
 import { createSignal } from '@viewfly/core'
 import { Link, RouterOutlet } from '@viewfly/router'
-import { routes } from './routes'
 
 const linkBase =
   'block rounded-md px-3 py-2 text-sm text-gray-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700/80 transition-colors'
@@ -91,7 +90,7 @@ export function App() {
         </nav>
 
         <main class="flex-1 min-w-0">
-          <RouterOutlet config={routes} />
+          <RouterOutlet>未匹配到路由</RouterOutlet>
         </main>
       </div>
     </div>

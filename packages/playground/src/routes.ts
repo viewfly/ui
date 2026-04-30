@@ -1,4 +1,3 @@
-import type { RouteConfig } from '@viewfly/router'
 import { ButtonPage } from './pages/ButtonPage'
 import { DividerPage } from './pages/DividerPage'
 import { InputPage } from './pages/InputPage'
@@ -20,7 +19,7 @@ import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { SandboxPage } from './pages/SandboxPage'
 
-export const routes: RouteConfig[] = [
+export const routes = [
   { path: '', component: HomePage },
   { path: 'sandbox', component: SandboxPage },
   { path: 'button', component: ButtonPage },
