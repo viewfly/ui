@@ -1,4 +1,4 @@
-import { DROPDOWN_VIEWPORT_EDGE } from './dropdown-constants'
+import { DROPDOWN_VERTICAL_SWITCH_THRESHOLD, DROPDOWN_VIEWPORT_EDGE } from './dropdown-constants'
 import type {
   DropdownHorizontalAlign,
   DropdownHorizontalPanelAlign,
@@ -15,6 +15,7 @@ export interface DropdownLayoutPatch {
   top: number
   left: number
   minWidth: number
+  maxHeight: number
   placement: 'top' | 'bottom' | 'left' | 'right'
 }
 
@@ -51,7 +52,10 @@ export function computeDropdownLayout(args: {
   const pad = DROPDOWN_VIEWPORT_EDGE
   const relaxViewportClamp = !triggerFullyInViewport(r, vw, vh)
 
-  const panelH = panelElement?.offsetHeight ?? 0
+  // 使用内容固有高度参与放置判断，避免 maxHeight 生效后以“当前裁剪高度”反复决策造成抖动
+  const panelH = panelElement
+    ? Math.max(panelElement.offsetHeight, panelElement.scrollHeight)
+    : 0
   const panelW = panelElement?.offsetWidth ?? r.width
   const effW = Math.max(panelW, r.width)
   const effH = Math.max(panelH, 1)
@@ -76,15 +80,22 @@ export function computeDropdownLayout(args: {
     } else {
       top = r.bottom - hForAlign
     }
-    const maxTop = vh - pad - hForAlign
     const refEl = getHorizontalTopMinFrom?.()
-    if (relaxViewportClamp) {
-      if (refEl != null) {
-        top = Math.max(top, refEl.getBoundingClientRect().top)
-      }
+    // 横向弹出在滚动过程中始终使用同一套 top 夹紧逻辑，避免跳变。
+    // 默认以触发器为参考；若提供 getHorizontalTopMinFrom 则改用该参考元素。
+    // - 向上最多到「面板底边 = 参考元素底边」（top = ref.bottom - panelH）
+    // - 向下最多到「面板顶边 = 参考元素顶边」（top = ref.top）
+    // 再与视口边界共同夹紧，确保不越界。
+    const refRect = refEl?.getBoundingClientRect() ?? r
+    let minTop = pad
+    let maxTop = vh - pad - hForAlign
+    minTop = Math.max(minTop, refRect.bottom - hForAlign)
+    maxTop = Math.min(maxTop, refRect.top)
+    if (minTop <= maxTop) {
+      top = Math.min(maxTop, Math.max(top, minTop))
     } else {
-      const floorTop = refEl != null ? Math.max(pad, refEl.getBoundingClientRect().top) : pad
-      top = Math.min(maxTop, Math.max(top, floorTop))
+      // 夹紧区间倒挂时选择更接近当前 top 的边界，避免突兀跳跃。
+      top = Math.abs(top - minTop) <= Math.abs(top - maxTop) ? minTop : maxTop
     }
 
     const placeLeft = (w: number) => {
@@ -151,8 +162,24 @@ export function computeDropdownLayout(args: {
         top = r.top - gap - panelH
         if (!relaxViewportClamp && top < pad) top = pad
       } else {
-        placement = 'bottom'
-        top = r.bottom + gap
+        // 上下都放不全时采用「下方优先」：
+        // - 下方可用高度 >= 阈值：强制放下方（可从 top 回切）
+        // - 下方可用高度 < 阈值：仅在上方空间更大时放上方
+        const currentVerticalPlacement = layout.placement === 'top' ? 'top' : 'bottom'
+        const bottomEnough = spaceBelow >= DROPDOWN_VERTICAL_SWITCH_THRESHOLD
+        const nextVerticalPlacement = bottomEnough
+          ? 'bottom'
+          : (spaceAbove > spaceBelow ? 'top' : 'bottom')
+        const shouldSwitch = nextVerticalPlacement !== currentVerticalPlacement
+
+        placement = shouldSwitch ? nextVerticalPlacement : currentVerticalPlacement
+        if (placement === 'top') {
+          placement = 'top'
+          top = pad
+        } else {
+          placement = 'bottom'
+          top = r.bottom + gap
+        }
       }
     } else {
       placement = 'bottom'
@@ -182,5 +209,10 @@ export function computeDropdownLayout(args: {
   layout.top = top
   layout.left = left
   layout.minWidth = r.width
+  if (placement === 'top') {
+    layout.maxHeight = Math.max(0, r.top - gap - pad)
+  } else {
+    layout.maxHeight = Math.max(0, vh - pad - top)
+  }
   layout.placement = placement
 }

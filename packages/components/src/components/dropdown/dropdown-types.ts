@@ -54,6 +54,8 @@ export interface DropdownProps {
   getContainer?: () => HTMLElement
   /** 面板与触发器之间的间距（px）：纵向为上下边距，横向为左右间距；默认 10 */
   gap?: number
+  /** 面板最大高度（px），默认 400；会与视口可用高度取更小值 */
+  maxHeight?: number
   open?: boolean
   disabled?: boolean
   /**

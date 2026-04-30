@@ -35,6 +35,7 @@ export function Dropdown(props: DropdownProps) {
     left: 0,
     zIndex: 0,
     minWidth: 0,
+    maxHeight: 0,
     placement: 'bottom' as 'top' | 'bottom' | 'left' | 'right',
   })
   /** 触发器元素（作为定位参考） */
@@ -256,6 +257,7 @@ export function Dropdown(props: DropdownProps) {
 
   return () => {
     const disabled = props.disabled ?? false
+    const panelMaxHeight = Math.max(0, Math.min(layout.maxHeight, props.maxHeight ?? 400))
     const disabledClass = disabled ? ' vfui-dropdown--disabled' : ''
     const blockClass = props.block ? ' vfui-dropdown--block' : ''
     const portalHost = props.getContainer?.() ?? defaultDropdownContainer()
@@ -294,6 +296,7 @@ export function Dropdown(props: DropdownProps) {
                     left: `${layout.left}px`,
                     zIndex: `${layout.zIndex}`,
                     minWidth: `${layout.minWidth}px`,
+                    maxHeight: `${panelMaxHeight}px`,
                   }}
                   role="menu"
                 >

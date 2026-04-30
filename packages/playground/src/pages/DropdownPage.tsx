@@ -10,6 +10,14 @@ const wideMenu = (
   </MenuList>
 )
 
+const longMenu = (
+  <MenuList role="menu" class="min-w-56">
+    {Array.from({ length: 36 }, (_, idx) => (
+      <MenuItem>超长菜单项 {idx + 1}</MenuItem>
+    ))}
+  </MenuList>
+)
+
 /** 虚线框作「大触发区」，便于看出与面板的水平/垂直对齐 */
 const triggerShell = (inner: JSXNode) => (
   <div class="inline-flex min-h-32 min-w-44 items-center justify-center rounded-lg border border-dashed border-gray-300 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-800/40 p-2">
@@ -28,6 +36,24 @@ export function DropdownPage() {
   return () => (
     <div>
       <h2 class="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-6">Dropdown</h2>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">超长列表：视口限高 + 纵向滚动</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          下拉项较多时，面板会按当前弹出方向自动计算可用高度，与视口顶部/底部至少保持{' '}
+          <code class="text-xs">10px</code> 间距；超出部分可纵向滚动。
+        </p>
+        <div class="flex flex-wrap gap-4 items-start">
+          <Dropdown trigger="click" verticalPanelAlign="left" dropdown={longMenu}>
+            <Button type="primary">打开超长菜单（靠上）</Button>
+          </Dropdown>
+          <div class="pt-28">
+            <Dropdown trigger="click" verticalPanelAlign="left" dropdown={longMenu}>
+              <Button type="default">打开超长菜单（靠下）</Button>
+            </Dropdown>
+          </div>
+        </div>
+      </section>
 
       <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">点击触发（默认）</h3>
