@@ -1,5 +1,13 @@
 # @viewfly/ui-components
 
+## 0.0.10
+
+### Patch Changes
+
+- 优化弹出层交互
+- Updated dependencies
+  - @viewfly/ui-icons@0.0.10
+
 ## 0.0.9
 
 ### Patch Changes
