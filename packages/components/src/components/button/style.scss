@@ -175,7 +175,7 @@
 .vfui-button--variant-text.vfui-button--default {
   @apply bg-transparent border-transparent text-[var(--vfui-fg-default)];
   .dark & {
-    color: var(--vfui-fg-muted);
+    color: color-mix(in srgb, var(--vfui-fg-default) 40%, var(--vfui-fg-muted));
   }
 
   &:hover:not(:disabled):not([aria-disabled='true']) {

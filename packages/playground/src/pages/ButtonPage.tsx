@@ -78,6 +78,15 @@ export function ButtonPage() {
             点击切换（模拟条件为真）
           </Button>
         </div>
+        <div class="mt-4 rounded-lg border border-dashed border-gray-300 dark:border-slate-600 p-3">
+          <div class="text-xs vfui-text-muted mb-2">对比：default + text（正常）vs disabled（深色主题下重点看文字明度差）</div>
+          <div class="flex flex-wrap gap-2 items-center">
+            <Button variant="text">default + text</Button>
+            <Button variant="text" disabled>
+              default + text disabled
+            </Button>
+          </div>
+        </div>
       </section>
 
       <section class="mb-8">
