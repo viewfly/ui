@@ -224,6 +224,7 @@ function resolveReferenceRect(
 export function Popover(props: PopoverProps) {
   const mounted = createSignal(false)
   const visible = createSignal(false)
+  const panelInteractive = createSignal(false)
   const layout = reactive({
     top: 0,
     left: 0,
@@ -277,6 +278,7 @@ export function Popover(props: PopoverProps) {
     if (props.disabled) return
     clearOpen()
     clearClose()
+    panelInteractive.set(false)
     layout.zIndex = acquireOverlayZIndex()
     mounted.set(true)
     compute()
@@ -311,6 +313,7 @@ export function Popover(props: PopoverProps) {
     clearOpen()
     clearClose()
     const wasShown = mounted()
+    panelInteractive.set(false)
     visible.set(false)
     mounted.set(false)
     if (wasShown) {
@@ -341,7 +344,14 @@ export function Popover(props: PopoverProps) {
   const panelRef = createDynamicRef<HTMLElement>((node) => {
     panelElement = node
     compute()
+    const onPanelAnimationEnd = () => {
+      if (mounted() && visible()) {
+        panelInteractive.set(true)
+      }
+    }
+    node.addEventListener('animationend', onPanelAnimationEnd)
     return () => {
+      node.removeEventListener('animationend', onPanelAnimationEnd)
       panelElement = null
     }
   })
@@ -494,6 +504,7 @@ export function Popover(props: PopoverProps) {
       right: ' vfui-popover__panel--anim-right',
     }
     const animCls = animBySide[layout.animSide]
+    const interactiveCls = panelInteractive() ? ' vfui-popover__panel--interactive' : ''
 
     const onTriggerEnter = () => {
       if (disabled) return
@@ -533,7 +544,7 @@ export function Popover(props: PopoverProps) {
               ref={panelRef}
               data-vfui-popover-id={popoverId}
               data-placement={layout.resolvedPlacement}
-              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}${noPaddingCls}`}
+              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}${noPaddingCls}${interactiveCls}`}
               style={mergePanelStyle(
                 {
                   top: `${layout.top}px`,

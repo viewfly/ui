@@ -68,6 +68,11 @@
   opacity: 0;
   transform: translate3d(0, 0, 0);
   will-change: opacity, transform;
+  pointer-events: none;
+}
+
+.vfui-popover__panel--open.vfui-popover__panel--interactive {
+  pointer-events: auto;
 }
 
 /* 与 `.vfui-dropdown__panel` 描边一致 */

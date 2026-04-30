@@ -82,7 +82,7 @@
   pointer-events: none;
 }
 
-.vfui-dropdown__panel--open {
+.vfui-dropdown__panel--open.vfui-dropdown__panel--interactive {
   pointer-events: auto;
 }
 

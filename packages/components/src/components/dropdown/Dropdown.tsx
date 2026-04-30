@@ -22,6 +22,7 @@ const dropdownCloseRecord = new Map<Component, () => void>()
 
 export function Dropdown(props: DropdownProps) {
   const expanded = createSignal(false)
+  const panelInteractive = createSignal(false)
   const computedExpanded = computed(() => {
     return typeof props.open === 'boolean' ? props.open : expanded()
   })
@@ -143,11 +144,13 @@ export function Dropdown(props: DropdownProps) {
 
   watch(() => computedExpanded.value, (v) => {
     if (v) {
+      panelInteractive.set(false)
       if (!cleanupLayoutFollow) {
         cleanupLayoutFollow = bindLayoutFollow()
       }
       queueMicrotask(computeLayout)
     } else {
+      panelInteractive.set(false)
       cleanupLayoutFollow?.()
       cleanupLayoutFollow = null
     }
@@ -235,6 +238,11 @@ export function Dropdown(props: DropdownProps) {
       pointerInSelf = false
       triggerMouseLeave()
     }))
+    subscription.add(fromEvent(node, 'animationend').subscribe(() => {
+      if (computedExpanded.value) {
+        panelInteractive.set(true)
+      }
+    }))
 
     subscription.add(fromEvent(document, 'click').subscribe(() => {
       if (clickFromSelf) {
@@ -270,6 +278,7 @@ export function Dropdown(props: DropdownProps) {
       right: ' vfui-dropdown__panel--anim-right',
     }
     const animCls = animByPlacement[layout.placement]
+    const interactiveCls = panelInteractive() ? ' vfui-dropdown__panel--interactive' : ''
 
     return (
       <div class={`vfui-dropdown${disabledClass}${blockClass}`}>
@@ -290,7 +299,7 @@ export function Dropdown(props: DropdownProps) {
                 <div
                   ref={panelRef}
                   data-vfui-popover-owner={ownerPopoverId ?? undefined}
-                  className={`vfui-dropdown__panel${animCls}${openCls}${compactMenuCls}`}
+                  className={`vfui-dropdown__panel${animCls}${openCls}${compactMenuCls}${interactiveCls}`}
                   style={{
                     top: `${layout.top}px`,
                     left: `${layout.left}px`,

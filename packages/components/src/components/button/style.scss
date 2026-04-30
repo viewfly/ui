@@ -174,9 +174,15 @@
 // —— text：无边框弱底 ——
 .vfui-button--variant-text.vfui-button--default {
   @apply bg-transparent border-transparent text-[var(--vfui-fg-default)];
+  .dark & {
+    color: var(--vfui-fg-muted);
+  }
 
   &:hover:not(:disabled):not([aria-disabled='true']) {
     @apply bg-gray-100 dark:bg-slate-700/90 border-transparent;
+    .dark & {
+      color: var(--vfui-fg-default);
+    }
   }
 }
 

@@ -98,7 +98,7 @@ $vfui-semantic: primary, success, warning, danger, info;
   --vfui-color-info: #22d3ee;
 
   @each $name in $vfui-semantic {
-    --vfui-color-#{$name}-hover: #{str.unquote('color-mix(in srgb, var(--vfui-color-#{$name}) 22%, white)')};
+    --vfui-color-#{$name}-hover: #{str.unquote('color-mix(in srgb, var(--vfui-color-#{$name}) 88%, black)')};
   }
 
   --vfui-color-error: var(--vfui-color-danger);

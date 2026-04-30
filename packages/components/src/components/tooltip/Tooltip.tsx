@@ -243,6 +243,7 @@ let tooltipIdSeq = 0
 export function Tooltip(props: TooltipProps) {
   const mounted = createSignal(false)
   const visible = createSignal(false)
+  const panelInteractive = createSignal(false)
   const layout = reactive({
     top: 0,
     left: 0,
@@ -295,6 +296,7 @@ export function Tooltip(props: TooltipProps) {
     if (props.disabled) return
     clearOpen()
     clearClose()
+    panelInteractive.set(false)
     layout.zIndex = acquireOverlayZIndex()
     mounted.set(true)
     compute()
@@ -325,6 +327,7 @@ export function Tooltip(props: TooltipProps) {
   const closeNow = () => {
     clearOpen()
     clearClose()
+    panelInteractive.set(false)
     visible.set(false)
     mounted.set(false)
   }
@@ -345,7 +348,14 @@ export function Tooltip(props: TooltipProps) {
   const panelRef = createDynamicRef<HTMLElement>((node) => {
     panelElement = node
     compute()
+    const onPanelAnimationEnd = () => {
+      if (mounted() && visible()) {
+        panelInteractive.set(true)
+      }
+    }
+    node.addEventListener('animationend', onPanelAnimationEnd)
     return () => {
+      node.removeEventListener('animationend', onPanelAnimationEnd)
       panelElement = null
     }
   })
@@ -460,6 +470,7 @@ export function Tooltip(props: TooltipProps) {
       right: ' vfui-tooltip__panel--anim-right',
     }
     const animCls = animBySide[layout.animSide]
+    const interactiveCls = panelInteractive() ? ' vfui-tooltip__panel--interactive' : ''
 
     const onTriggerEnter = () => {
       if (disabled) return
@@ -516,7 +527,7 @@ export function Tooltip(props: TooltipProps) {
               ref={panelRef}
               id={tooltipId}
               data-placement={layout.resolvedPlacement}
-              class={`vfui-tooltip__panel${animCls}${openCls}`}
+              class={`vfui-tooltip__panel${animCls}${openCls}${interactiveCls}`}
               style={mergePanelStyle(
                 {
                   top: `${layout.top}px`,
