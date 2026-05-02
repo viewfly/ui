@@ -55,13 +55,17 @@ export function computeDropdownLayout(args: {
   const pad = DROPDOWN_VIEWPORT_EDGE
   const relaxViewportClamp = !triggerFullyInViewport(r, vw, vh)
 
-  // 使用内容固有高度参与放置判断，避免 maxHeight 生效后以“当前裁剪高度”反复决策造成抖动
-  const panelH = panelElement
+  // 内容固有高度（未扣 maxHeight）；横向对齐等仍参考完整占位需求
+  const panelIntrinsicH = panelElement
     ? Math.max(panelElement.offsetHeight, panelElement.scrollHeight)
     : 0
   const panelW = panelElement?.offsetWidth ?? r.width
   const effW = Math.max(panelW, r.width)
-  const effH = Math.max(panelH, 1)
+  const effH = Math.max(panelIntrinsicH, 1)
+  // 纵向弹出：翻面 / 定 top 时按「实际不会超过 props.maxHeight（默认 400）」的高度算，
+  // 否则向上弹出时用 scrollHeight 会把 top 抬得太高，与后续 style maxHeight 裁剪不一致。
+  const panelHVertical =
+    panelIntrinsicH > 0 ? Math.min(panelIntrinsicH, panelMaxHeightCap) : 0
 
   let top = 0
   let left = 0
@@ -74,7 +78,7 @@ export function computeDropdownLayout(args: {
     const fitsRight = panelW <= 0 || panelW <= spaceRight
     const prefer = preferAlign ?? 'left'
     const vAlign = horizontalPanelAlign ?? (isNestedInParentDropdown ? 'middle' : 'top')
-    const hForAlign = panelH > 0 ? panelH : effH
+    const hForAlign = panelIntrinsicH > 0 ? panelIntrinsicH : effH
 
     if (vAlign === 'top') {
       top = r.top
@@ -154,10 +158,10 @@ export function computeDropdownLayout(args: {
 
     // 整块落在视口内才视为 fits，避免触发器滚出视口后仍用夸大的 spaceAbove 误判 fitsAbove，把面板「贴」进可视区上半
     const fitsBelow =
-      panelH <= 0 ||
-      (anchorBottom >= vTop && anchorBottom + panelH <= vBottom)
+      panelHVertical <= 0 ||
+      (anchorBottom >= vTop && anchorBottom + panelHVertical <= vBottom)
     const fitsAbove =
-      panelH > 0 && anchorTop <= vBottom && anchorTop - panelH >= vTop
+      panelHVertical > 0 && anchorTop <= vBottom && anchorTop - panelHVertical >= vTop
 
     // 冲突分支用的「可见侧剩余空间」：锚点在视口外该侧时为 0，避免误判翻面
     let spaceBelow = Math.max(0, vBottom - anchorBottom)
@@ -165,13 +169,15 @@ export function computeDropdownLayout(args: {
     if (anchorTop > vBottom) spaceAbove = 0
     if (anchorBottom < vTop) spaceBelow = 0
 
-    if (panelH > 0) {
+    if (panelHVertical > 0) {
       if (fitsBelow) {
         placement = 'bottom'
         top = r.bottom + gap
       } else if (fitsAbove) {
         placement = 'top'
-        top = r.top - gap - panelH
+        const maxHAbove = Math.max(0, r.top - gap - pad)
+        const hOpen = Math.min(panelHVertical, maxHAbove)
+        top = r.top - gap - hOpen
       } else {
         // 上下都放不全：下方空间 ≥ 阈值则优先下方；否则比较上下可见空间；两侧都为 0 时保持当前侧（跟按钮滚出视口仍朝上展示）
         const currentVerticalPlacement = layout.placement === 'top' ? 'top' : 'bottom'
@@ -189,7 +195,7 @@ export function computeDropdownLayout(args: {
         placement = shouldSwitch ? nextVerticalPlacement : currentVerticalPlacement
         if (placement === 'top') {
           const maxHAbove = Math.max(0, r.top - gap - pad)
-          const clampedH = Math.min(panelH, maxHAbove, panelMaxHeightCap)
+          const clampedH = Math.min(panelHVertical, maxHAbove)
           top = r.top - gap - clampedH
         } else {
           placement = 'bottom'
