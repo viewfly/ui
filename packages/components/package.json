@@ -1,6 +1,6 @@
 {
   "name": "@viewfly/ui-components",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "type": "module",
   "sideEffects": [
     "**/*.scss",
@@ -27,7 +27,7 @@
   "peerDependencies": {
     "@viewfly/core": "^3.0.0",
     "@viewfly/platform-browser": "^3.0.0",
-    "@viewfly/ui-icons": "^0.0.14"
+    "@viewfly/ui-icons": "^0.0.15"
   },
   "devDependencies": {
     "@types/node": "^20.19.0",

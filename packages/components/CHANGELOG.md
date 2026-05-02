@@ -1,5 +1,12 @@
 # @viewfly/ui-components
 
+## 0.0.15
+
+### Patch Changes
+
+- 修复 Dropdown 弹出层高度计算错误
+  - @viewfly/ui-icons@0.0.15
+
 ## 0.0.14
 
 ### Patch Changes
