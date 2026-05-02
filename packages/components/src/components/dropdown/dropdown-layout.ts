@@ -221,8 +221,17 @@ export function computeDropdownLayout(args: {
   const rawBelow = vh - pad - top
   if (placement === 'top') {
     layout.maxHeight = rawAbove > 0 ? Math.min(rawAbove, vh - 2 * pad) : Math.max(0, vh - 2 * pad)
-  } else {
+  } else if (placement === 'bottom') {
     layout.maxHeight = rawBelow > 0 ? Math.min(rawBelow, vh - 2 * pad) : Math.max(0, vh - 2 * pad)
+  } else {
+    // 横向 left/right：触发器整体在视口上/下方时，不要用「相对视口留 10px」去限高；压矮 offsetHeight 会破坏底对齐等纵向贴合。
+    const triggerBelowViewport = r.top >= vh
+    const triggerAboveViewport = r.bottom <= 0
+    if (triggerBelowViewport || triggerAboveViewport) {
+      layout.maxHeight = panelMaxHeightCap
+    } else {
+      layout.maxHeight = Math.max(0, vh - 2 * pad)
+    }
   }
   layout.placement = placement
 }
