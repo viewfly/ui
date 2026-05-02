@@ -173,6 +173,10 @@ export function computeDropdownLayout(args: {
       if (fitsBelow) {
         placement = 'bottom'
         top = r.bottom + gap
+      } else if (spaceBelow >= DROPDOWN_VERTICAL_SWITCH_THRESHOLD) {
+        // 整块放不下时：只要下方剩余不低于最小可用高度，仍优先向下（靠 maxHeight 裁切 + 内部滚动），避免过早改向上弹出
+        placement = 'bottom'
+        top = r.bottom + gap
       } else if (fitsAbove) {
         placement = 'top'
         const maxHAbove = Math.max(0, r.top - gap - pad)
