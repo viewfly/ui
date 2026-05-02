@@ -1,6 +1,6 @@
 {
   "name": "@viewfly/ui-icons",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "type": "module",
   "sideEffects": [
     "**/*.css",
@@ -26,8 +26,8 @@
     "prepublishOnly": "pnpm run build"
   },
   "peerDependencies": {
-    "@viewfly/core": "^3.0.0-alpha.8",
-    "@viewfly/platform-browser": "^3.0.0-alpha.8"
+    "@viewfly/core": "^3.0.0",
+    "@viewfly/platform-browser": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.19.0",

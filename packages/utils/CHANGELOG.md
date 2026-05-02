@@ -1,5 +1,11 @@
 # @viewfly/ui-utils
 
+## 0.0.14
+
+### Patch Changes
+
+- 修复 dropdown 位置计算 bug
+
 ## 0.0.13
 
 ### Patch Changes
