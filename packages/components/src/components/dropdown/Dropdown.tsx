@@ -69,6 +69,7 @@ export function Dropdown(props: DropdownProps) {
       vw,
       vh,
       layout,
+      panelMaxHeightCap: props.maxHeight ?? 400,
     })
   }
 

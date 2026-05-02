@@ -207,6 +207,36 @@ export function DropdownPage() {
       </section>
 
       <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">超长列表（hover / click）</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          同一套长菜单：悬停用 <code class="text-xs">trigger=&quot;hover&quot;</code>，点击用{' '}
+          <code class="text-xs">trigger=&quot;click&quot;</code>（可省略，默认即为点击）。均受视口限高与纵向滚动约束。
+        </p>
+        <div class="text-xs vfui-text-muted mb-2">hover</div>
+        <div class="flex flex-wrap gap-4 items-start mb-6">
+          <Dropdown trigger="hover" verticalPanelAlign="left" dropdown={longMenu}>
+            <Button type="primary">悬停打开超长菜单（靠上）</Button>
+          </Dropdown>
+          <div class="pt-28">
+            <Dropdown trigger="hover" verticalPanelAlign="left" dropdown={longMenu}>
+              <Button type="default">悬停打开超长菜单（靠下）</Button>
+            </Dropdown>
+          </div>
+        </div>
+        <div class="text-xs vfui-text-muted mb-2">click</div>
+        <div class="flex flex-wrap gap-4 items-start">
+          <Dropdown trigger="click" verticalPanelAlign="left" dropdown={longMenu}>
+            <Button type="primary">点击打开超长菜单（靠上）</Button>
+          </Dropdown>
+          <div class="pt-28">
+            <Dropdown trigger="click" verticalPanelAlign="left" dropdown={longMenu}>
+              <Button type="default">点击打开超长菜单（靠下）</Button>
+            </Dropdown>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">菜单分组：与 Divider 组合</h3>
         <p class="text-sm vfui-text-muted mb-4">
           在 <code class="text-xs">MenuList</code> 中穿插 <code class="text-xs">Divider</code> 可快速表达分组层级。

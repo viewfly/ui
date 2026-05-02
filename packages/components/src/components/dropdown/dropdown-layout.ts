@@ -33,6 +33,8 @@ export function computeDropdownLayout(args: {
   vw: number
   vh: number
   layout: DropdownLayoutPatch
+  /** 与面板 `maxHeight` 上限一致；用于「上下都放不下完整高度」时计算贴齐触发器的有效高度 */
+  panelMaxHeightCap?: number
 }): void {
   const {
     triggerRect: r,
@@ -47,6 +49,7 @@ export function computeDropdownLayout(args: {
     vw,
     vh,
     layout,
+    panelMaxHeightCap = 400,
   } = args
 
   const pad = DROPDOWN_VIEWPORT_EDGE
@@ -143,39 +146,51 @@ export function computeDropdownLayout(args: {
       if (left > maxLeft) left = Math.max(pad, maxLeft)
     }
   } else {
-    const spaceBelow = vh - pad - (r.bottom + gap)
-    const spaceAbove = r.top - gap - pad
+    // 视口内可用竖直区间 [vTop, vBottom]；锚点相对于触发器，用于判断「整块面板是否真正落在视口内」
+    const vTop = pad
+    const vBottom = vh - pad
+    const anchorTop = r.top - gap // 向上展开时面板底边
+    const anchorBottom = r.bottom + gap // 向下展开时面板顶边
 
-    const fitsBelow = panelH <= 0 || panelH <= spaceBelow
-    const fitsAbove = panelH > 0 && panelH <= spaceAbove
+    // 整块落在视口内才视为 fits，避免触发器滚出视口后仍用夸大的 spaceAbove 误判 fitsAbove，把面板「贴」进可视区上半
+    const fitsBelow =
+      panelH <= 0 ||
+      (anchorBottom >= vTop && anchorBottom + panelH <= vBottom)
+    const fitsAbove =
+      panelH > 0 && anchorTop <= vBottom && anchorTop - panelH >= vTop
+
+    // 冲突分支用的「可见侧剩余空间」：锚点在视口外该侧时为 0，避免误判翻面
+    let spaceBelow = Math.max(0, vBottom - anchorBottom)
+    let spaceAbove = Math.max(0, anchorTop - vTop)
+    if (anchorTop > vBottom) spaceAbove = 0
+    if (anchorBottom < vTop) spaceBelow = 0
 
     if (panelH > 0) {
       if (fitsBelow) {
         placement = 'bottom'
         top = r.bottom + gap
-        if (!relaxViewportClamp) {
-          const maxTop = vh - pad - panelH
-          if (top > maxTop) top = Math.max(pad, maxTop)
-        }
       } else if (fitsAbove) {
         placement = 'top'
         top = r.top - gap - panelH
-        if (!relaxViewportClamp && top < pad) top = pad
       } else {
-        // 上下都放不全时采用「下方优先」：
-        // - 下方可用高度 >= 阈值：强制放下方（可从 top 回切）
-        // - 下方可用高度 < 阈值：仅在上方空间更大时放上方
+        // 上下都放不全：下方空间 ≥ 阈值则优先下方；否则比较上下可见空间；两侧都为 0 时保持当前侧（跟按钮滚出视口仍朝上展示）
         const currentVerticalPlacement = layout.placement === 'top' ? 'top' : 'bottom'
         const bottomEnough = spaceBelow >= DROPDOWN_VERTICAL_SWITCH_THRESHOLD
-        const nextVerticalPlacement = bottomEnough
-          ? 'bottom'
-          : (spaceAbove > spaceBelow ? 'top' : 'bottom')
+        let nextVerticalPlacement: 'top' | 'bottom'
+        if (spaceAbove === 0 && spaceBelow === 0) {
+          nextVerticalPlacement = currentVerticalPlacement
+        } else if (bottomEnough) {
+          nextVerticalPlacement = 'bottom'
+        } else {
+          nextVerticalPlacement = spaceAbove > spaceBelow ? 'top' : 'bottom'
+        }
         const shouldSwitch = nextVerticalPlacement !== currentVerticalPlacement
 
         placement = shouldSwitch ? nextVerticalPlacement : currentVerticalPlacement
         if (placement === 'top') {
-          placement = 'top'
-          top = pad
+          const maxHAbove = Math.max(0, r.top - gap - pad)
+          const clampedH = Math.min(panelH, maxHAbove, panelMaxHeightCap)
+          top = r.top - gap - clampedH
         } else {
           placement = 'bottom'
           top = r.bottom + gap
@@ -195,24 +210,19 @@ export function computeDropdownLayout(args: {
     } else {
       left = r.right - wForAlign
     }
-    if (!relaxViewportClamp) {
-      const minLeft = pad
-      const maxLeft = vw - pad - wForAlign
-      if (maxLeft >= minLeft) {
-        left = Math.min(Math.max(left, minLeft), maxLeft)
-      } else {
-        left = minLeft
-      }
-    }
+    // 纵向弹出：水平方向同样跟随触发器，避免滚出视口时被夹到窗口侧边导致「脱离」按钮
   }
 
   layout.top = top
   layout.left = left
   layout.minWidth = r.width
+  // maxHeight：开口方向上的可用空间；负值表示锚点已离开视口该侧，不压成 0（否则条塌掉），用 vh 作上限交给外层 min(props.maxHeight)
+  const rawAbove = r.top - gap - pad
+  const rawBelow = vh - pad - top
   if (placement === 'top') {
-    layout.maxHeight = Math.max(0, r.top - gap - pad)
+    layout.maxHeight = rawAbove > 0 ? Math.min(rawAbove, vh - 2 * pad) : Math.max(0, vh - 2 * pad)
   } else {
-    layout.maxHeight = Math.max(0, vh - pad - top)
+    layout.maxHeight = rawBelow > 0 ? Math.min(rawBelow, vh - 2 * pad) : Math.max(0, vh - 2 * pad)
   }
   layout.placement = placement
 }
