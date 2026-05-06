@@ -4,7 +4,7 @@ import {
   createDynamicRef,
   createRef,
   createSignal, getCurrentInstance, inject,
-  onMounted,
+  onMounted, onUnmounted,
   Portal,
   reactive, watch
 } from '@viewfly/core'
@@ -129,6 +129,7 @@ export function Dropdown(props: DropdownProps) {
   function triggerMouseEnter() {
     if (props.disabled || triggerType.value !== 'hover') return
     expanded.set(true)
+    parentNest?.onSubDropdownOpened()
     clearTimeout(leaveTimer)
   }
 
@@ -167,6 +168,9 @@ export function Dropdown(props: DropdownProps) {
     if (triggerType.value === 'hover' && canHide) {
       expanded.set(false)
     }
+  })
+  onUnmounted(() => {
+    dropdownCloseRecord.delete(instance)
   })
   watch(expanded, (v) => {
     if (v) {
