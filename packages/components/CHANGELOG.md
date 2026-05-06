@@ -1,5 +1,13 @@
 # @viewfly/ui-components
 
+## 0.0.16
+
+### Patch Changes
+
+- 修复 Dropdown hover 时意外关闭上层的 bug
+- Updated dependencies
+  - @viewfly/ui-icons@0.0.16
+
 ## 0.0.15
 
 ### Patch Changes
