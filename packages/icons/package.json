@@ -26,8 +26,8 @@
     "prepublishOnly": "pnpm run build"
   },
   "peerDependencies": {
-    "@viewfly/core": "^3.0.0",
-    "@viewfly/platform-browser": "^3.0.0"
+    "@viewfly/core": "^3.0.2",
+    "@viewfly/platform-browser": "^3.0.2"
   },
   "devDependencies": {
     "@types/node": "^20.19.0",
