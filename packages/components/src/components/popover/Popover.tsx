@@ -149,10 +149,7 @@ function computeLayout(
   pw: number,
   ph: number,
   gap: number,
-  vw: number,
-  vh: number,
 ) {
-  const pad = VIEWPORT_EDGE
   const { side, align } = parsePlacement(placement)
   let top = 0
   let left = 0
@@ -178,17 +175,6 @@ function computeLayout(
     else if (align === 'center') top = r.top + (r.height - ph) / 2
     else top = r.bottom - ph
   }
-
-  const effW = Math.max(pw, 1)
-  const effH = Math.max(ph, 1)
-  const minL = pad
-  const maxL = vw - pad - effW
-  const minT = pad
-  const maxT = vh - pad - effH
-  if (maxL >= minL) left = Math.min(Math.max(left, minL), maxL)
-  else left = minL
-  if (maxT >= minT) top = Math.min(Math.max(top, minT), maxT)
-  else top = minT
 
   return { top, left, animSide: side, placement }
 }
@@ -268,7 +254,7 @@ export function Popover(props: PopoverProps) {
     const pw = panelElement?.offsetWidth ?? 0
     const ph = panelElement?.offsetHeight ?? 0
     const chosen = resolvePlacementWithFlip(preferred, flipEnabled, r, pw, ph, gap, vw, vh, VIEWPORT_EDGE)
-    const { top, left, animSide, placement: resolved } = computeLayout(chosen, r, pw, ph, gap, vw, vh)
+    const { top, left, animSide, placement: resolved } = computeLayout(chosen, r, pw, ph, gap)
     layout.top = top
     layout.left = left
     layout.animSide = animSide
