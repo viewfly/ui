@@ -2,6 +2,7 @@ import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import UnoCSS from 'unocss/vite'
 import checker from 'vite-plugin-checker'
+import { viewflyHmrPlugin } from '@viewfly/devtools/vite-viewfly-hmr-plugin'
 
 export default defineConfig({
   resolve: {
@@ -16,6 +17,7 @@ export default defineConfig({
     jsxImportSource: '@viewfly/core',
   },
   plugins: [
+    viewflyHmrPlugin(),
     UnoCSS(),
     checker({
       typescript: {
