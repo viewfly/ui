@@ -298,7 +298,7 @@
   }
 }
 
-.dark .vfui-color-picker__swatches > div:not(.vfui-color-picker__swatch--current) {
+.vfui-dark .vfui-color-picker__swatches > div:not(.vfui-color-picker__swatch--current) {
   box-shadow:
     0 1px 2px rgb(0 0 0 / 0.28),
     0 2px 5px rgb(0 0 0 / 0.32);

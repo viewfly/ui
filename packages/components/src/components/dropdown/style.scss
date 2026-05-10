@@ -71,7 +71,7 @@
   @apply bg-white dark:bg-slate-800;
   @apply text-left text-sm text-gray-800 dark:text-slate-100;
   border: 1px solid #d1d5db;
-  .dark & {
+  .vfui-dark & {
     border-color: #64748b;
   }
   box-sizing: border-box;

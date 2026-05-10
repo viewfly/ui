@@ -10,7 +10,7 @@ export function App() {
   const dark = createSignal(false)
 
   return () => (
-    <div class={dark() ? 'min-h-screen dark' : 'min-h-screen'}>
+    <div class={dark() ? 'min-h-screen vfui-dark' : 'min-h-screen'}>
       <div class="vfui-page p-6 md:p-8 font-sans transition-colors duration-200">
       <header class="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div class="flex items-center gap-3">

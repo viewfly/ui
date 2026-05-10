@@ -78,7 +78,11 @@ export default defineConfig({
   transformers: [transformerDirectives()],
   presets: [
     presetWind3({
-      dark: 'class',
+      // 避免与常见 `.dark` 冲突；与 `_theme.scss` 中 `.vfui-dark` 一致
+      dark: {
+        dark: '.vfui-dark',
+        light: '.vfui-light',
+      },
     }),
   ],
   theme: {

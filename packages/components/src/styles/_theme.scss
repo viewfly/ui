@@ -3,7 +3,7 @@
 
 $vfui-semantic: primary, success, warning, danger, info;
 
-// Design tokens：浅色在 :root；深色在 .dark 上（可挂在 html 或任意祖先，子树继承 CSS 变量）。
+// Design tokens：浅色在 :root；深色在 .vfui-dark 上（可挂在 html 或任意祖先，子树继承 CSS 变量）。
 // 主色与语义色的 hover 使用 color-mix + var()，在任意祖先上覆写如 --vfui-color-primary 时，子树内会随该色重算（无需为每个子 token 手抄一遍）。
 
 // —— 浅色：默认写在 :root，也可在任意祖先上覆写同名字段
@@ -87,7 +87,7 @@ $vfui-semantic: primary, success, warning, danger, info;
   --vfui-btn-default-hover-border: #9ca3af;
 }
 
-.dark {
+.vfui-dark {
   color-scheme: dark;
 
   // 深色模式下的基色（可在子树中覆写基色 token，派生色仍从 color-mix 重算）
