@@ -59,11 +59,12 @@
 }
 
 .vfui-popover__panel {
-  --vfui-popover-arrow-fill: #ffffff;
+  --vfui-popover-arrow-fill: var(--vfui-surface);
 
   @apply fixed z-[60] min-w-[220px] rounded-lg px-4 py-3 shadow-lg;
-  @apply bg-white text-gray-800;
-  @apply dark:bg-slate-800 dark:text-slate-100;
+  /* 与 Dropdown：Portal 根节点可能自身即 `.vfui-dark`，不用 `dark:` 祖先选择器 */
+  background: var(--vfui-surface);
+  color: var(--vfui-fg-default);
   box-sizing: border-box;
   opacity: 0;
   transform: translate3d(0, 0, 0);
@@ -77,10 +78,7 @@
 
 /* 与 `.vfui-dropdown__panel` 描边一致 */
 .vfui-popover__panel:not(.vfui-popover__panel--borderless) {
-  border: 1px solid #d1d5db;
-  .vfui-dark & {
-    border-color: #64748b;
-  }
+  border: 1px solid var(--vfui-border-default);
 }
 
 .vfui-popover__panel--borderless {
@@ -91,8 +89,9 @@
   @apply p-0;
 }
 
-.vfui-dark .vfui-popover__panel {
-  --vfui-popover-arrow-fill: #1e293b;
+/* 箭头填充与面板背景一致；面板自身可为 `.vfui-popover__panel.vfui-dark` */
+.vfui-popover__panel.vfui-dark {
+  --vfui-popover-arrow-fill: var(--vfui-surface);
 }
 
 .vfui-popover__panel--no-arrow::after {
@@ -100,11 +99,13 @@
 }
 
 .vfui-popover__title {
-  @apply mb-1 text-sm leading-5 font-medium text-gray-900 dark:text-slate-50;
+  @apply mb-1 text-sm leading-5 font-medium;
+  color: var(--vfui-fg-default);
 }
 
 .vfui-popover__content {
-  @apply text-sm leading-5 text-gray-600 dark:text-slate-300;
+  @apply text-sm leading-5;
+  color: var(--vfui-fg-muted);
 }
 
 .vfui-popover__panel::after {

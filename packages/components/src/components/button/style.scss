@@ -179,7 +179,8 @@
   }
 
   &:hover:not(:disabled):not([aria-disabled='true']) {
-    @apply bg-gray-100 dark:bg-slate-700/90 border-transparent;
+    @apply border-transparent;
+    background-color: var(--vfui-btn-default-hover-bg);
     .vfui-dark & {
       color: var(--vfui-fg-default);
     }

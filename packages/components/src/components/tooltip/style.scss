@@ -61,9 +61,11 @@
 .vfui-tooltip__panel {
   --vfui-tooltip-arrow-fill: #111827;
 
-  @apply fixed z-[60] max-w-xs rounded-md px-2.5 py-1.5 text-xs leading-snug shadow-md;
-  @apply bg-gray-900 text-gray-50 border border-gray-700/80;
-  @apply dark:bg-slate-700 dark:text-slate-50 dark:border-slate-600;
+  @apply fixed z-[60] max-w-xs rounded-md px-2.5 py-1.5 text-xs leading-snug shadow-md border;
+  /* 浅色页：反色气泡；Portal 上自身 `.vfui-dark` 时不能用依赖祖先的 `dark:` */
+  background: #111827;
+  color: #f9fafb;
+  border-color: rgb(55 65 81 / 0.8);
   box-sizing: border-box;
   opacity: 0;
   transform: translate3d(0, 0, 0);
@@ -75,8 +77,11 @@
   pointer-events: auto;
 }
 
-.vfui-dark .vfui-tooltip__panel {
-  --vfui-tooltip-arrow-fill: #334155;
+.vfui-tooltip__panel.vfui-dark {
+  --vfui-tooltip-arrow-fill: var(--vfui-surface-elevated);
+  background: var(--vfui-surface-elevated);
+  color: var(--vfui-fg-default);
+  border-color: var(--vfui-border);
 }
 
 /* 指向触发器的小三角：与面板同色，随 data-placement 贴边 */

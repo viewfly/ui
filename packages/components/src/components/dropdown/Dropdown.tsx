@@ -10,6 +10,7 @@ import {
 } from '@viewfly/core'
 import { fromEvent, Subscription } from '@tanbo/stream'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
+import { resolveVfuiPortalThemeClass } from '../../utils/overlay-theme-class'
 import { computeDropdownLayout } from './dropdown-layout'
 import { defaultDropdownContainer, getScrollableAncestors, resolveOwnerPopoverId } from './dropdown-dom'
 import type { DropdownProps } from './dropdown-types'
@@ -284,6 +285,7 @@ export function Dropdown(props: DropdownProps) {
     }
     const animCls = animByPlacement[layout.placement]
     const interactiveCls = panelInteractive() ? ' vfui-dropdown__panel--interactive' : ''
+    const themePortalCls = resolveVfuiPortalThemeClass(triggerRef.value)
 
     return (
       <div class={`vfui-dropdown${disabledClass}${blockClass}`}>
@@ -304,7 +306,7 @@ export function Dropdown(props: DropdownProps) {
                 <div
                   ref={panelRef}
                   data-vfui-popover-owner={ownerPopoverId ?? undefined}
-                  className={`vfui-dropdown__panel${animCls}${openCls}${compactMenuCls}${interactiveCls}`}
+                  className={`vfui-dropdown__panel${animCls}${openCls}${compactMenuCls}${interactiveCls}${themePortalCls}`}
                   style={{
                     top: `${layout.top}px`,
                     left: `${layout.left}px`,

@@ -2,6 +2,7 @@ import { JSXNode, onMounted, watch } from '@viewfly/core'
 import { createDynamicRef, createRef, createSignal, Portal, reactive } from '@viewfly/core'
 import type { CSSProperties, StyleValue } from '@viewfly/platform-browser'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
+import { resolveVfuiPortalThemeClass } from '../../utils/overlay-theme-class'
 import './style.scss'
 
 export type PopoverPlacement =
@@ -505,6 +506,7 @@ export function Popover(props: PopoverProps) {
     }
     const animCls = animBySide[layout.animSide]
     const interactiveCls = panelInteractive() ? ' vfui-popover__panel--interactive' : ''
+    const themePortalCls = resolveVfuiPortalThemeClass(triggerRef.value)
 
     const onTriggerEnter = () => {
       if (disabled) return
@@ -544,7 +546,7 @@ export function Popover(props: PopoverProps) {
               ref={panelRef}
               data-vfui-popover-id={popoverId}
               data-placement={layout.resolvedPlacement}
-              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}${noPaddingCls}${interactiveCls}`}
+              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}${noPaddingCls}${interactiveCls}${themePortalCls}`}
               style={mergePanelStyle(
                 {
                   top: `${layout.top}px`,

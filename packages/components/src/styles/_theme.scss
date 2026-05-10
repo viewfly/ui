@@ -90,12 +90,12 @@ $vfui-semantic: primary, success, warning, danger, info;
 .vfui-dark {
   color-scheme: dark;
 
-  // 深色模式下的基色（可在子树中覆写基色 token，派生色仍从 color-mix 重算）
-  --vfui-color-primary: #4d8dff;
-  --vfui-color-success: #22c55e;
-  --vfui-color-warning: #fbbf24;
-  --vfui-color-danger: #f87171;
-  --vfui-color-info: #22d3ee;
+  // 深色：中性灰底 + 与浅色一致的品牌/语义基准，避免 slate 蓝灰底与单独提亮主色带来的「整页偏蓝」
+  --vfui-color-primary: #{v.$vfui-color-primary};
+  --vfui-color-success: #{v.$vfui-color-success};
+  --vfui-color-warning: #{v.$vfui-color-warning};
+  --vfui-color-danger: #{v.$vfui-color-danger};
+  --vfui-color-info: #{v.$vfui-color-info};
 
   @each $name in $vfui-semantic {
     --vfui-color-#{$name}-hover: #{str.unquote('color-mix(in srgb, var(--vfui-color-#{$name}) 88%, black)')};
@@ -104,54 +104,55 @@ $vfui-semantic: primary, success, warning, danger, info;
   --vfui-color-error: var(--vfui-color-danger);
   --vfui-color-error-hover: var(--vfui-color-danger-hover);
 
-  --vfui-page-bg: #020617;
-  --vfui-surface: #0f172a;
-  --vfui-surface-elevated: #1e293b;
-  --vfui-surface-muted: #0f172a;
+  // 表面：neutral 系（非 slate），嵌入其它主题页时更不易抢色
+  --vfui-page-bg: #0a0a0a;
+  --vfui-surface: #171717;
+  --vfui-surface-elevated: #262626;
+  --vfui-surface-muted: #141414;
   --vfui-overlay: rgb(0 0 0 / 55%);
 
-  --vfui-text: #f1f5f9;
+  --vfui-text: #f5f5f5;
   --vfui-fg-default: var(--vfui-text);
-  --vfui-fg-muted: #94a3b8;
-  --vfui-fg-disabled: #64748b;
-  --vfui-fg-inverse: #0f172a;
+  --vfui-fg-muted: #a3a3a3;
+  --vfui-fg-disabled: #737373;
+  --vfui-fg-inverse: #171717;
   --vfui-fg-on-primary: #ffffff;
   --vfui-fg-on-success: #ffffff;
   --vfui-fg-on-danger: #ffffff;
   --vfui-fg-on-info: #ffffff;
   --vfui-fg-on-warning: #422006;
 
-  --vfui-border: #334155;
+  --vfui-border: #404040;
   --vfui-border-default: var(--vfui-border);
-  --vfui-border-muted: #1e293b;
-  --vfui-border-strong: #475569;
+  --vfui-border-muted: #262626;
+  --vfui-border-strong: #525252;
 
   --vfui-ring-color: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 45%, transparent)')};
 
   --vfui-link-color: var(--vfui-color-primary);
-  --vfui-link-hover: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 20%, white)')};
+  --vfui-link-hover: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 22%, white)')};
 
-  --vfui-tone-success-bg: rgb(34 197 94 / 12%);
-  --vfui-tone-success-border: #166534;
+  --vfui-tone-success-bg: rgb(22 163 74 / 14%);
+  --vfui-tone-success-border: #15803d;
   --vfui-tone-success-fg: #bbf7d0;
-  --vfui-tone-warning-bg: rgb(251 191 36 / 12%);
-  --vfui-tone-warning-border: #a16207;
+  --vfui-tone-warning-bg: rgb(217 119 6 / 14%);
+  --vfui-tone-warning-border: #b45309;
   --vfui-tone-warning-fg: #fde68a;
-  --vfui-tone-danger-bg: rgb(248 113 113 / 12%);
-  --vfui-tone-danger-border: #991b1b;
+  --vfui-tone-danger-bg: rgb(220 38 38 / 14%);
+  --vfui-tone-danger-border: #b91c1c;
   --vfui-tone-danger-fg: #fecaca;
-  --vfui-tone-info-bg: rgb(34 211 238 / 12%);
-  --vfui-tone-info-border: #155e75;
+  --vfui-tone-info-bg: rgb(8 145 178 / 14%);
+  --vfui-tone-info-border: #0e7490;
   --vfui-tone-info-fg: #a5f3fc;
-  --vfui-tone-primary-bg: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 14%, #0f172a)')};
-  --vfui-tone-primary-border: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 42%, #1e3a8a)')};
-  --vfui-tone-primary-fg: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 20%, #bfdbfe)')};
+  --vfui-tone-primary-bg: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 14%, #171717)')};
+  --vfui-tone-primary-border: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 38%, #262626)')};
+  --vfui-tone-primary-fg: #{str.unquote('color-mix(in srgb, var(--vfui-color-primary) 22%, #f5f5f5)')};
 
   --vfui-muted: var(--vfui-fg-muted);
-  --vfui-btn-default-bg: #1e293b;
+  --vfui-btn-default-bg: #262626;
   --vfui-btn-default-text: var(--vfui-fg-default);
   --vfui-btn-default-border: var(--vfui-border-default);
-  --vfui-btn-default-hover-bg: #334155;
-  --vfui-btn-default-hover-border: #475569;
+  --vfui-btn-default-hover-bg: #404040;
+  --vfui-btn-default-hover-border: #525252;
 }
 

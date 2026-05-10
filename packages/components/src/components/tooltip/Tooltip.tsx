@@ -2,6 +2,7 @@ import { JSXNode, onMounted, watch } from '@viewfly/core'
 import { createDynamicRef, createRef, createSignal, Portal, reactive } from '@viewfly/core'
 import type { CSSProperties, StyleValue } from '@viewfly/platform-browser'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
+import { resolveVfuiPortalThemeClass } from '../../utils/overlay-theme-class'
 import './style.scss'
 
 /**
@@ -471,6 +472,7 @@ export function Tooltip(props: TooltipProps) {
     }
     const animCls = animBySide[layout.animSide]
     const interactiveCls = panelInteractive() ? ' vfui-tooltip__panel--interactive' : ''
+    const themePortalCls = resolveVfuiPortalThemeClass(triggerRef.value)
 
     const onTriggerEnter = () => {
       if (disabled) return
@@ -527,7 +529,7 @@ export function Tooltip(props: TooltipProps) {
               ref={panelRef}
               id={tooltipId}
               data-placement={layout.resolvedPlacement}
-              class={`vfui-tooltip__panel${animCls}${openCls}${interactiveCls}`}
+              class={`vfui-tooltip__panel${animCls}${openCls}${interactiveCls}${themePortalCls}`}
               style={mergePanelStyle(
                 {
                   top: `${layout.top}px`,

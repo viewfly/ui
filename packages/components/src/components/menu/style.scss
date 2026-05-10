@@ -49,7 +49,8 @@
 }
 
 .vfui-menu__item:hover:not(:disabled):not([aria-disabled='true']) {
-  @apply bg-gray-100 dark:bg-slate-700/90;
+  /* 不用 `dark:`：弹出层面板常把 `.vfui-dark` 挂在自身，Uno 的 `.vfui-dark .vfui-menu__item` 在嵌套/顺序下易与浅色 hover 背景打架 */
+  background-color: var(--vfui-btn-default-hover-bg);
 }
 
 .vfui-menu__item:focus-visible {
