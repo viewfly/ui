@@ -1,5 +1,13 @@
 # @viewfly/ui-components
 
+## 0.0.19
+
+### Patch Changes
+
+- 修复 Dropdown 上下文引起的不必要渲染
+- Updated dependencies
+  - @viewfly/ui-icons@0.0.19
+
 ## 0.0.18
 
 ### Patch Changes
