@@ -86,6 +86,7 @@ export const ICON_GLYPH_NAMES = [
   'indent-increase',
   'indent-decrease',
   'code',
+  'flow-chart',
 ] as const
 
 export type IconGlyphName = (typeof ICON_GLYPH_NAMES)[number]
