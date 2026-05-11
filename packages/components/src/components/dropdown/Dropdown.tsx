@@ -269,6 +269,10 @@ export function Dropdown(props: DropdownProps) {
     }
   })
 
+  const triggerProviderValue = {
+    expanded
+  }
+
   return () => {
     const disabled = props.disabled ?? false
     const panelMaxHeight = Math.max(0, Math.min(layout.maxHeight, props.maxHeight ?? 400))
@@ -295,7 +299,7 @@ export function Dropdown(props: DropdownProps) {
              onMouseleave={triggerMouseLeave}
              onClick={triggerClick}
         >
-          <VfuiDropdownTriggerProvider useValue={{expanded}}>
+          <VfuiDropdownTriggerProvider useValue={triggerProviderValue}>
             {props.children}
           </VfuiDropdownTriggerProvider>
         </div>
