@@ -1,5 +1,11 @@
 # @viewfly/ui-icons
 
+## 0.0.20
+
+### Patch Changes
+
+- 支持文案配置
+
 ## 0.0.19
 
 ### Patch Changes
