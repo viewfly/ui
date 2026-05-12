@@ -19,7 +19,7 @@ export function SelectPage() {
       <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">非受控</h3>
         <p class="text-sm vfui-text-muted mb-4">默认选中「上海」；选中后下拉自动收起。</p>
-        <Select defaultValue="sh" options={baseOptions} />
+        <Select defaultValue="sh" options={baseOptions} placeholder="请选择" />
       </section>
 
       <section class="mb-10">
@@ -28,7 +28,7 @@ export function SelectPage() {
           当前：<span class="font-mono text-xs">{city() ?? '（空）'}</span>
         </p>
         <div class="flex flex-wrap items-center gap-4">
-          <Select value={city()} options={baseOptions} onChange={(v) => city.set(v)} />
+          <Select value={city()} options={baseOptions} onChange={(v) => city.set(v)} placeholder="请选择" />
           <button
             type="button"
             class="text-sm px-3 py-1.5 rounded-md border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700/80"

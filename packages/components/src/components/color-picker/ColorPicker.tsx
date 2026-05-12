@@ -151,6 +151,12 @@ export class Picker {
 
 export interface ColorPickerProps {
   value?: string
+  /** 「常用颜色」区域标题；多语言时传入 */
+  recentColorsLabel?: string
+  /** 展开调色盘面板的触发按钮文案 */
+  paletteTriggerLabel?: string
+  /** 调色盘内确认按钮文案 */
+  confirmLabel?: string
   /** 最近使用色（无 `recentColorsName` 时由外部传入，不持久化） */
   recentColors?: string[]
   /**
@@ -372,7 +378,12 @@ export function ColorPicker(props: ColorPickerProps) {
     addRecentColor()
   }
 
-  return () => (
+  return () => {
+    const recentColorsLabel = props.recentColorsLabel ?? 'Recent colors'
+    const paletteTriggerLabel = props.paletteTriggerLabel ?? 'Palette'
+    const confirmLabel = props.confirmLabel ?? 'OK'
+
+    return (
     <div
       onMousedown={(ev: MouseEvent) => {
         ev.stopPropagation()
@@ -409,7 +420,7 @@ export function ColorPicker(props: ColorPickerProps) {
             })
           }
         </div>
-        <div class="vfui-color-picker__recent-label">常用颜色</div>
+        <div class="vfui-color-picker__recent-label">{recentColorsLabel}</div>
         <div class="vfui-color-picker__swatches vfui-color-picker__swatches--row-recent">
           {
             Array.from({ length: 7 }).map((_, index) => {
@@ -608,7 +619,7 @@ export function ColorPicker(props: ColorPickerProps) {
                     htmlType="button"
                     onClick={selected}
                   >
-                    确定
+                    {confirmLabel}
                   </Button>
                 </div>
               </div>
@@ -617,7 +628,7 @@ export function ColorPicker(props: ColorPickerProps) {
             <button
               type="button"
               class="vfui-color-picker__to-palette"
-            >调色盘
+            >{paletteTriggerLabel}
               <svg
                 class="vfui-color-picker__icon"
                 viewBox="0 0 1024 1024"
@@ -631,5 +642,6 @@ export function ColorPicker(props: ColorPickerProps) {
         </div>
       </div>
     </div>
-  )
+    )
+  }
 }

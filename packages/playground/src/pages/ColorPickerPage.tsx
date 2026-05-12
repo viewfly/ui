@@ -25,6 +25,9 @@ export function ColorPickerPage() {
             value="#f00"
             recentColorsName="playground-demo"
             recentColors={['#296eff', '#16a34a', '#d97706']}
+            recentColorsLabel="常用颜色"
+            paletteTriggerLabel="调色盘"
+            confirmLabel="确定"
             onChange={(p: Picker) => {
               if (p.hex) {
                 liveHex.set(p.hex)
@@ -87,6 +90,9 @@ export function ColorPickerPage() {
                 <ColorPicker
                   value="#296eff"
                   recentColorsName="playground-dropdown-click"
+                  recentColorsLabel="常用颜色"
+                  paletteTriggerLabel="调色盘"
+                  confirmLabel="确定"
                   onSelected={(p: Picker) => {
                     dropdownClickHex.set(p.hex)
                     dropdownClickClose.set(dropdownClickClose() + 1)
@@ -126,6 +132,9 @@ export function ColorPickerPage() {
                 <ColorPicker
                   value="#16a34a"
                   recentColorsName="playground-dropdown-hover"
+                  recentColorsLabel="常用颜色"
+                  paletteTriggerLabel="调色盘"
+                  confirmLabel="确定"
                   onSelected={(p: Picker) => {
                     dropdownHoverHex.set(p.hex)
                     dropdownHoverClose.set(dropdownHoverClose() + 1)

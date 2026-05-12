@@ -24,7 +24,7 @@ export interface SelectProps {
   /** 选中变化 */
   onChange?: (value: string) => void
   disabled?: boolean
-  /** 未选中或没有匹配项时的占位 */
+  /** 未选中或没有匹配项时的占位；不传则无占位文案 */
   placeholder?: string
   size?: SelectSize
   /** 下拉选项行密度，与 `MenuItem` 一致 */
@@ -63,7 +63,7 @@ export function Select(props: SelectProps) {
     const {
       options,
       disabled = false,
-      placeholder = '请选择',
+      placeholder,
       block = false,
       optionDensity = 'compact',
       menuColumnCompact = true,

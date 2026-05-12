@@ -69,6 +69,12 @@ export interface InputNumberProps {
   ariaLabel?: string
   ariaDescribedby?: string
   ariaInvalid?: boolean
+  /** 减号步进按钮的 `aria-label` */
+  decrementAriaLabel?: string
+  /** 加号步进按钮的 `aria-label` */
+  incrementAriaLabel?: string
+  /** `controlsLayout="stack"` 时步进按钮组的 `aria-label` */
+  stepperGroupAriaLabel?: string
 }
 
 export function InputNumber(props: InputNumberProps) {
@@ -167,6 +173,9 @@ export function InputNumber(props: InputNumberProps) {
       ariaLabel,
       ariaDescribedby,
       ariaInvalid,
+      decrementAriaLabel = 'Decrease',
+      incrementAriaLabel = 'Increase',
+      stepperGroupAriaLabel = 'Stepper',
     } = props
 
     const useAffix = prefix != null || suffix != null || controls
@@ -248,7 +257,7 @@ export function InputNumber(props: InputNumberProps) {
         type="button"
         class="vfui-input-number__step"
         disabled={decDisabled}
-        aria-label="减少"
+        aria-label={decrementAriaLabel}
         onClick={() => stepBy(-1)}
       >
         −
@@ -260,7 +269,7 @@ export function InputNumber(props: InputNumberProps) {
         type="button"
         class="vfui-input-number__step"
         disabled={incDisabled}
-        aria-label="增加"
+        aria-label={incrementAriaLabel}
         onClick={() => stepBy(1)}
       >
         +
@@ -268,7 +277,7 @@ export function InputNumber(props: InputNumberProps) {
     )
 
     const stackHandlers = (
-      <div class="vfui-input-number__handlers vfui-input-number__handlers--stack" role="group" aria-label="步进">
+      <div class="vfui-input-number__handlers vfui-input-number__handlers--stack" role="group" aria-label={stepperGroupAriaLabel}>
         {incBtn}
         {decBtn}
       </div>

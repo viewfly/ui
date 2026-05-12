@@ -127,6 +127,9 @@ export function DropdownPage() {
                   <ColorPicker
                     value="#296eff"
                     recentColorsName="playground-dropdown-click"
+                    recentColorsLabel="常用颜色"
+                    paletteTriggerLabel="调色盘"
+                    confirmLabel="确定"
                     onSelected={(p: Picker) => {
                       dropdownClickHex.set(p.hex)
                       dropdownClickClose.set(dropdownClickClose() + 1)
@@ -154,6 +157,9 @@ export function DropdownPage() {
                   <ColorPicker
                     value="#16a34a"
                     recentColorsName="playground-dropdown-hover"
+                    recentColorsLabel="常用颜色"
+                    paletteTriggerLabel="调色盘"
+                    confirmLabel="确定"
                     onSelected={(p: Picker) => {
                       dropdownHoverHex.set(p.hex)
                       dropdownHoverClose.set(dropdownHoverClose() + 1)
