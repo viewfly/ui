@@ -18,7 +18,7 @@
 .vfui-select__control {
   @apply box-border inline-flex w-full min-w-[8rem] max-w-full cursor-default items-center justify-between gap-2 rounded-md border border-solid px-3 py-1.5 text-left text-sm leading-normal outline-none transition-[color,background-color,border-color] duration-150 ease-in-out;
   border-color: var(--vfui-border-default);
-  background: var(--vfui-surface);
+  background: var(--vfui-input-bg);
   color: var(--vfui-fg-default);
 }
 

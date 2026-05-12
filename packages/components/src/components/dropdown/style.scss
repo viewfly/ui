@@ -69,8 +69,8 @@
 .vfui-dropdown__panel {
   @apply fixed z-[70] min-w-0 overflow-y-auto rounded-lg p-[6px] shadow-lg;
   @apply text-left text-sm;
-  /* 面板常带 `.vfui-dark` 于自身（Portal），不能用依赖「祖先 .vfui-dark」的 `dark:` 工具类 */
-  background: var(--vfui-surface);
+  /* 与 Popover / Tooltip 等 Portal 浮层一致：`--vfui-surface-overlay` */
+  background: var(--vfui-surface-overlay);
   color: var(--vfui-fg-default);
   border: 1px solid var(--vfui-border-default);
   box-sizing: border-box;

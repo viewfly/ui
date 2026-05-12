@@ -59,11 +59,11 @@
 }
 
 .vfui-popover__panel {
-  --vfui-popover-arrow-fill: var(--vfui-surface);
+  --vfui-popover-arrow-fill: var(--vfui-surface-overlay);
 
   @apply fixed z-[60] min-w-[220px] rounded-lg px-4 py-3 shadow-lg;
-  /* 与 Dropdown：Portal 根节点可能自身即 `.vfui-dark`，不用 `dark:` 祖先选择器 */
-  background: var(--vfui-surface);
+  /* 与 Dropdown：Portal 浮层统一用 `--vfui-surface-overlay` */
+  background: var(--vfui-surface-overlay);
   color: var(--vfui-fg-default);
   box-sizing: border-box;
   opacity: 0;
@@ -87,11 +87,6 @@
 
 .vfui-popover__panel--no-padding {
   @apply p-0;
-}
-
-/* 箭头填充与面板背景一致；面板自身可为 `.vfui-popover__panel.vfui-dark` */
-.vfui-popover__panel.vfui-dark {
-  --vfui-popover-arrow-fill: var(--vfui-surface);
 }
 
 .vfui-popover__panel--no-arrow::after {

@@ -78,10 +78,10 @@
 }
 
 .vfui-tooltip__panel.vfui-dark {
-  --vfui-tooltip-arrow-fill: var(--vfui-surface-elevated);
-  background: var(--vfui-surface-elevated);
+  --vfui-tooltip-arrow-fill: var(--vfui-surface-overlay);
+  background: var(--vfui-surface-overlay);
   color: var(--vfui-fg-default);
-  border-color: var(--vfui-border);
+  border-color: var(--vfui-border-default);
 }
 
 /* 指向触发器的小三角：与面板同色，随 data-placement 贴边 */

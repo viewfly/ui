@@ -3,7 +3,6 @@
 .vfui-color-picker {
   @apply inline-block text-left text-xs select-none relative;
   @apply w-[165px] box-content;
-  background: var(--vfui-surface);
   color: var(--vfui-fg-default);
 
   // Dropdown 的触发区仍在本组件内，显式与根同字号，避免与 trigger 的 inline-flex 组合下继承异常
