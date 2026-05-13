@@ -455,8 +455,11 @@ export function Popover(props: PopoverProps) {
       closeNow()
     }
 
-    document.addEventListener('mousedown', onDocMouseDown, true)
-    cleanupDocMouseDown = () => document.removeEventListener('mousedown', onDocMouseDown, true)
+    // 使用冒泡阶段（勿用 capture）：Portal 内的 Dropdown 等面板不在 `panelElement` 子树里，
+    // 仅靠 `data-vfui-popover-owner` 排除；若在 capture 阶段误关 Popover，会先卸载子树，
+    // 导致浮层上的 mousedown/click 无法按预期触发。
+    document.addEventListener('mousedown', onDocMouseDown)
+    cleanupDocMouseDown = () => document.removeEventListener('mousedown', onDocMouseDown)
   })
 
   onMounted(() => {
