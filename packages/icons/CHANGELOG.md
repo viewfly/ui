@@ -1,5 +1,11 @@
 # @viewfly/ui-icons
 
+## 0.0.22
+
+### Patch Changes
+
+- 修复 Popover 事件捕获导致里面的 Dropdown 无法触发 Mouse 事件的 bug
+
 ## 0.0.21
 
 ### Patch Changes
