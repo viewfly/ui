@@ -1,5 +1,11 @@
 # @viewfly/ui-utils
 
+## 0.0.23
+
+### Patch Changes
+
+- 更新 icon
+
 ## 0.0.22
 
 ### Patch Changes
