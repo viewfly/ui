@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'viewfly-ui-icons';
   src:
-    url('fonts/viewfly-ui-icons.ttf?cr1jj7') format('truetype'),
-    url('fonts/viewfly-ui-icons.woff?cr1jj7') format('woff'),
-    url('fonts/viewfly-ui-icons.svg?cr1jj7#viewfly-ui-icons') format('svg');
+    url('fonts/viewfly-ui-icons.ttf?3xesrt') format('truetype'),
+    url('fonts/viewfly-ui-icons.woff?3xesrt') format('woff'),
+    url('fonts/viewfly-ui-icons.svg?3xesrt#viewfly-ui-icons') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,6 +24,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.vf-icon-send:before {
+  content: "\e934";
+}
+.vf-icon-message:before {
+  content: "\e935";
+}
 .vf-icon-flow-chart:before {
   content: "\e933";
 }
