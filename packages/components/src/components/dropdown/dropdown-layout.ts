@@ -87,7 +87,12 @@ export function computeDropdownLayout(args: {
     const fitsRight = panelW <= 0 || panelW <= spaceRight
     const prefer = preferAlign ?? 'left'
     const vAlign = horizontalPanelAlign ?? (isNestedInParentDropdown ? 'middle' : 'top')
-    const hForAlign = panelIntrinsicH > 0 ? panelIntrinsicH : effH
+    const hForAlign =
+      panelElement && panelElement.offsetHeight > 0
+        ? panelElement.offsetHeight
+        : panelIntrinsicH > 0
+          ? panelIntrinsicH
+          : effH
 
     if (vAlign === 'top') {
       top = r.top
