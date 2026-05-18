@@ -300,10 +300,19 @@ export function Popover(props: PopoverProps) {
     clearOpen()
     clearClose()
     const wasShown = mounted()
+    if (props.open !== undefined) {
+      if (wasShown) {
+        props.onOpenChange?.(false)
+      }
+      // 受控且外部仍为 open：仅通知父组件，不卸载内部展示状态
+      if (props.open) {
+        return
+      }
+    }
     panelInteractive.set(false)
     visible.set(false)
     mounted.set(false)
-    if (wasShown) {
+    if (wasShown && props.open === undefined) {
       props.onOpenChange?.(false)
     }
   }
