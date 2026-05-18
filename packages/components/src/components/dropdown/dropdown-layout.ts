@@ -96,22 +96,26 @@ export function computeDropdownLayout(args: {
     } else {
       top = r.bottom - hForAlign
     }
-    const refEl = getHorizontalTopMinFrom?.()
-    // 横向弹出在滚动过程中始终使用同一套 top 夹紧逻辑，避免跳变。
-    // 默认以触发器为参考；若提供 getHorizontalTopMinFrom 则改用该参考元素。
-    // - 向上最多到「面板底边 = 参考元素底边」（top = ref.bottom - panelH）
-    // - 向下最多到「面板顶边 = 参考元素顶边」（top = ref.top）
-    // 再与视口边界共同夹紧，确保不越界。
-    const refRect = refEl?.getBoundingClientRect() ?? r
-    let minTop = pad
-    let maxTop = vh - pad - hForAlign
-    minTop = Math.max(minTop, refRect.bottom - hForAlign)
-    maxTop = Math.min(maxTop, refRect.top)
-    if (minTop <= maxTop) {
-      top = Math.min(maxTop, Math.max(top, minTop))
+    const naturalTop = top
+    const refEl = getHorizontalTopMinFrom?.() ?? null
+    const refRect = refEl?.getBoundingClientRect()
+    if (refEl && refRect) {
+      const refFloor = refRect.top
+      // 统一判定（勿拆 relax / pad / r.top>=ref 多分支，否则边界会跳）：
+      // 1. naturalTop 已 >= 参考顶 → 保持与按钮相对位置；
+      // 2. 触发器顶越过参考顶 (r.top < ref.top) → 只能跟 naturalTop 才能与按钮一并滚出；
+      // 3. 否则触发器仍在参考顶下方且 naturalTop 会侵入参考顶之上 → 抬到参考顶。
+      top = naturalTop >= refFloor || r.top < refRect.top ? naturalTop : refFloor
     } else {
-      // 夹紧区间倒挂时选择更接近当前 top 的边界，避免突兀跳跃。
-      top = Math.abs(top - minTop) <= Math.abs(top - maxTop) ? minTop : maxTop
+      let minTop = pad
+      let maxTop = vh - pad - hForAlign
+      minTop = Math.max(minTop, r.bottom - hForAlign)
+      maxTop = Math.min(maxTop, r.top)
+      if (minTop <= maxTop) {
+        top = Math.min(maxTop, Math.max(top, minTop))
+      } else {
+        top = Math.abs(top - minTop) <= Math.abs(top - maxTop) ? minTop : maxTop
+      }
     }
 
     const placeLeft = (w: number) => {
