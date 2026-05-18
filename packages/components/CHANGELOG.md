@@ -1,5 +1,13 @@
 # @viewfly/ui-components
 
+## 0.0.24
+
+### Patch Changes
+
+- 优化 Dropdown、Popover 交互
+- Updated dependencies
+  - @viewfly/ui-icons@0.0.24
+
 ## 0.0.23
 
 ### Patch Changes
