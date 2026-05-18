@@ -19,6 +19,15 @@ export interface DropdownLayoutPatch {
   placement: 'top' | 'bottom' | 'left' | 'right'
 }
 
+/** 横向弹出已打开时保持 left/right，避免滚动导致触发器离开视口后回到 prefer 而翻面 */
+function resolveHorizontalPlacement(
+  prefer: DropdownHorizontalAlign,
+  current: DropdownLayoutPatch['placement'],
+): 'left' | 'right' {
+  if (current === 'left' || current === 'right') return current
+  return prefer
+}
+
 export function computeDropdownLayout(args: {
   triggerRect: DOMRect
   panelElement: HTMLElement | null
@@ -119,20 +128,28 @@ export function computeDropdownLayout(args: {
       }
     }
 
+    const stickySide = resolveHorizontalPlacement(prefer, layout.placement)
+
     if (panelW > 0) {
       if (relaxViewportClamp) {
-        if (prefer === 'left') placeLeft(panelW)
+        if (stickySide === 'left') placeLeft(panelW)
         else placeRight(panelW)
       } else if (prefer === 'left') {
         if (fitsLeft) placeLeft(panelW)
+        else if (fitsRight) placeRight(panelW)
+        else if (stickySide === 'left') placeLeft(panelW)
         else placeRight(panelW)
       } else if (fitsRight) {
+        placeRight(panelW)
+      } else if (fitsLeft) {
+        placeLeft(panelW)
+      } else if (stickySide === 'right') {
         placeRight(panelW)
       } else {
         placeLeft(panelW)
       }
     } else if (relaxViewportClamp) {
-      if (prefer === 'left') {
+      if (stickySide === 'left') {
         placement = 'left'
         left = r.left - gap - effW
       } else {
