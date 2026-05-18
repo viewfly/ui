@@ -67,6 +67,8 @@ function mergePanelStyle(base: CSSProperties, user: StyleValue | undefined): str
 }
 
 const VIEWPORT_EDGE = 8
+/** 纵向弹出 center 对齐时，面板距视口左右边缘的最小间距 */
+const POPOVER_HORIZONTAL_EDGE = 10
 let popoverIdSeq = 0
 
 function defaultContainer(): HTMLElement {
@@ -179,6 +181,24 @@ function computeLayout(
   return { top, left, animSide: side, placement }
 }
 
+function viewportClientWidth(): number {
+  if (typeof document === 'undefined') return 0
+  return document.documentElement.clientWidth
+}
+
+/** 纵向 center：左右至少 pad；右侧放不下时优先保留左侧 pad */
+function clampPanelLeftForVerticalCenter(left: number, panel: HTMLElement, pad: number): number {
+  const vw = viewportClientWidth()
+  const pw = Math.ceil(panel.getBoundingClientRect().width) || panel.offsetWidth
+  if (vw <= 0 || pw <= 0) return left
+  const minLeft = pad
+  const maxLeft = vw - pad - pw
+  if (maxLeft >= minLeft) {
+    return Math.min(maxLeft, Math.max(minLeft, left))
+  }
+  return minLeft
+}
+
 function getScrollableAncestors(el: HTMLElement): HTMLElement[] {
   const list: HTMLElement[] = []
   let p: HTMLElement | null = el.parentElement
@@ -244,19 +264,33 @@ export function Popover(props: PopoverProps) {
   }
 
   const compute = () => {
+    if (!mounted()) return
     const r = resolveReferenceRect(triggerRef.value, props.referenceBox, props.getReferenceBox)
     if (!r) return
+    if (!panelElement) return
+    const pw = panelElement.offsetWidth
+    const ph = panelElement.offsetHeight
+    // 首帧 pw/ph 常为 0，center/end 的 left 会算错；滚动后重算才对。等面板量到尺寸再定位。
+    if (pw === 0 && ph === 0) {
+      requestAnimationFrame(() => {
+        if (mounted() && panelElement) compute()
+      })
+      return
+    }
     const gap = props.gap ?? 10
     const preferred = props.placement ?? 'top-center'
     const flipEnabled = props.flip ?? true
     const vw = typeof window !== 'undefined' ? window.innerWidth : 0
     const vh = typeof window !== 'undefined' ? window.innerHeight : 0
-    const pw = panelElement?.offsetWidth ?? 0
-    const ph = panelElement?.offsetHeight ?? 0
     const chosen = resolvePlacementWithFlip(preferred, flipEnabled, r, pw, ph, gap, vw, vh, VIEWPORT_EDGE)
     const { top, left, animSide, placement: resolved } = computeLayout(chosen, r, pw, ph, gap)
+    const { side, align } = parsePlacement(resolved)
+    const finalLeft =
+      (side === 'top' || side === 'bottom') && align === 'center'
+        ? clampPanelLeftForVerticalCenter(left, panelElement, POPOVER_HORIZONTAL_EDGE)
+        : left
     layout.top = top
-    layout.left = left
+    layout.left = finalLeft
     layout.animSide = animSide
     layout.resolvedPlacement = resolved
   }
@@ -268,9 +302,7 @@ export function Popover(props: PopoverProps) {
     panelInteractive.set(false)
     layout.zIndex = acquireOverlayZIndex()
     mounted.set(true)
-    compute()
     queueMicrotask(() => {
-      compute()
       requestAnimationFrame(() => {
         compute()
         visible.set(true)
@@ -339,7 +371,15 @@ export function Popover(props: PopoverProps) {
 
   const panelRef = createDynamicRef<HTMLElement>((node) => {
     panelElement = node
-    compute()
+    let resizeObserver: ResizeObserver | undefined
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        if (mounted()) compute()
+      })
+      resizeObserver.observe(node)
+    }
+    queueMicrotask(() => compute())
+    requestAnimationFrame(() => compute())
     const onPanelAnimationEnd = () => {
       if (mounted() && visible()) {
         panelInteractive.set(true)
@@ -347,6 +387,7 @@ export function Popover(props: PopoverProps) {
     }
     node.addEventListener('animationend', onPanelAnimationEnd)
     return () => {
+      resizeObserver?.disconnect()
       node.removeEventListener('animationend', onPanelAnimationEnd)
       panelElement = null
     }
