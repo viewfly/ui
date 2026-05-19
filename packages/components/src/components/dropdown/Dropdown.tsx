@@ -54,7 +54,6 @@ export function Dropdown(props: DropdownProps) {
     const gap = props.gap ?? 10
     const orientation = props.orientation ?? 'vertical'
     const r = el.getBoundingClientRect()
-    const vw = typeof window !== 'undefined' ? window.innerWidth : 0
     const vh = typeof window !== 'undefined' ? window.innerHeight : 0
 
     computeDropdownLayout({
@@ -66,8 +65,6 @@ export function Dropdown(props: DropdownProps) {
       horizontalPanelAlign: props.horizontalPanelAlign,
       verticalPanelAlign: props.verticalPanelAlign,
       getHorizontalTopMinFrom: props.getHorizontalTopMinFrom,
-      isNestedInParentDropdown: !!parentNest,
-      vw,
       vh,
       layout,
       panelMaxHeightCap: props.maxHeight ?? 400,

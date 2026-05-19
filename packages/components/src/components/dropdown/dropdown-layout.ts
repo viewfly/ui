@@ -6,11 +6,6 @@ import type {
   DropdownVerticalPanelAlign,
 } from './dropdown-types'
 
-/** 触发器是否完全落在视口内；否则不再为「塞满视口」夹紧面板，仅保持与触发器的 gap（类原生 select） */
-export function triggerFullyInViewport(r: DOMRect, vw: number, vh: number): boolean {
-  return r.top >= 0 && r.left >= 0 && r.bottom <= vh && r.right <= vw
-}
-
 export interface DropdownLayoutPatch {
   top: number
   left: number
@@ -19,255 +14,163 @@ export interface DropdownLayoutPatch {
   placement: 'top' | 'bottom' | 'left' | 'right'
 }
 
-/** 横向弹出已打开时保持 left/right，避免滚动导致触发器离开视口后回到 prefer 而翻面 */
-function resolveHorizontalPlacement(
-  prefer: DropdownHorizontalAlign,
-  current: DropdownLayoutPatch['placement'],
-): 'left' | 'right' {
-  if (current === 'left' || current === 'right') return current
-  return prefer
-}
-
 export function computeDropdownLayout(args: {
+  /** 触发器根节点（`.vfui-dropdown__trigger`）的 `getBoundingClientRect()`，视口坐标 */
   triggerRect: DOMRect
+  /**
+   * 已挂载的面板 DOM（`.vfui-dropdown__panel`）；首帧可能为 `null`。
+   * 用于读 `offsetWidth` / `offsetHeight` / `scrollHeight` 参与翻面与对齐；未挂载时用触发器宽高等兜底。
+   */
   panelElement: HTMLElement | null
+  /**
+   * 触发器与面板之间的间距（px）。
+   * 纵向：`top`/`bottom` 放置时在触发器上/下缘外再留 `gap`；横向：`left`/`right` 时在左右缘外留 `gap`。
+   */
   gap: number
+  /** `vertical`：优先上下弹出；`horizontal`：优先左右弹出 */
   orientation: DropdownOrientation
+  /**
+   * 横向弹出时优先一侧：`left` 优先在触发器左侧，`right` 优先右侧；该侧空间不足时换边。
+   * 仅 `orientation === 'horizontal'` 时有效；未传时实现内通常当作 `left`。
+   */
   horizontalAlign?: DropdownHorizontalAlign
+  /**
+   * 横向弹出时，面板与触发器在垂直方向的对齐：`top` | `middle` | `bottom`。
+   * 未传时：根级默认 `top`，嵌套子菜单默认 `middle`。仅横向有效。
+   */
   horizontalPanelAlign?: DropdownHorizontalPanelAlign
+  /**
+   * 纵向弹出时，面板与触发器在水平方向的对齐：`left` | `center` | `right`。
+   * 未传时通常当作 `left`。仅纵向有效。
+   */
   verticalPanelAlign?: DropdownVerticalPanelAlign
+  /**
+   * 横向弹出时，返回「参考顶」元素；面板上沿不得低于该元素上沿（视口 `top`），并与视口上边距取较大值。
+   * 返回 `null` 时不做参考顶限制。仅本层 `Dropdown` 传入的 getter 生效，不继承父级。
+   */
   getHorizontalTopMinFrom?: () => HTMLElement | null
-  /** 嵌在另一 Dropdown 面板内（子菜单） */
-  isNestedInParentDropdown: boolean
-  vw: number
+  /** 视口高度（px），通常 `window.innerHeight` */
   vh: number
+  /**
+   * 输出写入此对象（可变 patch）：`top`、`left`、`minWidth`、`maxHeight`、`placement`。
+   * 调用前可保留上次 `placement`，用于横向已打开时「粘住」左右侧避免滚动翻面。
+   */
   layout: DropdownLayoutPatch
-  /** 与面板 `maxHeight` 上限一致；用于「上下都放不下完整高度」时计算贴齐触发器的有效高度 */
+  /**
+   * 业务侧 `props.maxHeight` 上限（默认 400），与视口算出的 `layout.maxHeight` 在 `Dropdown` 渲染时再取 `min`。
+   * 布局内用于纵向翻面、有效面板高度估算，应与最终 style `maxHeight` 同一量级。
+   */
   panelMaxHeightCap?: number
 }): void {
   const {
-    triggerRect: r,
+    /** 触发器视口矩形，下文别名 `r` */
+    triggerRect,
+    /** 面板元素；未挂载时为 `null` */
     panelElement,
+    /** 触发器与面板间距（px） */
     gap,
+    /** 弹出主轴：`vertical` | `horizontal` */
     orientation,
-    horizontalAlign: preferAlign,
-    horizontalPanelAlign,
-    verticalPanelAlign,
+    /** 横向优先侧  */
+    horizontalAlign = 'right',
+    /** 横向时面板相对触发器的垂直对齐 */
+    horizontalPanelAlign = 'middle',
+    /** 纵向时面板相对触发器的水平对齐 */
+    verticalPanelAlign = 'left',
+    /** 横向参考顶元素 getter（可选） */
     getHorizontalTopMinFrom,
-    isNestedInParentDropdown,
-    vw,
+    // /** 是否为嵌套子菜单 */
+    // isNestedInParentDropdown,
+    // /** 视口宽 */
+    // vw,
+    /** 视口高 */
     vh,
+    /** 写入定位结果的 reactive / patch 对象 */
     layout,
+    /** `props.maxHeight` 上限，默认 400 */
     panelMaxHeightCap = 400,
   } = args
 
+  if (!panelElement) {
+    return
+  }
+
   const pad = DROPDOWN_VIEWPORT_EDGE
-  const relaxViewportClamp = !triggerFullyInViewport(r, vw, vh)
 
-  // 内容固有高度（未扣 maxHeight）；横向对齐等仍参考完整占位需求
-  const panelIntrinsicH = panelElement
-    ? Math.max(panelElement.offsetHeight, panelElement.scrollHeight)
-    : 0
-  const panelW = panelElement?.offsetWidth ?? r.width
-  const effW = Math.max(panelW, r.width)
-  const effH = Math.max(panelIntrinsicH, 1)
-  // 纵向弹出：翻面 / 定 top 时按「实际不会超过 props.maxHeight（默认 400）」的高度算，
-  // 否则向上弹出时用 scrollHeight 会把 top 抬得太高，与后续 style maxHeight 裁剪不一致。
-  const panelHVertical =
-    panelIntrinsicH > 0 ? Math.min(panelIntrinsicH, panelMaxHeightCap) : 0
-
-  let top = 0
-  let left = 0
-  let placement: 'top' | 'bottom' | 'left' | 'right' = 'bottom'
+  const panelRect = panelElement.getBoundingClientRect()
 
   if (orientation === 'horizontal') {
-    const spaceLeft = r.left - gap - pad
-    const spaceRight = vw - pad - (r.right + gap)
-    const fitsLeft = panelW <= 0 || panelW <= spaceLeft
-    const fitsRight = panelW <= 0 || panelW <= spaceRight
-    const prefer = preferAlign ?? 'left'
-    const vAlign = horizontalPanelAlign ?? (isNestedInParentDropdown ? 'middle' : 'top')
-    const hForAlign =
-      panelElement && panelElement.offsetHeight > 0
-        ? panelElement.offsetHeight
-        : panelIntrinsicH > 0
-          ? panelIntrinsicH
-          : effH
-
-    if (vAlign === 'top') {
-      top = r.top
-    } else if (vAlign === 'middle') {
-      top = r.top + (r.height - hForAlign) / 2
+    if (horizontalAlign === 'left' && triggerRect.left >= panelRect.width + pad + gap) {
+      layout.placement = 'left'
+      layout.left = triggerRect.left - gap - panelRect.width
     } else {
-      top = r.bottom - hForAlign
+      layout.placement = 'right'
+      layout.left = triggerRect.right + gap
     }
-    const naturalTop = top
-    const refEl = getHorizontalTopMinFrom?.() ?? null
-    const refRect = refEl?.getBoundingClientRect()
-    if (refEl && refRect) {
-      const refFloor = refRect.top
-      // 统一判定（勿拆 relax / pad / r.top>=ref 多分支，否则边界会跳）：
-      // 1. naturalTop 已 >= 参考顶 → 保持与按钮相对位置；
-      // 2. 触发器顶越过参考顶 (r.top < ref.top) → 只能跟 naturalTop 才能与按钮一并滚出；
-      // 3. 否则触发器仍在参考顶下方且 naturalTop 会侵入参考顶之上 → 抬到参考顶。
-      top = naturalTop >= refFloor || r.top < refRect.top ? naturalTop : refFloor
+
+    let minTop = Math.min(triggerRect.top, pad)
+
+    const limitRect = getHorizontalTopMinFrom?.()?.getBoundingClientRect()
+    if (limitRect) {
+      minTop = Math.max(limitRect.top, minTop)
+    }
+
+    const hSpace = Math.max(vh - pad, triggerRect.bottom) - minTop
+
+    let panelHeight = Math.min(panelMaxHeightCap, panelElement.scrollHeight)
+
+    if (panelHeight > hSpace) {
+      panelHeight = Math.max(DROPDOWN_VERTICAL_SWITCH_THRESHOLD, hSpace)
+    }
+
+    layout.maxHeight = panelHeight
+
+    if (horizontalPanelAlign === 'top') {
+      layout.top = Math.max(minTop,
+        triggerRect.bottom - layout.maxHeight,
+        Math.min(
+          triggerRect.top,
+          vh - pad - layout.maxHeight
+        )
+      )
+    } else if (horizontalPanelAlign === 'bottom') {
+      layout.top = Math.max(minTop,
+        triggerRect.bottom - layout.maxHeight,
+        Math.min(
+          triggerRect.bottom - layout.maxHeight,
+          vh - pad - layout.maxHeight
+        )
+      )
     } else {
-      let minTop = pad
-      let maxTop = vh - pad - hForAlign
-      minTop = Math.max(minTop, r.bottom - hForAlign)
-      maxTop = Math.min(maxTop, r.top)
-      if (minTop <= maxTop) {
-        top = Math.min(maxTop, Math.max(top, minTop))
-      } else {
-        top = Math.abs(top - minTop) <= Math.abs(top - maxTop) ? minTop : maxTop
-      }
-    }
-
-    const placeLeft = (w: number) => {
-      placement = 'left'
-      left = r.left - gap - w
-      if (!relaxViewportClamp && left < pad) left = pad
-    }
-    const placeRight = (w: number) => {
-      placement = 'right'
-      left = r.right + gap
-      if (!relaxViewportClamp) {
-        const maxLeft = vw - pad - w
-        if (left > maxLeft) left = Math.max(pad, maxLeft)
-      }
-    }
-
-    const stickySide = resolveHorizontalPlacement(prefer, layout.placement)
-
-    if (panelW > 0) {
-      if (relaxViewportClamp) {
-        if (stickySide === 'left') placeLeft(panelW)
-        else placeRight(panelW)
-      } else if (prefer === 'left') {
-        if (fitsLeft) placeLeft(panelW)
-        else if (fitsRight) placeRight(panelW)
-        else if (stickySide === 'left') placeLeft(panelW)
-        else placeRight(panelW)
-      } else if (fitsRight) {
-        placeRight(panelW)
-      } else if (fitsLeft) {
-        placeLeft(panelW)
-      } else if (stickySide === 'right') {
-        placeRight(panelW)
-      } else {
-        placeLeft(panelW)
-      }
-    } else if (relaxViewportClamp) {
-      if (stickySide === 'left') {
-        placement = 'left'
-        left = r.left - gap - effW
-      } else {
-        placement = 'right'
-        left = r.right + gap
-      }
-    } else if (prefer === 'left') {
-      placement = 'left'
-      left = r.left - gap - effW
-      if (left < pad) left = pad
-    } else {
-      placement = 'right'
-      left = r.right + gap
-      const maxLeft = vw - pad - effW
-      if (left > maxLeft) left = Math.max(pad, maxLeft)
+      layout.top = Math.max(minTop,
+        triggerRect.bottom - layout.maxHeight,
+        Math.min(
+          triggerRect.top + triggerRect.height / 2 - layout.maxHeight / 2,
+          vh - pad - layout.maxHeight
+        )
+      )
     }
   } else {
-    // 视口内可用竖直区间 [vTop, vBottom]；锚点相对于触发器，用于判断「整块面板是否真正落在视口内」
-    const vTop = pad
-    const vBottom = vh - pad
-    const anchorTop = r.top - gap // 向上展开时面板底边
-    const anchorBottom = r.bottom + gap // 向下展开时面板顶边
+    const topSpace = triggerRect.top - gap - pad
+    const bottomSpace = vh - triggerRect.bottom - gap - pad
 
-    // 整块落在视口内才视为 fits，避免触发器滚出视口后仍用夸大的 spaceAbove 误判 fitsAbove，把面板「贴」进可视区上半
-    const fitsBelow =
-      panelHVertical <= 0 ||
-      (anchorBottom >= vTop && anchorBottom + panelHVertical <= vBottom)
-    const fitsAbove =
-      panelHVertical > 0 && anchorTop <= vBottom && anchorTop - panelHVertical >= vTop
-
-    // 冲突分支用的「可见侧剩余空间」：锚点在视口外该侧时为 0，避免误判翻面
-    let spaceBelow = Math.max(0, vBottom - anchorBottom)
-    let spaceAbove = Math.max(0, anchorTop - vTop)
-    if (anchorTop > vBottom) spaceAbove = 0
-    if (anchorBottom < vTop) spaceBelow = 0
-
-    if (panelHVertical > 0) {
-      if (fitsBelow) {
-        placement = 'bottom'
-        top = r.bottom + gap
-      } else if (spaceBelow >= DROPDOWN_VERTICAL_SWITCH_THRESHOLD) {
-        // 整块放不下时：只要下方剩余不低于最小可用高度，仍优先向下（靠 maxHeight 裁切 + 内部滚动），避免过早改向上弹出
-        placement = 'bottom'
-        top = r.bottom + gap
-      } else if (fitsAbove) {
-        placement = 'top'
-        const maxHAbove = Math.max(0, r.top - gap - pad)
-        const hOpen = Math.min(panelHVertical, maxHAbove)
-        top = r.top - gap - hOpen
-      } else {
-        // 上下都放不全：下方空间 ≥ 阈值则优先下方；否则比较上下可见空间；两侧都为 0 时保持当前侧（跟按钮滚出视口仍朝上展示）
-        const currentVerticalPlacement = layout.placement === 'top' ? 'top' : 'bottom'
-        const bottomEnough = spaceBelow >= DROPDOWN_VERTICAL_SWITCH_THRESHOLD
-        let nextVerticalPlacement: 'top' | 'bottom'
-        if (spaceAbove === 0 && spaceBelow === 0) {
-          nextVerticalPlacement = currentVerticalPlacement
-        } else if (bottomEnough) {
-          nextVerticalPlacement = 'bottom'
-        } else {
-          nextVerticalPlacement = spaceAbove > spaceBelow ? 'top' : 'bottom'
-        }
-        const shouldSwitch = nextVerticalPlacement !== currentVerticalPlacement
-
-        placement = shouldSwitch ? nextVerticalPlacement : currentVerticalPlacement
-        if (placement === 'top') {
-          const maxHAbove = Math.max(0, r.top - gap - pad)
-          const clampedH = Math.min(panelHVertical, maxHAbove)
-          top = r.top - gap - clampedH
-        } else {
-          placement = 'bottom'
-          top = r.bottom + gap
-        }
-      }
+    if (bottomSpace >= topSpace || bottomSpace >= DROPDOWN_VERTICAL_SWITCH_THRESHOLD) {
+      layout.placement = 'bottom'
+      layout.maxHeight = Math.min(bottomSpace, panelElement.scrollHeight, panelMaxHeightCap)
+      layout.top = triggerRect.bottom + gap
     } else {
-      placement = 'bottom'
-      top = r.bottom + gap
+      layout.placement = 'top'
+      layout.maxHeight = Math.min(topSpace, panelElement.scrollHeight, panelMaxHeightCap)
+      layout.top = triggerRect.top - gap - layout.maxHeight
+    }
+    if (verticalPanelAlign === 'right') {
+      layout.left = triggerRect.right - panelRect.width
+    } else if (verticalPanelAlign === 'center') {
+      layout.left = triggerRect.left + triggerRect.width / 2 - panelRect.width / 2
+    } else {
+      layout.left = triggerRect.left
     }
 
-    const hAlign = verticalPanelAlign ?? 'left'
-    const wForAlign = panelW > 0 ? panelW : effW
-    if (hAlign === 'left') {
-      left = r.left
-    } else if (hAlign === 'center') {
-      left = r.left + (r.width - wForAlign) / 2
-    } else {
-      left = r.right - wForAlign
-    }
-    // 纵向弹出：水平方向同样跟随触发器，避免滚出视口时被夹到窗口侧边导致「脱离」按钮
+    layout.minWidth = triggerRect.width
   }
-
-  layout.top = top
-  layout.left = left
-  layout.minWidth = r.width
-  // maxHeight：开口方向上的可用空间；负值表示锚点已离开视口该侧，不压成 0（否则条塌掉），用 vh 作上限交给外层 min(props.maxHeight)
-  const rawAbove = r.top - gap - pad
-  const rawBelow = vh - pad - top
-  if (placement === 'top') {
-    layout.maxHeight = rawAbove > 0 ? Math.min(rawAbove, vh - 2 * pad) : Math.max(0, vh - 2 * pad)
-  } else if (placement === 'bottom') {
-    layout.maxHeight = rawBelow > 0 ? Math.min(rawBelow, vh - 2 * pad) : Math.max(0, vh - 2 * pad)
-  } else {
-    // 横向 left/right：触发器整体在视口上/下方时，不要用「相对视口留 10px」去限高；压矮 offsetHeight 会破坏底对齐等纵向贴合。
-    const triggerBelowViewport = r.top >= vh
-    const triggerAboveViewport = r.bottom <= 0
-    if (triggerBelowViewport || triggerAboveViewport) {
-      layout.maxHeight = panelMaxHeightCap
-    } else {
-      layout.maxHeight = Math.max(0, vh - 2 * pad)
-    }
-  }
-  layout.placement = placement
 }
