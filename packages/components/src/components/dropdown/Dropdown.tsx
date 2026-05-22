@@ -174,6 +174,7 @@ export function Dropdown(props: DropdownProps) {
       return
     }
     // if (triggerType.value === 'hover' && canHide) {
+    canHide = true
     expanded.set(false)
     // }
   })
