@@ -29,6 +29,7 @@ export function DropdownPage() {
   const horizontalTopRef = createRef<HTMLDivElement>()
   const dropdownClickClose = createSignal(0)
   const dropdownHoverClose = createSignal(0)
+  const nestedHoverChildClose = createSignal(0)
   const controlledOpen = createSignal(false)
   const dropdownClickHex = createSignal<string | null>(null)
   const dropdownHoverHex = createSignal<string | null>(null)
@@ -149,11 +150,11 @@ export function DropdownPage() {
           <div class="flex items-center gap-3">
             <Dropdown
               trigger="hover"
-              // closeTick={dropdownHoverClose}
+              closeTick={dropdownHoverClose}
               verticalPanelAlign="left"
               gap={8}
               dropdown={(
-                // <div onMousedown={(e: MouseEvent) => e.stopPropagation()}>
+                <div onMousedown={(e: MouseEvent) => e.stopPropagation()}>
                   <ColorPicker
                     value="#16a34a"
                     recentColorsName="playground-dropdown-hover"
@@ -165,7 +166,7 @@ export function DropdownPage() {
                       dropdownHoverClose.set(dropdownHoverClose() + 1)
                     }}
                   />
-                // </div>
+                </div>
               )}
             >
               <Button type="default">悬停选色 B</Button>
@@ -477,6 +478,59 @@ export function DropdownPage() {
         >
           <Button type="default">工作区（悬停 + 子菜单）</Button>
         </Dropdown>
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">两级悬停嵌套 + closeTick 收起子层</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          根、子均为 <code class="text-xs">trigger=&quot;hover&quot;</code>；子级传入{' '}
+          <code class="text-xs">closeTick</code>，在二级菜单项 <code class="text-xs">onClick</code> 里递增该 signal，仅收起子弹出层，根级保持展开。
+        </p>
+        <div class="rounded-lg border border-dashed border-gray-300 dark:border-slate-600 p-4 inline-block">
+          <Dropdown
+            trigger="hover"
+            dropdown={
+              <MenuList role="menu" class="min-w-48">
+                <MenuItem>一级项（不关子层）</MenuItem>
+                <Dropdown
+                  block
+                  trigger="hover"
+                  closeTick={nestedHoverChildClose}
+                  orientation="horizontal"
+                  horizontalAlign="right"
+                  dropdown={
+                    <MenuList role="menu" class="min-w-44">
+                      <MenuItem
+                        onClick={() => {
+                          console.log('nested-hover-close', 'child-a')
+                          nestedHoverChildClose.set(nestedHoverChildClose() + 1)
+                        }}
+                      >
+                        二级 A（点击收起子层）
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          console.log('nested-hover-close', 'child-b')
+                          nestedHoverChildClose.set(nestedHoverChildClose() + 1)
+                        }}
+                      >
+                        二级 B（点击收起子层）
+                      </MenuItem>
+                    </MenuList>
+                  }
+                >
+                  <MenuItem chevronRight>子菜单（悬停）</MenuItem>
+                </Dropdown>
+              </MenuList>
+            }
+          >
+            <Button type="primary">两级悬停 · closeTick</Button>
+          </Dropdown>
+        </div>
+        <p class="text-sm vfui-text-muted mt-3">
+          子层 <code class="text-xs">closeTick</code> 当前值：
+          <span class="font-mono text-xs text-gray-900 dark:text-slate-100">{nestedHoverChildClose()}</span>
+        </p>
       </section>
 
       <Divider/>

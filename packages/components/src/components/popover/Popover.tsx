@@ -1,8 +1,19 @@
-import { JSXNode, onMounted, watch } from '@viewfly/core'
-import { createDynamicRef, createRef, createSignal, Portal, reactive } from '@viewfly/core'
+import {
+  computed, createContextProvider,
+  createDynamicRef,
+  createRef,
+  createSignal, getCurrentInstance, inject,
+  JSXNode,
+  onMounted, onUnmounted,
+  Portal,
+  reactive, watch
+} from '@viewfly/core'
+import type { Signal } from '@viewfly/core'
 import type { CSSProperties, StyleValue } from '@viewfly/platform-browser'
+import { fromEvent, Subscription } from '@tanbo/stream'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
 import { resolveVfuiPortalThemeClass } from '../../utils/overlay-theme-class'
+import { DropdownNestContext } from '../dropdown/nest-context'
 import './style.scss'
 
 export type PopoverPlacement =
@@ -40,6 +51,7 @@ export interface PopoverProps {
   flip?: boolean
   open?: boolean
   defaultOpen?: boolean
+  closeTick?: Signal<number>
   onOpenChange?: (open: boolean) => void
   getContainer?: () => HTMLElement
   disabled?: boolean
@@ -63,7 +75,7 @@ function mergePanelStyle(base: CSSProperties, user: StyleValue | undefined): str
     const baseCss = `top:${String(base.top)};left:${String(base.left)};z-index:${String(base.zIndex)};`
     return `${baseCss}${user}`
   }
-  return { ...base, ...user }
+  return {...base, ...user}
 }
 
 const VIEWPORT_EDGE = 8
@@ -75,7 +87,10 @@ function defaultContainer(): HTMLElement {
   return typeof document !== 'undefined' ? document.body : (null as unknown as HTMLElement)
 }
 
-function parsePlacement(p: PopoverPlacement): { side: 'top' | 'bottom' | 'left' | 'right'; align: 'start' | 'center' | 'end' } {
+function parsePlacement(p: PopoverPlacement): {
+  side: 'top' | 'bottom' | 'left' | 'right';
+  align: 'start' | 'center' | 'end'
+} {
   const [a, b] = p.split('-')
   return {
     side: a as 'top' | 'bottom' | 'left' | 'right',
@@ -84,7 +99,7 @@ function parsePlacement(p: PopoverPlacement): { side: 'top' | 'bottom' | 'left' 
 }
 
 function oppositePlacement(p: PopoverPlacement): PopoverPlacement {
-  const { side, align } = parsePlacement(p)
+  const {side, align} = parsePlacement(p)
   if (side === 'top') return `bottom-${align}` as PopoverPlacement
   if (side === 'bottom') return `top-${align}` as PopoverPlacement
   if (side === 'left') return `right-${align}` as PopoverPlacement
@@ -101,7 +116,7 @@ function placementHasRoom(
   vh: number,
   pad: number,
 ): boolean {
-  const { side } = parsePlacement(placement)
+  const {side} = parsePlacement(placement)
   if (side === 'top') return r.top - gap - pad >= ph
   if (side === 'bottom') return vh - pad - r.bottom - gap >= ph
   if (side === 'left') return r.left - gap - pad >= pw
@@ -116,7 +131,7 @@ function spaceAlongOpening(
   vh: number,
   pad: number,
 ): number {
-  const { side } = parsePlacement(placement)
+  const {side} = parsePlacement(placement)
   if (side === 'top') return r.top - gap - pad
   if (side === 'bottom') return vh - pad - r.bottom - gap
   if (side === 'left') return r.left - gap - pad
@@ -152,7 +167,7 @@ function computeLayout(
   ph: number,
   gap: number,
 ) {
-  const { side, align } = parsePlacement(placement)
+  const {side, align} = parsePlacement(placement)
   let top = 0
   let left = 0
 
@@ -178,7 +193,7 @@ function computeLayout(
     else top = r.bottom - ph
   }
 
-  return { top, left, animSide: side, placement }
+  return {top, left, animSide: side, placement}
 }
 
 function viewportClientWidth(): number {
@@ -229,9 +244,16 @@ function resolveReferenceRect(
 }
 
 export function Popover(props: PopoverProps) {
-  const mounted = createSignal(false)
+  const expanded = createSignal(false)
   const visible = createSignal(false)
   const panelInteractive = createSignal(false)
+  const computedExpanded = computed(() => {
+    return typeof props.open === 'boolean' ? props.open : expanded()
+  })
+  const triggerType = computed(() => {
+    return props.trigger === 'hover' ? 'hover' : 'click'
+  })
+
   const layout = reactive({
     top: 0,
     left: 0,
@@ -241,39 +263,20 @@ export function Popover(props: PopoverProps) {
   })
   const triggerRef = createRef<HTMLElement>()
   let panelElement: HTMLElement | null = null
+  let cleanupLayoutFollow: (() => void) | null = null
+  const parentNest = inject(DropdownNestContext)
   const popoverId = `vfui-popover-${++popoverIdSeq}`
-  let didScheduleDefaultOpen = false
-
-  let openTimer: ReturnType<typeof setTimeout> | undefined
-  let closeTimer: ReturnType<typeof setTimeout> | undefined
-  let cleanupLayoutListeners: (() => void) | null = null
-  let cleanupDocMouseDown: (() => void) | null = null
-
-  const clearOpen = () => {
-    if (openTimer != null) {
-      clearTimeout(openTimer)
-      openTimer = undefined
-    }
-  }
-
-  const clearClose = () => {
-    if (closeTimer != null) {
-      clearTimeout(closeTimer)
-      closeTimer = undefined
-    }
-  }
 
   const compute = () => {
-    if (!mounted()) return
+    if (!computedExpanded.value) return
     const r = resolveReferenceRect(triggerRef.value, props.referenceBox, props.getReferenceBox)
     if (!r) return
     if (!panelElement) return
     const pw = panelElement.offsetWidth
     const ph = panelElement.offsetHeight
-    // 首帧 pw/ph 常为 0，center/end 的 left 会算错；滚动后重算才对。等面板量到尺寸再定位。
     if (pw === 0 && ph === 0) {
       requestAnimationFrame(() => {
-        if (mounted() && panelElement) compute()
+        if (computedExpanded.value && panelElement) compute()
       })
       return
     }
@@ -283,8 +286,8 @@ export function Popover(props: PopoverProps) {
     const vw = typeof window !== 'undefined' ? window.innerWidth : 0
     const vh = typeof window !== 'undefined' ? window.innerHeight : 0
     const chosen = resolvePlacementWithFlip(preferred, flipEnabled, r, pw, ph, gap, vw, vh, VIEWPORT_EDGE)
-    const { top, left, animSide, placement: resolved } = computeLayout(chosen, r, pw, ph, gap)
-    const { side, align } = parsePlacement(resolved)
+    const {top, left, animSide, placement: resolved} = computeLayout(chosen, r, pw, ph, gap)
+    const {side, align} = parsePlacement(resolved)
     const finalLeft =
       (side === 'top' || side === 'bottom') && align === 'center'
         ? clampPanelLeftForVerticalCenter(left, panelElement, POPOVER_HORIZONTAL_EDGE)
@@ -295,166 +298,9 @@ export function Popover(props: PopoverProps) {
     layout.resolvedPlacement = resolved
   }
 
-  const openNow = () => {
-    if (props.disabled) return
-    clearOpen()
-    clearClose()
-    panelInteractive.set(false)
-    layout.zIndex = acquireOverlayZIndex()
-    mounted.set(true)
-    queueMicrotask(() => {
-      requestAnimationFrame(() => {
-        compute()
-        visible.set(true)
-        if (props.open === undefined) {
-          props.onOpenChange?.(true)
-        }
-      })
-    })
-  }
-
-  const scheduleOpen = () => {
-    if (props.disabled) return
-    clearClose()
-    clearOpen()
-    const d = props.openDelay ?? 60
-    if (d <= 0) {
-      openNow()
-      return
-    }
-    openTimer = setTimeout(() => {
-      openTimer = undefined
-      openNow()
-    }, d)
-  }
-
-  const closeNow = () => {
-    clearOpen()
-    clearClose()
-    const wasShown = mounted()
-    if (props.open !== undefined) {
-      if (wasShown) {
-        props.onOpenChange?.(false)
-      }
-      // 受控且外部仍为 open：仅通知父组件，不卸载内部展示状态
-      if (props.open) {
-        return
-      }
-    }
-    panelInteractive.set(false)
-    visible.set(false)
-    mounted.set(false)
-    if (wasShown && props.open === undefined) {
-      props.onOpenChange?.(false)
-    }
-  }
-
-  const scheduleClose = () => {
-    clearClose()
-    const d = props.closeDelay ?? 120
-    if (d <= 0) {
-      closeNow()
-      return
-    }
-    closeTimer = setTimeout(() => {
-      closeTimer = undefined
-      closeNow()
-    }, d)
-  }
-
-  const toggleByClick = () => {
-    if (props.disabled) return
-    const isOpen = props.open !== undefined ? props.open : mounted()
-    if (isOpen) closeNow()
-    else openNow()
-  }
-
-  const panelRef = createDynamicRef<HTMLElement>((node) => {
-    panelElement = node
-    let resizeObserver: ResizeObserver | undefined
-    if (typeof ResizeObserver !== 'undefined') {
-      resizeObserver = new ResizeObserver(() => {
-        if (mounted()) compute()
-      })
-      resizeObserver.observe(node)
-    }
-    queueMicrotask(() => compute())
-    requestAnimationFrame(() => compute())
-    const onPanelAnimationEnd = () => {
-      if (mounted() && visible()) {
-        panelInteractive.set(true)
-      }
-    }
-    node.addEventListener('animationend', onPanelAnimationEnd)
-    return () => {
-      resizeObserver?.disconnect()
-      node.removeEventListener('animationend', onPanelAnimationEnd)
-      panelElement = null
-    }
-  })
-
-  watch(
-    () => {
-      if (props.open === undefined) return 'uc' as const
-      if (props.disabled ?? false) return 'dis' as const
-      return props.open ? ('on' as const) : ('off' as const)
-    },
-    (mode) => {
-      if (mode === 'uc') return
-      if (mode === 'dis') {
-        closeNow()
-        return
-      }
-      if (mode === 'on') {
-        openNow()
-      } else {
-        closeNow()
-      }
-    },
-  )
-
-  watch(
-    () => {
-      void mounted()
-      void visible()
-      return props.content
-    },
-    () => {
-      if (!mounted() || !visible()) return
-      queueMicrotask(() => compute())
-    },
-  )
-
-  watch(
-    () => {
-      void mounted()
-      void visible()
-      const dynamicBox = props.getReferenceBox?.()
-      if (dynamicBox != null) {
-        return `dynamic:${dynamicBox.left},${dynamicBox.top},${dynamicBox.width},${dynamicBox.height}`
-      }
-      const staticBox = props.referenceBox
-      if (staticBox == null) return null
-      return `static:${staticBox.left},${staticBox.top},${staticBox.width},${staticBox.height}`
-    },
-    () => {
-      if (!mounted() || !visible()) return
-      queueMicrotask(() => compute())
-    },
-  )
-
-  if (!didScheduleDefaultOpen && props.defaultOpen && props.open === undefined && !(props.disabled ?? false)) {
-    didScheduleDefaultOpen = true
-    queueMicrotask(() => {
-      if (!props.disabled) openNow()
-    })
-  }
-
-  watch(mounted, (m) => {
-    cleanupLayoutListeners?.()
-    cleanupLayoutListeners = null
-
-    if (!m) return
+  const bindLayoutFollow = () => {
+    const triggerEl = triggerRef.value
+    if (!triggerEl) return null
     const onLayout = () => compute()
     window.addEventListener('resize', onLayout)
 
@@ -468,63 +314,225 @@ export function Popover(props: PopoverProps) {
     addScroll(window)
 
     const bindScrollParents = () => {
-      const el = triggerRef.value
-      if (!el) return
-      for (const node of getScrollableAncestors(el)) {
+      for (const node of getScrollableAncestors(triggerEl)) {
         addScroll(node)
       }
     }
-    bindScrollParents()
-    queueMicrotask(bindScrollParents)
     requestAnimationFrame(bindScrollParents)
 
-    cleanupLayoutListeners = () => {
+    return () => {
       window.removeEventListener('resize', onLayout)
       for (const t of scrollTargets) {
         t.removeEventListener('scroll', onLayout, true)
       }
     }
+  }
+
+  let leaveTimer: any = null
+  let openTimer: any = null
+  let canHide = true
+  let clickFromSelf = false
+  let pointerInSelf = false
+
+  function triggerClick() {
+    clickFromSelf = true
+    if (triggerType.value !== 'click') return
+    expanded.set(!expanded())
+  }
+
+  function triggerMouseEnter() {
+    if (props.disabled || triggerType.value !== 'hover') return
+    clearTimeout(leaveTimer)
+    clearTimeout(openTimer)
+    const d = props.openDelay ?? 60
+    if (d <= 0) {
+      expanded.set(true)
+      parentNest.onSubDropdownOpened.next()
+    } else {
+      openTimer = setTimeout(() => {
+        expanded.set(true)
+        parentNest.onSubDropdownOpened.next()
+      }, d)
+    }
+  }
+
+  function triggerMouseLeave() {
+    if (props.disabled || triggerType.value !== 'hover' || !canHide) return
+    clearTimeout(leaveTimer)
+    const d = props.closeDelay ?? 120
+    leaveTimer = setTimeout(() => {
+      expanded.set(false)
+      parentNest.onMouseLeaveSubPanel.next()
+    }, d)
+  }
+
+  watch(() => computedExpanded.value, (v) => {
+    if (v) {
+      panelInteractive.set(false)
+      if (!cleanupLayoutFollow) {
+        cleanupLayoutFollow = bindLayoutFollow()
+      }
+      requestAnimationFrame(() => {
+        compute()
+        visible.set(true)
+      })
+    } else {
+      panelInteractive.set(false)
+      visible.set(false)
+      cleanupLayoutFollow?.()
+      cleanupLayoutFollow = null
+    }
+    v ? parentNest.onSubDropdownOpened.next() : parentNest.onSubDropdownClosed.next()
+    props.onOpenChange?.(v)
   })
 
-  watch(mounted, (m) => {
-    cleanupDocMouseDown?.()
-    cleanupDocMouseDown = null
+  watch(() => props.closeTick?.(), () => {
+    expanded.set(false)
+  })
 
-    if (!m) return
-    if ((props.trigger ?? 'click') !== 'click') return
-
-    const onDocMouseDown = (ev: MouseEvent) => {
-      const n = ev.target as Node | null
-      if (!n) return
-      if (triggerRef.value?.contains(n)) return
-      if (panelElement?.contains(n)) return
-      if (n instanceof Element) {
-        const ownerDropdown = n.closest('[data-vfui-popover-owner]') as HTMLElement | null
-        if (ownerDropdown?.dataset.vfuiPopoverOwner === popoverId) return
-      }
-      closeNow()
+  const instance = getCurrentInstance()
+  watch(expanded, (v) => {
+    if (v) {
+      parentNest.onSiblingDropdownOpen.next(instance)
     }
+  })
 
-    // 使用冒泡阶段（勿用 capture）：Portal 内的 Dropdown 等面板不在 `panelElement` 子树里，
-    // 仅靠 `data-vfui-popover-owner` 排除；若在 capture 阶段误关 Popover，会先卸载子树，
-    // 导致浮层上的 mousedown/click 无法按预期触发。
-    document.addEventListener('mousedown', onDocMouseDown)
-    cleanupDocMouseDown = () => document.removeEventListener('mousedown', onDocMouseDown)
+  const dropdownNestContext = new DropdownNestContext()
+
+  const sub = parentNest.onSiblingDropdownOpen.subscribe((dropdown) => {
+    if (dropdown === instance) return
+    canHide = true
+    expanded.set(false)
+  })
+
+  sub.add(
+    dropdownNestContext.onSubPanelClicked.subscribe(() => {
+      clickFromSelf = true
+      parentNest.onSubPanelClicked.next()
+    }),
+    dropdownNestContext.onSubDropdownOpened.subscribe(() => {
+      canHide = false
+      clearTimeout(leaveTimer)
+    }),
+    dropdownNestContext.onSubDropdownClosed.subscribe(() => {
+      canHide = true
+    }),
+    dropdownNestContext.onMouseEnterSubPanel.subscribe(() => {
+      canHide = false
+      clearTimeout(leaveTimer)
+    }),
+    dropdownNestContext.onMouseLeaveSubPanel.subscribe(() => {
+      canHide = true
+      if (pointerInSelf) return
+      if (triggerType.value === 'hover' && canHide) {
+        expanded.set(false)
+      }
+    })
+  )
+
+  watch(
+    () => {
+      void computedExpanded.value
+      void visible()
+      return props.content
+    },
+    () => {
+      if (!computedExpanded.value || !visible()) return
+      queueMicrotask(() => compute())
+    },
+  )
+
+  watch(
+    () => {
+      void computedExpanded.value
+      void visible()
+      const dynamicBox = props.getReferenceBox?.()
+      if (dynamicBox != null) {
+        return `dynamic:${dynamicBox.left},${dynamicBox.top},${dynamicBox.width},${dynamicBox.height}`
+      }
+      const staticBox = props.referenceBox
+      if (staticBox == null) return null
+      return `static:${staticBox.left},${staticBox.top},${staticBox.width},${staticBox.height}`
+    },
+    () => {
+      if (!computedExpanded.value || !visible()) return
+      queueMicrotask(() => compute())
+    },
+  )
+
+  onUnmounted(() => {
+    sub.unsubscribe()
+    clearTimeout(leaveTimer)
+    clearTimeout(openTimer)
+    cleanupLayoutFollow?.()
+    cleanupLayoutFollow = null
   })
 
   onMounted(() => {
-    return () => {
-      clearOpen()
-      clearClose()
-      cleanupLayoutListeners?.()
-      cleanupLayoutListeners = null
-      cleanupDocMouseDown?.()
-      cleanupDocMouseDown = null
+    if (props.defaultOpen && props.open === undefined && !(props.disabled ?? false)) {
+      queueMicrotask(() => {
+        if (!props.disabled) expanded.set(true)
+      })
     }
   })
 
+  const panelRef = createDynamicRef<HTMLElement>((node) => {
+    panelElement = node
+    let resizeObserver: ResizeObserver | undefined
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        if (computedExpanded.value) compute()
+      })
+      resizeObserver.observe(node)
+    }
+
+    layout.zIndex = acquireOverlayZIndex()
+    requestAnimationFrame(() => compute())
+
+    const subscription = new Subscription()
+
+    subscription.add(fromEvent(node, 'mouseenter').subscribe(() => {
+      pointerInSelf = true
+      parentNest.onMouseEnterSubPanel.next()
+      if (triggerType.value === 'hover') {
+        clearTimeout(leaveTimer)
+      }
+    }))
+    subscription.add(fromEvent(node, 'mouseleave').subscribe(() => {
+      pointerInSelf = false
+      triggerMouseLeave()
+    }))
+    subscription.add(fromEvent(node, 'animationend').subscribe(() => {
+      if (computedExpanded.value) {
+        panelInteractive.set(true)
+      }
+    }))
+
+    subscription.add(fromEvent(document, 'mousedown').subscribe(() => {
+      if (clickFromSelf) {
+        clickFromSelf = false
+        return
+      }
+      canHide = true
+      expanded.set(false)
+    }))
+    subscription.add(fromEvent(node, 'mousedown').subscribe(() => {
+      clickFromSelf = true
+      parentNest.onSubPanelClicked.next()
+    }))
+
+    return () => {
+      resizeObserver?.disconnect()
+      subscription.unsubscribe()
+      panelElement = null
+    }
+  })
+
+  const VfuiDropdownNestProvider = createContextProvider({
+    provide: DropdownNestContext
+  })
+
   return () => {
-    const triggerMode = props.trigger ?? 'click'
     const disabled = props.disabled ?? false
     const disabledClass = disabled ? ' vfui-popover--disabled' : ''
     const portalHost = props.getContainer?.() ?? defaultContainer()
@@ -547,72 +555,41 @@ export function Popover(props: PopoverProps) {
     const interactiveCls = panelInteractive() ? ' vfui-popover__panel--interactive' : ''
     const themePortalCls = resolveVfuiPortalThemeClass(triggerRef.value)
 
-    const onTriggerEnter = () => {
-      if (disabled) return
-      if (props.open !== undefined) return
-      if (triggerMode !== 'hover') return
-      scheduleOpen()
-    }
-    const onTriggerLeave = () => {
-      if (disabled) return
-      if (props.open !== undefined) return
-      if (triggerMode !== 'hover') return
-      clearOpen()
-      scheduleClose()
-    }
-
     return (
       <span class={`vfui-popover${disabledClass}`}>
         <span
           class="vfui-popover__trigger"
           ref={triggerRef}
-          onClick={() => {
-            if (props.open !== undefined) {
-              props.onOpenChange?.(!props.open)
-              return
-            }
-            if (triggerMode !== 'click') return
-            toggleByClick()
-          }}
-          onMouseEnter={onTriggerEnter}
-          onMouseLeave={onTriggerLeave}
+          onMouseDown={triggerClick}
+          onMouseEnter={triggerMouseEnter}
+          onMouseLeave={triggerMouseLeave}
         >
           {props.children}
         </span>
         <Portal container={portalHost}>
-          {mounted() ? (
-            <div
-              ref={panelRef}
-              data-vfui-popover-id={popoverId}
-              data-placement={layout.resolvedPlacement}
-              class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}${noPaddingCls}${interactiveCls}${themePortalCls}`}
-              style={mergePanelStyle(
-                {
-                  top: `${layout.top}px`,
-                  left: `${layout.left}px`,
-                  zIndex: `${layout.zIndex}`,
-                },
-                props.style,
-              )}
-              role="dialog"
-              aria-modal="false"
-              onMouseEnter={() => {
-                if (props.disabled) return
-                if (props.open !== undefined) return
-                if ((props.trigger ?? 'click') !== 'hover') return
-                clearClose()
-              }}
-              onMouseLeave={() => {
-                if (props.disabled) return
-                if (props.open !== undefined) return
-                if ((props.trigger ?? 'click') !== 'hover') return
-                scheduleClose()
-              }}
-            >
-              {props.title != null ? <div class="vfui-popover__title">{props.title}</div> : null}
-              <div class="vfui-popover__content">{props.content}</div>
-            </div>
-          ) : null}
+          <VfuiDropdownNestProvider useValue={dropdownNestContext}>
+            {computedExpanded.value ? (
+              <div
+                ref={panelRef}
+                data-vfui-popover-id={popoverId}
+                data-placement={layout.resolvedPlacement}
+                class={`vfui-popover__panel${animCls}${openCls}${withTitleCls}${noArrowCls}${borderCls}${noPaddingCls}${interactiveCls}${themePortalCls}`}
+                style={mergePanelStyle(
+                  {
+                    top: `${layout.top}px`,
+                    left: `${layout.left}px`,
+                    zIndex: `${layout.zIndex}`,
+                  },
+                  props.style,
+                )}
+                role="dialog"
+                aria-modal="false"
+              >
+                {props.title != null ? <div class="vfui-popover__title">{props.title}</div> : null}
+                <div class="vfui-popover__content">{props.content}</div>
+              </div>
+            ) : null}
+          </VfuiDropdownNestProvider>
         </Portal>
       </span>
     )

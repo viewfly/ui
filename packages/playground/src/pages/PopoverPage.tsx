@@ -27,6 +27,8 @@ export function PopoverPage() {
   const externalComboOpen = createSignal(false)
   const externalAnchorRef = createRef<HTMLSpanElement>()
   const externalComboAnchorRef = createRef<HTMLSpanElement>()
+  const popoverNestedInnerClose = createSignal(0)
+  const popoverNestedInnerValue = createSignal<string | null>(null)
 
   return () => (
     <div>
@@ -97,11 +99,11 @@ export function PopoverPage() {
       <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">组合场景：Popover 内嵌 Dropdown</h3>
         <p class="text-sm vfui-text-muted mb-4">
-          点击 Dropdown 菜单时，Popover 不会误关闭。下面同时演示「点击触发 Popover」与「外部受控 Popover」两种场景。
+          在 Popover 面板内操作 Dropdown 时，Popover 不应误关闭。下面包含点击/悬停两种 Dropdown，以及「悬停 Popover + 面板内悬停 Dropdown」的双层悬停组合。
         </p>
         <Space size={16} wrap>
           <Popover
-            title="点击触发 + Dropdown"
+            title="点击触发 + Dropdown（click）"
             content={
               <div class="flex items-center gap-2">
                 <span class="text-sm">更多操作：</span>
@@ -113,7 +115,49 @@ export function PopoverPage() {
               </div>
             }
           >
-            <Button type="default">点击触发组合</Button>
+            <Button type="default">点击 + 内层点击菜单</Button>
+          </Popover>
+          <Popover
+            title="点击触发 + Dropdown（hover）"
+            content={
+              <div class="flex flex-col gap-2">
+                <p class="text-sm vfui-text-muted m-0">
+                  先点击打开本 Popover，再在面板内悬停按钮展开菜单；移入菜单项时不应收起 Popover。
+                </p>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">悬停操作：</span>
+                  <Dropdown trigger="hover" dropdown={popoverDropdownMenu}>
+                    <Button type="default" size="small">
+                      悬停打开菜单
+                    </Button>
+                  </Dropdown>
+                </div>
+              </div>
+            }
+          >
+            <Button type="default">点击 + 内层悬停菜单</Button>
+          </Popover>
+          <Popover
+            trigger="hover"
+            placement="right-center"
+            title="悬停 Popover + Dropdown（hover）"
+            content={
+              <div class="flex flex-col gap-2 max-w-xs">
+                <p class="text-sm vfui-text-muted m-0">
+                  悬停触发区打开 Popover 后，在面板内悬停下列按钮展开 Dropdown；指针在 Popover 与 Dropdown 浮层间移动时不应互相误关。
+                </p>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">面板内：</span>
+                  <Dropdown trigger="hover" dropdown={popoverDropdownMenu}>
+                    <Button type="primary" size="small">
+                      悬停菜单
+                    </Button>
+                  </Dropdown>
+                </div>
+              </div>
+            }
+          >
+            <Button type="default">悬停 + 内层悬停菜单</Button>
           </Popover>
           <span ref={externalComboAnchorRef}>
             <Button type="primary" onClick={() => externalComboOpen.set(true)}>
@@ -128,7 +172,7 @@ export function PopoverPage() {
           open={externalComboOpen()}
           getReferenceBox={() => externalComboAnchorRef.value?.getBoundingClientRect() ?? null}
           placement="bottom-start"
-          title="外部受控 + Dropdown"
+          title="外部受控 + Dropdown（click）"
           content={
             <div class="flex items-center gap-2">
               <span class="text-sm">菜单交互：</span>
@@ -140,6 +184,79 @@ export function PopoverPage() {
             </div>
           }
         />
+      </section>
+
+      <section class="mb-10">
+        <h3 class="text-sm font-medium vfui-text-muted mb-3">Popover 内两层悬停 Dropdown + closeTick</h3>
+        <p class="text-sm vfui-text-muted mb-4">
+          先点击打开 Popover，再在面板内用两级 <code class="text-xs">trigger=&quot;hover&quot;</code> 的{' '}
+          <code class="text-xs">Dropdown</code> 展开子菜单；最内层菜单项点击时写入下方展示值，并递增{' '}
+          <code class="text-xs">closeTick</code> 仅收起最内层浮层。
+        </p>
+        <Popover
+          placement="bottom-start"
+          title="两层悬停菜单"
+          content={
+            <div class="flex flex-col gap-3 max-w-sm">
+              <p class="text-sm vfui-text-muted m-0">
+                悬停「一级菜单」→ 悬停「子菜单」→ 点击三级项。
+              </p>
+              <Dropdown
+                trigger="hover"
+                verticalPanelAlign="left"
+                dropdown={
+                  <MenuList role="menu" class="min-w-48">
+                    <MenuItem>Popover 内一级项</MenuItem>
+                    <Dropdown
+                      block
+                      trigger="hover"
+                      closeTick={popoverNestedInnerClose}
+                      orientation="horizontal"
+                      horizontalAlign="right"
+                      dropdown={
+                        <MenuList role="menu" class="min-w-44">
+                          <MenuItem
+                            onClick={() => {
+                              popoverNestedInnerValue.set('方案 A')
+                              popoverNestedInnerClose.set(popoverNestedInnerClose() + 1)
+                              console.log('popover-nested-dropdown', '方案 A')
+                            }}
+                          >
+                            方案 A
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              popoverNestedInnerValue.set('方案 B')
+                              popoverNestedInnerClose.set(popoverNestedInnerClose() + 1)
+                              console.log('popover-nested-dropdown', '方案 B')
+                            }}
+                          >
+                            方案 B
+                          </MenuItem>
+                        </MenuList>
+                      }
+                    >
+                      <MenuItem chevronRight>子菜单（悬停）</MenuItem>
+                    </Dropdown>
+                  </MenuList>
+                }
+              >
+                <Button type="default" size="small">
+                  一级菜单（悬停）
+                </Button>
+              </Dropdown>
+            </div>
+          }
+        >
+          <Button type="primary">Popover · 两层 hover</Button>
+        </Popover>
+        <p class="text-sm vfui-text-muted mt-3">
+          最内层选中：
+          <span class="font-mono text-xs text-gray-900 dark:text-slate-100">{popoverNestedInnerValue() ?? '—'}</span>
+          {' · '}
+          <code class="text-xs">closeTick</code>：
+          <span class="font-mono text-xs text-gray-900 dark:text-slate-100">{popoverNestedInnerClose()}</span>
+        </p>
       </section>
 
       <section class="mb-10">
