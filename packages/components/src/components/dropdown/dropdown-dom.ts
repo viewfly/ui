@@ -13,13 +13,6 @@ export function getScrollableAncestors(el: HTMLElement): HTMLElement[] {
   return list
 }
 
-/** 若触发器位于某个 Popover 面板内，则返回该 Popover 的实例 id。 */
-export function resolveOwnerPopoverId(el: HTMLElement | null | undefined): string | null {
-  if (!el) return null
-  const owner = el.closest('[data-vfui-popover-id]') as HTMLElement | null
-  return owner?.dataset.vfuiPopoverId ?? null
-}
-
 export function defaultDropdownContainer(): HTMLElement {
   return typeof document !== 'undefined' ? document.body : (null as unknown as HTMLElement)
 }

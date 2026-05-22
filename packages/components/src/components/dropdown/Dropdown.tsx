@@ -11,7 +11,7 @@ import { fromEvent, Subscription } from '@tanbo/stream'
 import { acquireOverlayZIndex } from '../../utils/overlay-z-index'
 import { resolveVfuiPortalThemeClass } from '../../utils/overlay-theme-class'
 import { computeDropdownLayout } from './dropdown-layout'
-import { defaultDropdownContainer, getScrollableAncestors, resolveOwnerPopoverId } from './dropdown-dom'
+import { defaultDropdownContainer, getScrollableAncestors } from './dropdown-dom'
 import type { DropdownProps } from './dropdown-types'
 import './style.scss'
 import { VfuiDropdownTriggerProvider } from './trigger-context'
@@ -41,7 +41,6 @@ export function Dropdown(props: DropdownProps) {
   const triggerRef = createRef<HTMLDivElement>()
   /** 面板元素（用于读取面板宽高） */
   let panelElement: HTMLElement | null = null
-  let ownerPopoverId: string | null = null
   let cleanupLayoutFollow: (() => void) | null = null
   const parentNest = inject(DropdownNestContext)
 
@@ -89,8 +88,6 @@ export function Dropdown(props: DropdownProps) {
         addScroll(node)
       }
     }
-    bindScrollParents()
-    queueMicrotask(bindScrollParents)
     requestAnimationFrame(bindScrollParents)
 
     return () => {
@@ -107,11 +104,6 @@ export function Dropdown(props: DropdownProps) {
    * - trigger 的可滚动祖先滚动
    */
   onMounted(() => {
-    const triggerEl = triggerRef.value
-    if (triggerEl) {
-      ownerPopoverId = resolveOwnerPopoverId(triggerEl)
-    }
-
     return () => {
       clearTimeout(leaveTimer)
       cleanupLayoutFollow?.()
@@ -311,7 +303,6 @@ export function Dropdown(props: DropdownProps) {
               computedExpanded.value && (
                 <div
                   ref={panelRef}
-                  data-vfui-popover-owner={ownerPopoverId ?? undefined}
                   className={`vfui-dropdown__panel${animCls}${openCls}${compactMenuCls}${interactiveCls}${themePortalCls}`}
                   style={{
                     top: `${layout.top}px`,
