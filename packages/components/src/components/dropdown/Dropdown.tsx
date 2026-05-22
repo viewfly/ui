@@ -1,6 +1,5 @@
 import {
-  Component,
-  computed,
+  computed, createContextProvider,
   createDynamicRef,
   createRef,
   createSignal, getCurrentInstance, inject,
@@ -16,10 +15,8 @@ import { defaultDropdownContainer, getScrollableAncestors, resolveOwnerPopoverId
 import type { DropdownProps } from './dropdown-types'
 import './style.scss'
 import { VfuiDropdownTriggerProvider } from './trigger-context'
-import { VfuiDropdownNestContext, VfuiDropdownNestProvider, VfuiDropdownNestToken } from './nest-context'
+import { DropdownNestContext } from './nest-context'
 import { DROPDOWN_HOVER_CLOSE_MS } from './dropdown-constants'
-
-const dropdownCloseRecord = new Map<Component, () => void>()
 
 export function Dropdown(props: DropdownProps) {
   const expanded = createSignal(false)
@@ -46,6 +43,7 @@ export function Dropdown(props: DropdownProps) {
   let panelElement: HTMLElement | null = null
   let ownerPopoverId: string | null = null
   let cleanupLayoutFollow: (() => void) | null = null
+  const parentNest = inject(DropdownNestContext)
 
   const computeLayout = () => {
     if (!computedExpanded.value) return
@@ -127,7 +125,7 @@ export function Dropdown(props: DropdownProps) {
   function triggerMouseEnter() {
     if (props.disabled || triggerType.value !== 'hover') return
     expanded.set(true)
-    parentNest?.onSubDropdownOpened()
+    parentNest.onSubDropdownOpened.next()
     clearTimeout(leaveTimer)
   }
 
@@ -136,11 +134,9 @@ export function Dropdown(props: DropdownProps) {
     clearTimeout(leaveTimer)
     leaveTimer = setTimeout(() => {
       expanded.set(false)
-      parentNest?.onMouseLeaveSubPanel()
+      parentNest.onMouseLeaveSubPanel.next()
     }, DROPDOWN_HOVER_CLOSE_MS)
   }
-
-  const parentNest = inject(VfuiDropdownNestToken, null)
 
   watch(() => computedExpanded.value, (v) => {
     if (v) {
@@ -154,7 +150,7 @@ export function Dropdown(props: DropdownProps) {
       cleanupLayoutFollow?.()
       cleanupLayoutFollow = null
     }
-    v ? parentNest?.onSubDropdownOpened() : parentNest?.onSubDropdownClosed()
+    v ? parentNest.onSubDropdownOpened.next() : parentNest.onSubDropdownClosed.next()
     props.onOpenChange?.(v)
   })
   watch(() => props.closeTick?.(), () => {
@@ -162,43 +158,43 @@ export function Dropdown(props: DropdownProps) {
   })
 
   const instance = getCurrentInstance()
-  dropdownCloseRecord.set(instance, () => {
-    if (triggerType.value === 'hover' && canHide) {
-      expanded.set(false)
-    }
-  })
-  onUnmounted(() => {
-    dropdownCloseRecord.delete(instance)
-  })
   watch(expanded, (v) => {
     if (v) {
-      dropdownCloseRecord.forEach((close, comp) => {
-        if (comp !== instance) {
-          close()
-        }
-      })
+      parentNest.onSiblingDropdownOpen.next(instance)
     }
   })
 
   let pointerInSelf = false
 
-  const dropdownNestContext: VfuiDropdownNestContext = {
-    onSubPanelClicked() {
+  const dropdownNestContext = new DropdownNestContext()
+
+
+  const sub = parentNest.onSiblingDropdownOpen.subscribe((dropdown) => {
+    if (dropdown === instance) {
+      return
+    }
+    // if (triggerType.value === 'hover' && canHide) {
+    expanded.set(false)
+    // }
+  })
+
+  sub.add(
+    dropdownNestContext.onSubPanelClicked.subscribe(() => {
       clickFromSelf = true
-      parentNest?.onSubPanelClicked()
-    },
-    onSubDropdownOpened() {
+      parentNest.onSubPanelClicked.next()
+    }),
+    dropdownNestContext.onSubDropdownOpened.subscribe(() => {
       canHide = false
       clearTimeout(leaveTimer)
-    },
-    onSubDropdownClosed() {
+    }),
+    dropdownNestContext.onSubDropdownClosed.subscribe(() => {
       canHide = true
-    },
-    onMouseEnterSubPanel() {
+    }),
+    dropdownNestContext.onMouseEnterSubPanel.subscribe(() => {
       canHide = false
       clearTimeout(leaveTimer)
-    },
-    onMouseLeaveSubPanel() {
+    }),
+    dropdownNestContext.onMouseLeaveSubPanel.subscribe(() => {
       canHide = true
       if (pointerInSelf) {
         return
@@ -206,8 +202,12 @@ export function Dropdown(props: DropdownProps) {
       if (triggerType.value === 'hover' && canHide) {
         expanded.set(false)
       }
-    }
-  }
+    })
+  )
+
+  onUnmounted(() => {
+    sub.unsubscribe()
+  })
 
   let clickFromSelf = false
 
@@ -232,7 +232,7 @@ export function Dropdown(props: DropdownProps) {
 
     subscription.add(fromEvent(node, 'mouseenter').subscribe(() => {
       pointerInSelf = true
-      parentNest?.onMouseEnterSubPanel()
+      parentNest.onMouseEnterSubPanel.next()
       if (triggerType.value === 'hover') {
         clearTimeout(leaveTimer)
       }
@@ -257,7 +257,7 @@ export function Dropdown(props: DropdownProps) {
     }))
     subscription.add(fromEvent(node, 'click').subscribe(() => {
       clickFromSelf = true
-      parentNest?.onSubPanelClicked()
+      parentNest.onSubPanelClicked.next()
     }))
 
     return () => {
@@ -269,6 +269,10 @@ export function Dropdown(props: DropdownProps) {
   const triggerProviderValue = {
     expanded
   }
+
+  const VfuiDropdownNestProvider = createContextProvider({
+    provide: DropdownNestContext
+  })
 
   return () => {
     const disabled = props.disabled ?? false

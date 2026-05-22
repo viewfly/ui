@@ -119,11 +119,11 @@ export function DropdownPage() {
           <div class="flex items-center gap-3">
             <Dropdown
               trigger="hover"
-              closeTick={dropdownClickClose}
+              // closeTick={dropdownClickClose}
               verticalPanelAlign="left"
               gap={8}
               dropdown={(
-                <div onMousedown={(e: MouseEvent) => e.stopPropagation()}>
+                // <div onMousedown={(e: MouseEvent) => e.stopPropagation()}>
                   <ColorPicker
                     value="#296eff"
                     recentColorsName="playground-dropdown-click"
@@ -135,7 +135,7 @@ export function DropdownPage() {
                       dropdownClickClose.set(dropdownClickClose() + 1)
                     }}
                   />
-                </div>
+                // </div>
               )}
             >
               <Button type="primary">悬停选色 A</Button>
@@ -149,11 +149,11 @@ export function DropdownPage() {
           <div class="flex items-center gap-3">
             <Dropdown
               trigger="hover"
-              closeTick={dropdownHoverClose}
+              // closeTick={dropdownHoverClose}
               verticalPanelAlign="left"
               gap={8}
               dropdown={(
-                <div onMousedown={(e: MouseEvent) => e.stopPropagation()}>
+                // <div onMousedown={(e: MouseEvent) => e.stopPropagation()}>
                   <ColorPicker
                     value="#16a34a"
                     recentColorsName="playground-dropdown-hover"
@@ -165,7 +165,7 @@ export function DropdownPage() {
                       dropdownHoverClose.set(dropdownHoverClose() + 1)
                     }}
                   />
-                </div>
+                // </div>
               )}
             >
               <Button type="default">悬停选色 B</Button>

@@ -1,17 +1,14 @@
-import { createContextProvider, InjectionToken } from '@viewfly/core'
+import { Component, Injectable } from '@viewfly/core'
+import { Subject } from '@tanbo/stream'
 
-export interface VfuiDropdownNestContext {
-  onSubPanelClicked(): void
-
-  onSubDropdownOpened(): void
-
-  onSubDropdownClosed(): void
-
-  onMouseEnterSubPanel(): void
-
-  onMouseLeaveSubPanel(): void
+@Injectable({
+  provideIn: 'root',
+})
+export class DropdownNestContext {
+  onSiblingDropdownOpen = new Subject<Component>()
+  onSubPanelClicked = new Subject<void>()
+  onSubDropdownOpened = new Subject<void>()
+  onSubDropdownClosed = new Subject<void>()
+  onMouseEnterSubPanel = new Subject<void>()
+  onMouseLeaveSubPanel = new Subject<void>()
 }
-
-export const VfuiDropdownNestToken = new InjectionToken<VfuiDropdownNestContext>('VfuiDropdownNest')
-
-export const VfuiDropdownNestProvider = createContextProvider({provide: VfuiDropdownNestToken})
