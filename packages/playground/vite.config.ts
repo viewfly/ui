@@ -16,6 +16,10 @@ export default defineConfig({
     jsx: 'automatic',
     jsxImportSource: '@viewfly/core',
   },
+  build: {
+    minify: false,
+    cssMinify: false,
+  },
   plugins: [
     viewflyHmrPlugin(),
     UnoCSS(),
