@@ -1,5 +1,11 @@
 # @viewfly/ui-utils
 
+## 0.0.26
+
+### Patch Changes
+
+- 重构 Popover
+
 ## 0.0.25
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @viewfly/ui-components
 
+## 0.0.26
+
+### Patch Changes
+
+- 重构 Popover
+- Updated dependencies
+  - @viewfly/ui-icons@0.0.26
+
 ## 0.0.25
 
 ### Patch Changes
