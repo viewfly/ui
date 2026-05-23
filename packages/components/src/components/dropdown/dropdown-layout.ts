@@ -98,6 +98,7 @@ export function computeDropdownLayout(args: {
   const pad = DROPDOWN_VIEWPORT_EDGE
 
   const panelRect = panelElement.getBoundingClientRect()
+  const panelNaturalHeight = panelElement.scrollHeight + 2
 
   if (orientation === 'horizontal') {
     if (horizontalAlign === 'left' && triggerRect.left >= panelRect.width + pad + gap) {
@@ -117,7 +118,7 @@ export function computeDropdownLayout(args: {
 
     const hSpace = Math.max(vh - pad, triggerRect.bottom) - minTop
 
-    let panelHeight = Math.min(panelMaxHeightCap, panelElement.scrollHeight)
+    let panelHeight = Math.min(panelMaxHeightCap, panelNaturalHeight)
 
     if (panelHeight > hSpace) {
       panelHeight = Math.max(DROPDOWN_VERTICAL_SWITCH_THRESHOLD, hSpace)
@@ -156,11 +157,11 @@ export function computeDropdownLayout(args: {
 
     if (bottomSpace >= topSpace || bottomSpace >= DROPDOWN_VERTICAL_SWITCH_THRESHOLD) {
       layout.placement = 'bottom'
-      layout.maxHeight = Math.min(bottomSpace, panelElement.scrollHeight, panelMaxHeightCap)
+      layout.maxHeight = Math.min(bottomSpace, panelNaturalHeight, panelMaxHeightCap)
       layout.top = triggerRect.bottom + gap
     } else {
       layout.placement = 'top'
-      layout.maxHeight = Math.min(topSpace, panelElement.scrollHeight, panelMaxHeightCap)
+      layout.maxHeight = Math.min(topSpace, panelNaturalHeight, panelMaxHeightCap)
       layout.top = triggerRect.top - gap - layout.maxHeight
     }
     if (verticalPanelAlign === 'right') {
