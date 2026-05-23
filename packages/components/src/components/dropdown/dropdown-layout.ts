@@ -1,4 +1,4 @@
-import { DROPDOWN_VERTICAL_SWITCH_THRESHOLD, DROPDOWN_VIEWPORT_EDGE } from './dropdown-constants'
+import {DROPDOWN_VERTICAL_SWITCH_THRESHOLD, DROPDOWN_VIEWPORT_EDGE} from './dropdown-constants'
 import type {
   DropdownHorizontalAlign,
   DropdownHorizontalPanelAlign,
@@ -126,30 +126,42 @@ export function computeDropdownLayout(args: {
 
     layout.maxHeight = panelHeight
 
-    if (horizontalPanelAlign === 'top') {
-      layout.top = Math.max(minTop,
-        triggerRect.bottom - layout.maxHeight,
-        Math.min(
-          triggerRect.top,
-          vh - pad - layout.maxHeight
-        )
-      )
-    } else if (horizontalPanelAlign === 'bottom') {
-      layout.top = Math.max(minTop,
-        triggerRect.bottom - layout.maxHeight,
-        Math.min(
-          triggerRect.bottom - layout.maxHeight,
-          vh - pad - layout.maxHeight
-        )
-      )
+    const isMenuHeightLessThanTrigger = panelHeight <= triggerRect.height
+    if (isMenuHeightLessThanTrigger) {
+      if (horizontalPanelAlign === 'top') {
+        layout.top = Math.max(minTop, triggerRect.top)
+      } else if (horizontalPanelAlign === 'bottom') {
+        layout.top = Math.max(minTop, triggerRect.bottom - panelHeight)
+      } else {
+        layout.top = Math.max(minTop, triggerRect.top + triggerRect.height / 2 - panelHeight / 2)
+      }
+
     } else {
-      layout.top = Math.max(minTop,
-        triggerRect.bottom - layout.maxHeight,
-        Math.min(
-          triggerRect.top + triggerRect.height / 2 - layout.maxHeight / 2,
-          vh - pad - layout.maxHeight
+      if (horizontalPanelAlign === 'top') {
+        layout.top = Math.max(minTop,
+          triggerRect.bottom - layout.maxHeight,
+          Math.min(
+            triggerRect.top,
+            vh - pad - layout.maxHeight
+          )
         )
-      )
+      } else if (horizontalPanelAlign === 'bottom') {
+        layout.top = Math.max(minTop,
+          triggerRect.bottom - layout.maxHeight,
+          Math.min(
+            triggerRect.bottom - layout.maxHeight,
+            vh - pad - layout.maxHeight
+          )
+        )
+      } else {
+        layout.top = Math.max(minTop,
+          triggerRect.bottom - layout.maxHeight,
+          Math.min(
+            triggerRect.top + triggerRect.height / 2 - layout.maxHeight / 2,
+            vh - pad - layout.maxHeight
+          )
+        )
+      }
     }
   } else {
     const topSpace = triggerRect.top - gap - pad

@@ -10,6 +10,16 @@ const wideMenu = (
   </MenuList>
 )
 
+const wideMenuMax = (
+  <MenuList role="menu" class="min-w-52">
+    {
+      Array.from({length: 100}).map((_, index) => {
+        return <MenuItem>菜单项 {index + 1}</MenuItem>
+      })
+    }
+  </MenuList>
+)
+
 const longMenu = (
   <MenuList role="menu" class="min-w-56">
     {Array.from({ length: 36 }, (_, idx) => (
@@ -334,12 +344,12 @@ export function DropdownPage() {
 
       <section class="mb-10">
         <h3 class="text-sm font-medium vfui-text-muted mb-3">横向弹出：垂直对齐（horizontalPanelAlign）</h3>
-        <p class="text-sm vfui-text-muted mb-4">
-          仅 <code class="text-xs">orientation=&quot;horizontal&quot;</code> 时有效：
-          <code class="text-xs">top</code> 顶对齐、<code class="text-xs">middle</code> 垂直居中、
-          <code class="text-xs">bottom</code> 底对齐；与 <code class="text-xs">horizontalAlign</code>、视口边距规则共用。
+        <p className="text-sm vfui-text-muted mb-4">
+          仅 <code className="text-xs">orientation=&quot;horizontal&quot;</code> 时有效：
+          <code className="text-xs">top</code> 顶对齐、<code className="text-xs">middle</code> 垂直居中、
+          <code className="text-xs">bottom</code> 底对齐；与 <code className="text-xs">horizontalAlign</code>、视口边距规则共用。
         </p>
-        <div class="flex flex-wrap gap-6 items-start">
+        <div className="flex flex-wrap gap-6 items-start">
           <Dropdown
             orientation="horizontal"
             horizontalAlign="left"
@@ -364,6 +374,36 @@ export function DropdownPage() {
             horizontalPanelAlign="bottom"
             trigger="click"
             dropdown={wideMenu}
+          >
+            {triggerShell(<Button type="primary">bottom</Button>)}
+          </Dropdown>
+        </div>
+        <p className="text-sm vfui-text-muted mb-4">长下拉 </p>
+        <div className="flex flex-wrap gap-6 items-start">
+          <Dropdown
+            orientation="horizontal"
+            horizontalAlign="left"
+            horizontalPanelAlign="top"
+            trigger="click"
+            dropdown={wideMenuMax}
+          >
+            {triggerShell(<Button type="primary">top</Button>)}
+          </Dropdown>
+          <Dropdown
+            orientation="horizontal"
+            horizontalAlign="left"
+            horizontalPanelAlign="middle"
+            trigger="click"
+            dropdown={wideMenuMax}
+          >
+            {triggerShell(<Button type="primary">middle</Button>)}
+          </Dropdown>
+          <Dropdown
+            orientation="horizontal"
+            horizontalAlign="left"
+            horizontalPanelAlign="bottom"
+            trigger="click"
+            dropdown={wideMenuMax}
           >
             {triggerShell(<Button type="primary">bottom</Button>)}
           </Dropdown>
