@@ -98,7 +98,7 @@ export function computeDropdownLayout(args: {
   const pad = DROPDOWN_VIEWPORT_EDGE
 
   const panelRect = panelElement.getBoundingClientRect()
-  const panelNaturalHeight = panelElement.scrollHeight + 2
+  const panelNaturalHeight = panelElement.scrollHeight + 2 + 1 // + 1 为防止小数高度常开滚动条
 
   if (orientation === 'horizontal') {
     if (horizontalAlign === 'left' && triggerRect.left >= panelRect.width + pad + gap) {
